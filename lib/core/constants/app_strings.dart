@@ -92,8 +92,7 @@ class AppStrings {
   static const String forgotPasswordDesc =
       "Don't worry! Enter your email and we'll send you a reset link.";
   static const String checkYourEmail = 'Check Your Email!';
-  static const String resetEmailSent =
-      "We've sent a password reset link to";
+  static const String resetEmailSent = "We've sent a password reset link to";
   static const String appPartner = 'Your AI Coding & English\nPartner';
   static const String codeBetterSpeakBetter = 'Code Better. Speak Better.';
 
@@ -130,8 +129,10 @@ class AppStrings {
   static const String pleaseEnterEmail = 'Please enter your email';
   static const String pleaseEnterValidEmail = 'Please enter a valid email';
   static const String pleaseEnterPassword = 'Please enter your password';
-  static const String passwordTooShort = 'Password must be at least 8 characters';
-  static const String pleaseAgreeToTerms = 'Please agree to the Terms & Conditions';
+  static const String passwordTooShort =
+      'Password must be at least 8 characters';
+  static const String pleaseAgreeToTerms =
+      'Please agree to the Terms & Conditions';
 
   // Auth Errors
   static const String emailAlreadyInUse = 'Email already in use';

@@ -30,10 +30,8 @@ class CopyButton extends StatelessWidget {
           ),
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 250),
-            transitionBuilder: (child, anim) => ScaleTransition(
-              scale: anim,
-              child: child,
-            ),
+            transitionBuilder: (child, anim) =>
+                ScaleTransition(scale: anim, child: child),
             child: hasCopied
                 ? Row(
                     key: const ValueKey('copied'),

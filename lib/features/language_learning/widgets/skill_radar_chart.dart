@@ -30,8 +30,24 @@ class SkillRadarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final values = [grammar, pronunciation, spelling, reading, writing, listening, speaking];
-    final labels = ['Grammar', 'Pronunciation', 'Spelling', 'Reading', 'Writing', 'Listening', 'Speaking'];
+    final values = [
+      grammar,
+      pronunciation,
+      spelling,
+      reading,
+      writing,
+      listening,
+      speaking,
+    ];
+    final labels = [
+      'Grammar',
+      'Pronunciation',
+      'Spelling',
+      'Reading',
+      'Writing',
+      'Listening',
+      'Speaking',
+    ];
 
     return CustomPaint(
       size: const Size(double.infinity, 250),
@@ -131,16 +147,8 @@ class _RadarPainter extends CustomPainter {
       final x = center.dx + radius * value * cos(angle * i - pi / 2);
       final y = center.dy + radius * value * sin(angle * i - pi / 2);
 
-      canvas.drawCircle(
-        Offset(x, y),
-        5,
-        Paint()..color = AppColors.primary,
-      );
-      canvas.drawCircle(
-        Offset(x, y),
-        3,
-        Paint()..color = Colors.white,
-      );
+      canvas.drawCircle(Offset(x, y), 5, Paint()..color = AppColors.primary);
+      canvas.drawCircle(Offset(x, y), 3, Paint()..color = Colors.white);
     }
 
     // Draw labels

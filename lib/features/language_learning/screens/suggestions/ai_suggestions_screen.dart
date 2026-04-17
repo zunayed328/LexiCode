@@ -19,7 +19,6 @@ class AiSuggestionsScreen extends StatefulWidget {
 }
 
 class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -43,24 +42,50 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
           slivers: [
             SliverToBoxAdapter(child: _buildAppBar(context, isDark)),
             if (progressProvider.weaknessAnalysis == null)
-              SliverToBoxAdapter(child: _buildAnalyzePrompt(isDark, progressProvider))
+              SliverToBoxAdapter(
+                child: _buildAnalyzePrompt(isDark, progressProvider),
+              )
             else ...[
               SliverToBoxAdapter(
-                  child: _buildSkillRadar(isDark, progressProvider)),
-              if (progressProvider.weaknessAnalysis!.criticalWeaknesses.isNotEmpty ||
-                  progressProvider.weaknessAnalysis!.moderateWeaknesses.isNotEmpty)
+                child: _buildSkillRadar(isDark, progressProvider),
+              ),
+              if (progressProvider
+                      .weaknessAnalysis!
+                      .criticalWeaknesses
+                      .isNotEmpty ||
+                  progressProvider
+                      .weaknessAnalysis!
+                      .moderateWeaknesses
+                      .isNotEmpty)
                 SliverToBoxAdapter(
-                    child: _buildWeaknesses(isDark, progressProvider.weaknessAnalysis!)),
-              if (progressProvider.weaknessAnalysis!.strengthsToLeverage.isNotEmpty)
+                  child: _buildWeaknesses(
+                    isDark,
+                    progressProvider.weaknessAnalysis!,
+                  ),
+                ),
+              if (progressProvider
+                  .weaknessAnalysis!
+                  .strengthsToLeverage
+                  .isNotEmpty)
                 SliverToBoxAdapter(
-                    child: _buildStrengths(isDark, progressProvider.weaknessAnalysis!)),
+                  child: _buildStrengths(
+                    isDark,
+                    progressProvider.weaknessAnalysis!,
+                  ),
+                ),
               if (progressProvider.weaknessAnalysis!.hiddenPatterns.isNotEmpty)
                 SliverToBoxAdapter(
-                    child: _buildHiddenPatterns(isDark, progressProvider.weaknessAnalysis!)),
+                  child: _buildHiddenPatterns(
+                    isDark,
+                    progressProvider.weaknessAnalysis!,
+                  ),
+                ),
               SliverToBoxAdapter(
-                  child: _buildPersonalizedPlanCTA(context, isDark)),
+                child: _buildPersonalizedPlanCTA(context, isDark),
+              ),
               SliverToBoxAdapter(
-                  child: _buildRoadmapCTA(context, isDark, progressProvider)),
+                child: _buildRoadmapCTA(context, isDark, progressProvider),
+              ),
             ],
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
@@ -87,20 +112,33 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.auto_awesome_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('AI Suggestions',
-                    style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800)),
-                Text('Personalized learning analysis',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
-                    )),
+                Text(
+                  'AI Suggestions',
+                  style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  'Personalized learning analysis',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
               ],
             ),
           ),
@@ -131,7 +169,11 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
                 ),
               ],
             ),
-            child: const Icon(Icons.psychology_rounded, color: Colors.white, size: 48),
+            child: const Icon(
+              Icons.psychology_rounded,
+              color: Colors.white,
+              size: 48,
+            ),
           ),
           const SizedBox(height: 28),
           Text(
@@ -145,7 +187,9 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
             style: GoogleFonts.inter(
               fontSize: 15,
               height: 1.5,
-              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.lightTextSecondary,
             ),
           ),
           const SizedBox(height: 32),
@@ -153,53 +197,79 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
             width: double.infinity,
             height: 56,
             child: ElevatedButton.icon(
-              onPressed: provider.isAnalyzing ? null : () => provider.getWeaknessAnalysis(),
+              onPressed: provider.isAnalyzing
+                  ? null
+                  : () => provider.getWeaknessAnalysis(),
               icon: provider.isAnalyzing
                   ? const SizedBox(
                       width: 20,
                       height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
                     )
                   : const Icon(Icons.auto_awesome_rounded),
               label: Text(
-                provider.isAnalyzing ? 'Analyzing your progress...' : 'Run AI Analysis',
-                style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700),
+                provider.isAnalyzing
+                    ? 'Analyzing your progress...'
+                    : 'Run AI Analysis',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFF59E0B),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
             ),
           ),
           if (provider.error != null)
             Padding(
               padding: const EdgeInsets.only(top: 16),
-              child: Text(provider.error!, style: GoogleFonts.inter(color: AppColors.error)),
-            )
+              child: Text(
+                provider.error!,
+                style: GoogleFonts.inter(color: AppColors.error),
+              ),
+            ),
         ],
       ),
     );
   }
 
   Widget _buildSkillRadar(bool isDark, ProgressProvider provider) {
-    if (provider.weaknessAnalysis != null && provider.weaknessAnalysis!.skillBalance.isNotEmpty) {
+    if (provider.weaknessAnalysis != null &&
+        provider.weaknessAnalysis!.skillBalance.isNotEmpty) {
       final balance = provider.weaknessAnalysis!.skillBalance;
       return Padding(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
         child: GlassCard(
           child: Column(
             children: [
-              Text('Skills Balance', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+              Text(
+                'Skills Balance',
+                style: GoogleFonts.inter(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
               const SizedBox(height: 16),
               SizedBox(
                 height: 250,
                 child: SkillRadarChart(
                   grammar: balance['Grammar'] ?? balance['grammar'] ?? 0.0,
-                  pronunciation: balance['Pronunciation'] ?? balance['pronunciation'] ?? 0.0,
+                  pronunciation:
+                      balance['Pronunciation'] ??
+                      balance['pronunciation'] ??
+                      0.0,
                   spelling: balance['Spelling'] ?? balance['spelling'] ?? 0.0,
                   reading: balance['Reading'] ?? balance['reading'] ?? 0.0,
                   writing: balance['Writing'] ?? balance['writing'] ?? 0.0,
-                  listening: balance['Listening'] ?? balance['listening'] ?? 0.0,
+                  listening:
+                      balance['Listening'] ?? balance['listening'] ?? 0.0,
                   speaking: balance['Speaking'] ?? balance['speaking'] ?? 0.0,
                 ),
               ),
@@ -215,7 +285,13 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
       child: GlassCard(
         child: Column(
           children: [
-            Text('Skills Balance', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+            Text(
+              'Skills Balance',
+              style: GoogleFonts.inter(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             const SizedBox(height: 16),
             SizedBox(
               height: 250,
@@ -249,16 +325,36 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('⚠️ Areas to Improve', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+              Text(
+                '⚠️ Areas to Improve',
+                style: GoogleFonts.inter(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
               TextButton(
-                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WeaknessAnalysisScreen())),
-                child: Text('Deep Dive', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFFF59E0B))),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const WeaknessAnalysisScreen(),
+                  ),
+                ),
+                child: Text(
+                  'Deep Dive',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFFF59E0B),
+                  ),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 12),
           ...allWeaknesses.map((w) {
-            final color = w.urgency.name.toLowerCase() == 'high' || w.urgency.name.toLowerCase() == 'critical'
+            final color =
+                w.urgency.name.toLowerCase() == 'high' ||
+                    w.urgency.name.toLowerCase() == 'critical'
                 ? AppColors.error
                 : AppColors.warning;
             return GlassCard(
@@ -273,7 +369,11 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
                       color: color.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(Icons.track_changes_rounded, color: color, size: 22),
+                    child: Icon(
+                      Icons.track_changes_rounded,
+                      color: color,
+                      size: 22,
+                    ),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -283,34 +383,55 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
                         Row(
                           children: [
                             Flexible(
-                              child: Text(w.area,
-                                  style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600)),
+                              child: Text(
+                                w.area,
+                                style: GoogleFonts.inter(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             ),
                             const SizedBox(width: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
                                 color: color.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
                                 w.urgency.name.toUpperCase(),
-                                style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.w700, color: color),
+                                style: GoogleFonts.inter(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w700,
+                                  color: color,
+                                ),
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 4),
-                        Text(w.description,
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              height: 1.4,
-                              color: isDark ? Colors.white60 : Colors.black54,
-                            )),
+                        Text(
+                          w.description,
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            height: 1.4,
+                            color: isDark ? Colors.white60 : Colors.black54,
+                          ),
+                        ),
                         if (w.evidence.isNotEmpty) ...[
                           const SizedBox(height: 6),
-                          Text(w.evidence, style: GoogleFonts.inter(fontSize: 12, fontStyle: FontStyle.italic, color: isDark ? Colors.white54 : Colors.grey)),
-                        ]
+                          Text(
+                            w.evidence,
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontStyle: FontStyle.italic,
+                              color: isDark ? Colors.white54 : Colors.grey,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -329,13 +450,18 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('💪 Your Strengths', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+          Text(
+            '💪 Your Strengths',
+            style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+          ),
           const SizedBox(height: 12),
           GlassCard(
             borderColor: AppColors.success.withValues(alpha: 0.2),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: analysis.strengthsToLeverage.asMap().entries.map((entry) {
+              children: analysis.strengthsToLeverage.asMap().entries.map((
+                entry,
+              ) {
                 return Column(
                   children: [
                     if (entry.key > 0) const Divider(height: 20),
@@ -353,10 +479,17 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
   Widget _strengthItem(String title) {
     return Row(
       children: [
-        const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 20),
+        const Icon(
+          Icons.check_circle_rounded,
+          color: AppColors.success,
+          size: 20,
+        ),
         const SizedBox(width: 10),
         Expanded(
-          child: Text(title, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600)),
+          child: Text(
+            title,
+            style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600),
+          ),
         ),
       ],
     );
@@ -368,7 +501,10 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('🔍 Hidden Patterns', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+          Text(
+            '🔍 Hidden Patterns',
+            style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+          ),
           const SizedBox(height: 12),
           GlassCard(
             borderColor: AppColors.info.withValues(alpha: 0.2),
@@ -394,11 +530,10 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
         const Text('•', style: TextStyle(fontSize: 18, color: AppColors.info)),
         const SizedBox(width: 8),
         Expanded(
-          child: Text(pattern,
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                height: 1.4,
-              )),
+          child: Text(
+            pattern,
+            style: GoogleFonts.inter(fontSize: 13, height: 1.4),
+          ),
         ),
       ],
     );
@@ -408,7 +543,10 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
       child: GestureDetector(
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PersonalizedPlanScreen())),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const PersonalizedPlanScreen()),
+        ),
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
@@ -428,15 +566,29 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
           ),
           child: Column(
             children: [
-              const Icon(Icons.person_outline_rounded, color: Colors.white, size: 36),
+              const Icon(
+                Icons.person_outline_rounded,
+                color: Colors.white,
+                size: 36,
+              ),
               const SizedBox(height: 12),
-              Text('Daily Personalized Plan',
-                  style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white)),
+              Text(
+                'Daily Personalized Plan',
+                style: GoogleFonts.inter(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
               const SizedBox(height: 8),
               Text(
                 'Get your optimal mix of reading, writing, speaking, and grammar for today.',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.inter(fontSize: 14, color: Colors.white.withOpacity(0.9), height: 1.5),
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.9),
+                  height: 1.5,
+                ),
               ),
               const SizedBox(height: 24),
               Container(
@@ -447,8 +599,14 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: Text('View Action Plan',
-                    style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: const Color(0xFF6D28D9))),
+                child: Text(
+                  'View Action Plan',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF6D28D9),
+                  ),
+                ),
               ),
             ],
           ),
@@ -457,7 +615,11 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
     );
   }
 
-  Widget _buildRoadmapCTA(BuildContext context, bool isDark, ProgressProvider provider) {
+  Widget _buildRoadmapCTA(
+    BuildContext context,
+    bool isDark,
+    ProgressProvider provider,
+  ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
       child: Container(
@@ -481,13 +643,23 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
           children: [
             const Icon(Icons.map_rounded, color: Colors.white, size: 36),
             const SizedBox(height: 12),
-            Text('Your Learning Roadmap',
-                style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white)),
+            Text(
+              'Your Learning Roadmap',
+              style: GoogleFonts.inter(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
             const SizedBox(height: 8),
             Text(
               'AI has created a personalized study plan based on your strengths and weaknesses.',
               textAlign: TextAlign.center,
-              style: GoogleFonts.inter(fontSize: 14, color: Colors.white.withValues(alpha: 0.9), height: 1.5),
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: Colors.white.withValues(alpha: 0.9),
+                height: 1.5,
+              ),
             ),
             const SizedBox(height: 24),
             SizedBox(
@@ -498,10 +670,17 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: const Color(0xFFD97706),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
-                child: Text('Generate & View Roadmap',
-                    style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700)),
+                child: Text(
+                  'Generate & View Roadmap',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ),
           ],
@@ -518,7 +697,9 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           title: const Text('Design Your Action Plan'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -526,7 +707,9 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Your Goal (e.g. IELTS 7.5, Fluent Speaking)',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 onChanged: (v) => goal = v,
               ),
@@ -535,7 +718,9 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
                 initialValue: timeline,
                 decoration: InputDecoration(
                   labelText: 'Timeline',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 items: ['2 weeks', '4 weeks', '8 weeks', '12 weeks']
                     .map((t) => DropdownMenuItem(value: t, child: Text(t)))
@@ -547,19 +732,30 @@ class _AiSuggestionsScreenState extends State<AiSuggestionsScreen> {
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
             ElevatedButton(
               onPressed: () {
                 if (goal.trim().isEmpty) return;
                 Navigator.pop(ctx);
                 provider.generateRoadmap(goal: goal.trim(), timeline: timeline);
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const RoadmapScreen()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RoadmapScreen()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFF59E0B),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-              child: const Text('Generate AI Roadmap', style: TextStyle(color: Colors.white)),
+              child: const Text(
+                'Generate AI Roadmap',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );

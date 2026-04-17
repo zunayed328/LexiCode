@@ -34,13 +34,13 @@ class PronunciationExercise {
       );
 
   Map<String, dynamic> toJson() => {
-        'word': word,
-        'phonetic': phonetic,
-        'audioHint': audioHint,
-        'definition': definition,
-        'exampleSentence': exampleSentence,
-        'difficulty': difficulty.name,
-      };
+    'word': word,
+    'phonetic': phonetic,
+    'audioHint': audioHint,
+    'definition': definition,
+    'exampleSentence': exampleSentence,
+    'difficulty': difficulty.name,
+  };
 }
 
 // ─── Spelling Exercise ────────────────────────────────────────────
@@ -92,22 +92,31 @@ class SpellingExercise {
       );
 
   Map<String, dynamic> toJson() => {
-        'word': word,
-        'definition': definition,
-        'exampleSentence': exampleSentence,
-        'commonMisspelling': commonMisspelling,
-        'pronunciationGuide': pronunciationGuide,
-        'category': category.name,
-        'difficulty': difficulty.name,
-      };
+    'word': word,
+    'definition': definition,
+    'exampleSentence': exampleSentence,
+    'commonMisspelling': commonMisspelling,
+    'pronunciationGuide': pronunciationGuide,
+    'category': category.name,
+    'difficulty': difficulty.name,
+  };
 }
 
 // ─── Reading Passage ──────────────────────────────────────────────
 
 enum ReadingGenre {
-  mystery, adventure, scienceFiction, historicalFiction,
-  dailyLife, fantasy, biography, science, technology,
-  culture, environment, health,
+  mystery,
+  adventure,
+  scienceFiction,
+  historicalFiction,
+  dailyLife,
+  fantasy,
+  biography,
+  science,
+  technology,
+  culture,
+  environment,
+  health,
 }
 
 class VocabularyWord {
@@ -123,20 +132,19 @@ class VocabularyWord {
     this.exampleSentence,
   });
 
-  factory VocabularyWord.fromJson(Map<String, dynamic> json) =>
-      VocabularyWord(
-        word: json['word'] ?? '',
-        definition: json['definition'] ?? '',
-        pronunciationGuide: json['pronunciationGuide'],
-        exampleSentence: json['exampleSentence'],
-      );
+  factory VocabularyWord.fromJson(Map<String, dynamic> json) => VocabularyWord(
+    word: json['word'] ?? '',
+    definition: json['definition'] ?? '',
+    pronunciationGuide: json['pronunciationGuide'],
+    exampleSentence: json['exampleSentence'],
+  );
 
   Map<String, dynamic> toJson() => {
-        'word': word,
-        'definition': definition,
-        'pronunciationGuide': pronunciationGuide,
-        'exampleSentence': exampleSentence,
-      };
+    'word': word,
+    'definition': definition,
+    'pronunciationGuide': pronunciationGuide,
+    'exampleSentence': exampleSentence,
+  };
 }
 
 class DecisionPoint {
@@ -152,22 +160,21 @@ class DecisionPoint {
     this.consequenceTexts,
   });
 
-  factory DecisionPoint.fromJson(Map<String, dynamic> json) =>
-      DecisionPoint(
-        positionInText: json['positionInText'] ?? 0,
-        prompt: json['prompt'] ?? '',
-        choices: List<String>.from(json['choices'] ?? []),
-        consequenceTexts: json['consequenceTexts'] != null
-            ? Map<String, String>.from(json['consequenceTexts'])
-            : null,
-      );
+  factory DecisionPoint.fromJson(Map<String, dynamic> json) => DecisionPoint(
+    positionInText: json['positionInText'] ?? 0,
+    prompt: json['prompt'] ?? '',
+    choices: List<String>.from(json['choices'] ?? []),
+    consequenceTexts: json['consequenceTexts'] != null
+        ? Map<String, String>.from(json['consequenceTexts'])
+        : null,
+  );
 
   Map<String, dynamic> toJson() => {
-        'positionInText': positionInText,
-        'prompt': prompt,
-        'choices': choices,
-        'consequenceTexts': consequenceTexts,
-      };
+    'positionInText': positionInText,
+    'prompt': prompt,
+    'choices': choices,
+    'consequenceTexts': consequenceTexts,
+  };
 }
 
 class ReadingPassage {
@@ -195,58 +202,63 @@ class ReadingPassage {
     this.decisionPoints,
   });
 
-  factory ReadingPassage.fromJson(Map<String, dynamic> json) =>
-      ReadingPassage(
-        id: json['id'] ?? '',
-        title: json['title'] ?? '',
-        subtitle: json['subtitle'],
-        content: json['content'] ?? '',
-        genre: ReadingGenre.values.firstWhere(
-          (e) => e.name == json['genre'],
-          orElse: () => ReadingGenre.dailyLife,
-        ),
-        wordCount: json['wordCount'] ?? 0,
-        level: LearningLevel.values.firstWhere(
-          (e) => e.name == json['level'],
-          orElse: () => LearningLevel.intermediate,
-        ),
-        vocabularyWords: (json['vocabularyWords'] as List<dynamic>?)
-                ?.map((e) =>
-                    VocabularyWord.fromJson(Map<String, dynamic>.from(e)))
-                .toList() ??
-            [],
-        comprehensionQuestions:
-            (json['comprehensionQuestions'] as List<dynamic>?)
-                    ?.map((e) =>
-                        Exercise.fromJson(Map<String, dynamic>.from(e)))
-                    .toList() ??
-                [],
-        decisionPoints: (json['decisionPoints'] as List<dynamic>?)
-            ?.map((e) =>
-                DecisionPoint.fromJson(Map<String, dynamic>.from(e)))
-            .toList(),
-      );
+  factory ReadingPassage.fromJson(Map<String, dynamic> json) => ReadingPassage(
+    id: json['id'] ?? '',
+    title: json['title'] ?? '',
+    subtitle: json['subtitle'],
+    content: json['content'] ?? '',
+    genre: ReadingGenre.values.firstWhere(
+      (e) => e.name == json['genre'],
+      orElse: () => ReadingGenre.dailyLife,
+    ),
+    wordCount: json['wordCount'] ?? 0,
+    level: LearningLevel.values.firstWhere(
+      (e) => e.name == json['level'],
+      orElse: () => LearningLevel.intermediate,
+    ),
+    vocabularyWords:
+        (json['vocabularyWords'] as List<dynamic>?)
+            ?.map((e) => VocabularyWord.fromJson(Map<String, dynamic>.from(e)))
+            .toList() ??
+        [],
+    comprehensionQuestions:
+        (json['comprehensionQuestions'] as List<dynamic>?)
+            ?.map((e) => Exercise.fromJson(Map<String, dynamic>.from(e)))
+            .toList() ??
+        [],
+    decisionPoints: (json['decisionPoints'] as List<dynamic>?)
+        ?.map((e) => DecisionPoint.fromJson(Map<String, dynamic>.from(e)))
+        .toList(),
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'subtitle': subtitle,
-        'content': content,
-        'genre': genre.name,
-        'wordCount': wordCount,
-        'level': level.name,
-        'vocabularyWords': vocabularyWords.map((e) => e.toJson()).toList(),
-        'comprehensionQuestions':
-            comprehensionQuestions.map((e) => e.toJson()).toList(),
-        'decisionPoints': decisionPoints?.map((e) => e.toJson()).toList(),
-      };
+    'id': id,
+    'title': title,
+    'subtitle': subtitle,
+    'content': content,
+    'genre': genre.name,
+    'wordCount': wordCount,
+    'level': level.name,
+    'vocabularyWords': vocabularyWords.map((e) => e.toJson()).toList(),
+    'comprehensionQuestions': comprehensionQuestions
+        .map((e) => e.toJson())
+        .toList(),
+    'decisionPoints': decisionPoints?.map((e) => e.toJson()).toList(),
+  };
 }
 
 // ─── Writing Task ─────────────────────────────────────────────────
 
 enum WritingTaskType {
-  email, paragraph, opinion, description, narrative,
-  processExplanation, persuasive, report, essay,
+  email,
+  paragraph,
+  opinion,
+  description,
+  narrative,
+  processExplanation,
+  persuasive,
+  report,
+  essay,
 }
 
 class WritingTask {
@@ -273,38 +285,36 @@ class WritingTask {
   });
 
   factory WritingTask.fromJson(Map<String, dynamic> json) => WritingTask(
-        id: json['id'] ?? '',
-        prompt: json['prompt'] ?? '',
-        taskType: WritingTaskType.values.firstWhere(
-          (e) => e.name == json['taskType'],
-          orElse: () => WritingTaskType.paragraph,
-        ),
-        wordCountTarget: json['wordCountTarget'] ?? 150,
-        evaluationCriteria:
-            List<String>.from(json['evaluationCriteria'] ?? []),
-        suggestedVocabulary:
-            List<String>.from(json['suggestedVocabulary'] ?? []),
-        sentenceStarters: json['sentenceStarters'] != null
-            ? List<String>.from(json['sentenceStarters'])
-            : null,
-        sampleAnswer: json['sampleAnswer'],
-        level: LearningLevel.values.firstWhere(
-          (e) => e.name == json['level'],
-          orElse: () => LearningLevel.intermediate,
-        ),
-      );
+    id: json['id'] ?? '',
+    prompt: json['prompt'] ?? '',
+    taskType: WritingTaskType.values.firstWhere(
+      (e) => e.name == json['taskType'],
+      orElse: () => WritingTaskType.paragraph,
+    ),
+    wordCountTarget: json['wordCountTarget'] ?? 150,
+    evaluationCriteria: List<String>.from(json['evaluationCriteria'] ?? []),
+    suggestedVocabulary: List<String>.from(json['suggestedVocabulary'] ?? []),
+    sentenceStarters: json['sentenceStarters'] != null
+        ? List<String>.from(json['sentenceStarters'])
+        : null,
+    sampleAnswer: json['sampleAnswer'],
+    level: LearningLevel.values.firstWhere(
+      (e) => e.name == json['level'],
+      orElse: () => LearningLevel.intermediate,
+    ),
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'prompt': prompt,
-        'taskType': taskType.name,
-        'wordCountTarget': wordCountTarget,
-        'evaluationCriteria': evaluationCriteria,
-        'suggestedVocabulary': suggestedVocabulary,
-        'sentenceStarters': sentenceStarters,
-        'sampleAnswer': sampleAnswer,
-        'level': level.name,
-      };
+    'id': id,
+    'prompt': prompt,
+    'taskType': taskType.name,
+    'wordCountTarget': wordCountTarget,
+    'evaluationCriteria': evaluationCriteria,
+    'suggestedVocabulary': suggestedVocabulary,
+    'sentenceStarters': sentenceStarters,
+    'sampleAnswer': sampleAnswer,
+    'level': level.name,
+  };
 }
 
 // ─── Speaking Prompt ──────────────────────────────────────────────
@@ -328,24 +338,23 @@ class SpeakingPrompt {
     this.sampleAnswer,
   });
 
-  factory SpeakingPrompt.fromJson(Map<String, dynamic> json) =>
-      SpeakingPrompt(
-        id: json['id'] ?? '',
-        prompt: json['prompt'] ?? '',
-        preparationTimeSeconds: json['preparationTimeSeconds'] ?? 60,
-        speakingTimeSeconds: json['speakingTimeSeconds'] ?? 120,
-        bulletPoints: List<String>.from(json['bulletPoints'] ?? []),
-        usefulPhrases: List<String>.from(json['usefulPhrases'] ?? []),
-        sampleAnswer: json['sampleAnswer'],
-      );
+  factory SpeakingPrompt.fromJson(Map<String, dynamic> json) => SpeakingPrompt(
+    id: json['id'] ?? '',
+    prompt: json['prompt'] ?? '',
+    preparationTimeSeconds: json['preparationTimeSeconds'] ?? 60,
+    speakingTimeSeconds: json['speakingTimeSeconds'] ?? 120,
+    bulletPoints: List<String>.from(json['bulletPoints'] ?? []),
+    usefulPhrases: List<String>.from(json['usefulPhrases'] ?? []),
+    sampleAnswer: json['sampleAnswer'],
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'prompt': prompt,
-        'preparationTimeSeconds': preparationTimeSeconds,
-        'speakingTimeSeconds': speakingTimeSeconds,
-        'bulletPoints': bulletPoints,
-        'usefulPhrases': usefulPhrases,
-        'sampleAnswer': sampleAnswer,
-      };
+    'id': id,
+    'prompt': prompt,
+    'preparationTimeSeconds': preparationTimeSeconds,
+    'speakingTimeSeconds': speakingTimeSeconds,
+    'bulletPoints': bulletPoints,
+    'usefulPhrases': usefulPhrases,
+    'sampleAnswer': sampleAnswer,
+  };
 }

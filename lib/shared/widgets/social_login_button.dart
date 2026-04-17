@@ -37,9 +37,10 @@ class _SocialLoginButtonState extends State<SocialLoginButton>
       duration: const Duration(milliseconds: 100),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -52,10 +53,8 @@ class _SocialLoginButtonState extends State<SocialLoginButton>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _scaleAnimation,
-      builder: (context, child) => Transform.scale(
-        scale: _scaleAnimation.value,
-        child: child,
-      ),
+      builder: (context, child) =>
+          Transform.scale(scale: _scaleAnimation.value, child: child),
       child: GestureDetector(
         onTapDown: (_) => _controller.forward(),
         onTapUp: (_) {
@@ -82,7 +81,8 @@ class _SocialLoginButtonState extends State<SocialLoginButton>
               Icon(
                 widget.icon,
                 size: 24,
-                color: widget.iconColor ??
+                color:
+                    widget.iconColor ??
                     (widget.isDark ? Colors.white : AppColors.textPrimary),
               ),
               const SizedBox(width: 12),

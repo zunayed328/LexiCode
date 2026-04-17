@@ -11,9 +11,23 @@ enum LessonCategory {
   technicalInterview,
 }
 
-enum LessonDifficulty { beginner, elementary, intermediate, upperIntermediate, advanced, proficiency }
+enum LessonDifficulty {
+  beginner,
+  elementary,
+  intermediate,
+  upperIntermediate,
+  advanced,
+  proficiency,
+}
 
-enum QuestionType { multipleChoice, fillBlank, translation, matching, speaking, writing }
+enum QuestionType {
+  multipleChoice,
+  fillBlank,
+  translation,
+  matching,
+  speaking,
+  writing,
+}
 
 class LessonModel {
   final String id;
@@ -46,7 +60,8 @@ class LessonModel {
     this.questions = const [],
   });
 
-  double get progress => totalQuestions > 0 ? completedQuestions / totalQuestions : 0;
+  double get progress =>
+      totalQuestions > 0 ? completedQuestions / totalQuestions : 0;
 
   String get difficultyLabel {
     switch (difficulty) {

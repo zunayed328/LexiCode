@@ -86,8 +86,10 @@ class CustomTextField extends StatelessWidget {
                 : null,
             filled: true,
             fillColor: AppColors.inputBackground,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -98,23 +100,17 @@ class CustomTextField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide:
-                  const BorderSide(color: AppColors.primary, width: 2),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide:
-                  const BorderSide(color: AppColors.error, width: 1),
+              borderSide: const BorderSide(color: AppColors.error, width: 1),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide:
-                  const BorderSide(color: AppColors.error, width: 2),
+              borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
-            errorStyle: GoogleFonts.inter(
-              fontSize: 12,
-              color: AppColors.error,
-            ),
+            errorStyle: GoogleFonts.inter(fontSize: 12, color: AppColors.error),
           ),
         ),
       ],

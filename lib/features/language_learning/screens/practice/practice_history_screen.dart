@@ -22,10 +22,16 @@ class PracticeHistoryScreen extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           slivers: [
             SliverToBoxAdapter(child: _buildAppBar(context, isDark)),
-            SliverToBoxAdapter(child: _buildStatsGrid(context, progress, isDark)),
-            SliverToBoxAdapter(child: _buildSectionTitle('Skill Mastery Metrics', isDark)),
+            SliverToBoxAdapter(
+              child: _buildStatsGrid(context, progress, isDark),
+            ),
+            SliverToBoxAdapter(
+              child: _buildSectionTitle('Skill Mastery Metrics', isDark),
+            ),
             SliverToBoxAdapter(child: _buildSkillRadar(progress)),
-            SliverToBoxAdapter(child: _buildSectionTitle('Recent Activity', isDark)),
+            SliverToBoxAdapter(
+              child: _buildSectionTitle('Recent Activity', isDark),
+            ),
             _buildRecentSessions(progress.recentTopics, isDark),
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
@@ -52,20 +58,33 @@ class PracticeHistoryScreen extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.history_rounded, color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.history_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Practice History',
-                    style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800)),
-                Text('Track your learning journey',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
-                    )),
+                Text(
+                  'Practice History',
+                  style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  'Track your learning journey',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
               ],
             ),
           ),
@@ -147,16 +166,21 @@ class PracticeHistoryScreen extends StatelessWidget {
             children: [
               Icon(icon, color: color, size: 20),
               const SizedBox(width: 8),
-              Text(title,
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.white70 : Colors.black54,
-                  )),
+              Text(
+                title,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? Colors.white70 : Colors.black54,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
-          Text(value, style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w800)),
+          Text(
+            value,
+            style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w800),
+          ),
         ],
       ),
     );
@@ -165,7 +189,10 @@ class PracticeHistoryScreen extends StatelessWidget {
   Widget _buildSectionTitle(String title, bool isDark) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
-      child: Text(title, style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+      child: Text(
+        title,
+        style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+      ),
     );
   }
 
@@ -197,7 +224,10 @@ class PracticeHistoryScreen extends StatelessWidget {
           child: Center(
             child: Text(
               'No recent activity recorded yet.',
-              style: GoogleFonts.inter(fontSize: 14, color: isDark ? Colors.white54 : Colors.black54),
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: isDark ? Colors.white54 : Colors.black54,
+              ),
             ),
           ),
         ),
@@ -220,20 +250,31 @@ class PracticeHistoryScreen extends StatelessWidget {
                       color: AppColors.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.task_alt_rounded, color: AppColors.primary, size: 22),
+                    child: const Icon(
+                      Icons.task_alt_rounded,
+                      color: AppColors.primary,
+                      size: 22,
+                    ),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Practiced Topic',
-                            style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w600)),
-                        Text(topic,
-                            style: GoogleFonts.inter(
-                              fontSize: 12,
-                              color: isDark ? Colors.white60 : Colors.black54,
-                            )),
+                        Text(
+                          'Practiced Topic',
+                          style: GoogleFonts.inter(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          topic,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: isDark ? Colors.white60 : Colors.black54,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -242,7 +283,9 @@ class PracticeHistoryScreen extends StatelessWidget {
             ),
           );
         },
-        childCount: recentSessions.length > 5 ? 5 : recentSessions.length, // Limit to 5
+        childCount: recentSessions.length > 5
+            ? 5
+            : recentSessions.length, // Limit to 5
       ),
     );
   }

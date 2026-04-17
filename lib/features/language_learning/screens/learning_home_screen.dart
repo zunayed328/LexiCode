@@ -61,20 +61,24 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
             SliverToBoxAdapter(child: _buildHeader(isDark, learningProvider)),
             // Motivational Hero
             SliverToBoxAdapter(
-                child: _buildMotivationCard(isDark, learningProvider)),
+              child: _buildMotivationCard(isDark, learningProvider),
+            ),
             // Progress Overview
             SliverToBoxAdapter(
-                child: _buildProgressOverview(isDark, progressProvider)),
+              child: _buildProgressOverview(isDark, progressProvider),
+            ),
             // Level Selection
             SliverToBoxAdapter(child: _buildLevelSection(isDark)),
             // Level Cards
             SliverToBoxAdapter(
-                child: _buildLevelCards(isDark, learningProvider)),
+              child: _buildLevelCards(isDark, learningProvider),
+            ),
             // Quick Actions
             SliverToBoxAdapter(child: _buildQuickActions(isDark)),
             // Recent Activity
             SliverToBoxAdapter(
-                child: _buildRecentActivity(isDark, progressProvider)),
+              child: _buildRecentActivity(isDark, progressProvider),
+            ),
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
         ),
@@ -103,8 +107,11 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
                 ),
               ],
             ),
-            child: const Icon(Icons.school_rounded,
-                color: Colors.white, size: 24),
+            child: const Icon(
+              Icons.school_rounded,
+              color: Colors.white,
+              size: 24,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -182,8 +189,11 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.auto_awesome_rounded,
-                  color: Colors.white, size: 22),
+              child: const Icon(
+                Icons.auto_awesome_rounded,
+                color: Colors.white,
+                size: 22,
+              ),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -253,8 +263,10 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
                 ),
                 const Spacer(),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(10),
@@ -306,19 +318,28 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
             const SizedBox(height: 14),
             // Daily goals progress
             _buildDailyGoalRow(
-                'Grammar', progress.dailyGoal.grammarLessonsCompleted,
-                progress.dailyGoal.grammarLessonsTarget,
-                AppColors.accentGreen, isDark),
+              'Grammar',
+              progress.dailyGoal.grammarLessonsCompleted,
+              progress.dailyGoal.grammarLessonsTarget,
+              AppColors.accentGreen,
+              isDark,
+            ),
             const SizedBox(height: 6),
             _buildDailyGoalRow(
-                'Pronunciation', progress.dailyGoal.pronunciationMinutesCompleted,
-                progress.dailyGoal.pronunciationMinutesTarget,
-                AppColors.info, isDark),
+              'Pronunciation',
+              progress.dailyGoal.pronunciationMinutesCompleted,
+              progress.dailyGoal.pronunciationMinutesTarget,
+              AppColors.info,
+              isDark,
+            ),
             const SizedBox(height: 6),
             _buildDailyGoalRow(
-                'Spelling', progress.dailyGoal.spellingWordsCompleted,
-                progress.dailyGoal.spellingWordsTarget,
-                AppColors.primary, isDark),
+              'Spelling',
+              progress.dailyGoal.spellingWordsCompleted,
+              progress.dailyGoal.spellingWordsTarget,
+              AppColors.primary,
+              isDark,
+            ),
           ],
         ),
       ),
@@ -326,7 +347,12 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
   }
 
   Widget _buildStatItem(
-      String value, String label, Color color, IconData icon, bool isDark) {
+    String value,
+    String label,
+    Color color,
+    IconData icon,
+    bool isDark,
+  ) {
     return Expanded(
       child: Column(
         children: [
@@ -355,7 +381,12 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
   }
 
   Widget _buildDailyGoalRow(
-      String label, int current, int target, Color color, bool isDark) {
+    String label,
+    int current,
+    int target,
+    Color color,
+    bool isDark,
+  ) {
     final progress = target > 0 ? (current / target).clamp(0.0, 1.0) : 0.0;
     return Row(
       children: [
@@ -396,8 +427,11 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
         ),
         if (progress >= 1.0) ...[
           const SizedBox(width: 4),
-          const Icon(Icons.check_circle_rounded,
-              color: AppColors.success, size: 14),
+          const Icon(
+            Icons.check_circle_rounded,
+            color: AppColors.success,
+            size: 14,
+          ),
         ],
       ],
     );
@@ -426,30 +460,26 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
             level: LearningLevel.beginner,
             title: 'Beginner',
             subtitle: 'Grammar, Pronunciation, Spelling',
-            description:
-                'Master English fundamentals with AI-powered lessons',
+            description: 'Master English fundamentals with AI-powered lessons',
             icon: Icons.school_rounded,
             gradient: const [Color(0xFF10B981), Color(0xFF059669)],
             cefrTag: 'A1–A2',
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (_) => const BeginnerDashboard()),
+              MaterialPageRoute(builder: (_) => const BeginnerDashboard()),
             ),
           ),
           _LevelCard(
             level: LearningLevel.intermediate,
             title: 'Intermediate',
             subtitle: 'Reading, Writing, Practice',
-            description:
-                'Duolingo-style exercises that adapt to your level',
+            description: 'Duolingo-style exercises that adapt to your level',
             icon: Icons.trending_up_rounded,
             gradient: const [Color(0xFF3B82F6), Color(0xFF2563EB)],
             cefrTag: 'B1–B2',
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (_) => const IntermediateDashboard()),
+              MaterialPageRoute(builder: (_) => const IntermediateDashboard()),
             ),
           ),
           _LevelCard(
@@ -462,8 +492,7 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
             cefrTag: 'C1–C2',
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (_) => const AdvancedDashboard()),
+              MaterialPageRoute(builder: (_) => const AdvancedDashboard()),
             ),
           ),
         ],
@@ -497,7 +526,8 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const AiSuggestionsScreen()),
+                      builder: (_) => const AiSuggestionsScreen(),
+                    ),
                   ),
                 ),
               ),
@@ -511,7 +541,8 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const DailyPracticeScreen()),
+                      builder: (_) => const DailyPracticeScreen(),
+                    ),
                   ),
                 ),
               ),
@@ -529,7 +560,8 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const WeeklyChallengeScreen()),
+                      builder: (_) => const WeeklyChallengeScreen(),
+                    ),
                   ),
                 ),
               ),
@@ -543,7 +575,8 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const PracticeHistoryScreen()),
+                      builder: (_) => const PracticeHistoryScreen(),
+                    ),
                   ),
                 ),
               ),
@@ -571,27 +604,54 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
           ),
           const SizedBox(height: 12),
           // Skill bars
-          _buildSkillBar('Grammar', progress.skills.grammar.currentScore,
-              AppColors.accentGreen, isDark),
-          _buildSkillBar('Pronunciation',
-              progress.skills.pronunciation.currentScore, AppColors.info, isDark),
-          _buildSkillBar('Spelling', progress.skills.spelling.currentScore,
-              AppColors.primary, isDark),
-          _buildSkillBar('Reading', progress.skills.reading.currentScore,
-              const Color(0xFF10B981), isDark),
-          _buildSkillBar('Writing', progress.skills.writing.currentScore,
-              AppColors.secondary, isDark),
-          _buildSkillBar('Listening', progress.skills.listening.currentScore,
-              const Color(0xFF8B5CF6), isDark),
-          _buildSkillBar('Speaking', progress.skills.speaking.currentScore,
-              const Color(0xFFF59E0B), isDark),
+          _buildSkillBar(
+            'Grammar',
+            progress.skills.grammar.currentScore,
+            AppColors.accentGreen,
+            isDark,
+          ),
+          _buildSkillBar(
+            'Pronunciation',
+            progress.skills.pronunciation.currentScore,
+            AppColors.info,
+            isDark,
+          ),
+          _buildSkillBar(
+            'Spelling',
+            progress.skills.spelling.currentScore,
+            AppColors.primary,
+            isDark,
+          ),
+          _buildSkillBar(
+            'Reading',
+            progress.skills.reading.currentScore,
+            const Color(0xFF10B981),
+            isDark,
+          ),
+          _buildSkillBar(
+            'Writing',
+            progress.skills.writing.currentScore,
+            AppColors.secondary,
+            isDark,
+          ),
+          _buildSkillBar(
+            'Listening',
+            progress.skills.listening.currentScore,
+            const Color(0xFF8B5CF6),
+            isDark,
+          ),
+          _buildSkillBar(
+            'Speaking',
+            progress.skills.speaking.currentScore,
+            const Color(0xFFF59E0B),
+            isDark,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildSkillBar(
-      String skill, double score, Color color, bool isDark) {
+  Widget _buildSkillBar(String skill, double score, Color color, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
@@ -618,8 +678,9 @@ class _LearningHomeScreenState extends State<LearningHomeScreen>
                   return LinearProgressIndicator(
                     value: value.clamp(0.0, 1.0),
                     minHeight: 8,
-                    backgroundColor:
-                        isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    backgroundColor: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
                     valueColor: AlwaysStoppedAnimation(color),
                   );
                 },
@@ -715,7 +776,9 @@ class _LevelCard extends StatelessWidget {
                       const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.25),
                           borderRadius: BorderRadius.circular(8),
@@ -793,9 +856,7 @@ class _QuickActionCard extends StatelessWidget {
               ? AppColors.darkCard.withValues(alpha: 0.8)
               : Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: color.withValues(alpha: 0.2),
-          ),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
           boxShadow: [
             BoxShadow(
               color: color.withValues(alpha: isDark ? 0.1 : 0.08),

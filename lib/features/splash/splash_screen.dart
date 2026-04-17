@@ -71,15 +71,13 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    _slideUp = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _fadeController,
-        curve: const Interval(0.3, 0.7, curve: Curves.easeOut),
-      ),
-    );
+    _slideUp = Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _fadeController,
+            curve: const Interval(0.3, 0.7, curve: Curves.easeOut),
+          ),
+        );
 
     _startAnimations();
   }
@@ -107,9 +105,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.splashGradient,
-        ),
+        decoration: const BoxDecoration(gradient: AppColors.splashGradient),
         child: Stack(
           children: [
             // Animated particles
@@ -195,8 +191,7 @@ class _SplashScreenState extends State<SplashScreen>
                         children: [
                           ShaderMask(
                             shaderCallback: (bounds) =>
-                                AppColors.primaryGradient
-                                    .createShader(bounds),
+                                AppColors.primaryGradient.createShader(bounds),
                             child: Text(
                               AppStrings.appName,
                               style: GoogleFonts.inter(
@@ -233,10 +228,12 @@ class _SplashScreenState extends State<SplashScreen>
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(4),
                         child: LinearProgressIndicator(
-                          backgroundColor:
-                              AppColors.darkBorder.withValues(alpha: 0.3),
+                          backgroundColor: AppColors.darkBorder.withValues(
+                            alpha: 0.3,
+                          ),
                           valueColor: const AlwaysStoppedAnimation<Color>(
-                              AppColors.primary),
+                            AppColors.primary,
+                          ),
                           minHeight: 3,
                         ),
                       ),
@@ -263,10 +260,9 @@ class _SplashScreenState extends State<SplashScreen>
         final progress = (_particleController.value + index * 0.05) % 1.0;
         final screenSize = MediaQuery.of(context).size;
         return Positioned(
-          left: screenSize.width * startX +
-              math.sin(progress * math.pi * 2) * 30,
-          top: screenSize.height *
-              ((startY + progress) % 1.0),
+          left:
+              screenSize.width * startX + math.sin(progress * math.pi * 2) * 30,
+          top: screenSize.height * ((startY + progress) % 1.0),
           child: Container(
             width: size,
             height: size,

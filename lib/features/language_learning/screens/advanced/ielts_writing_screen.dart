@@ -13,7 +13,7 @@ import 'exam_result_screen.dart';
 
 class IeltsWritingScreen extends StatefulWidget {
   final bool isFullExam;
-  
+
   const IeltsWritingScreen({super.key, this.isFullExam = false});
 
   @override
@@ -24,14 +24,14 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
   final ContentGenerationService _contentService = ContentGenerationService();
   final GeminiLearningService _gemini = GeminiLearningService();
   final TextEditingController _textController = TextEditingController();
-  
+
   bool _isLoading = true;
   bool _isEvaluating = false;
   String? _error;
   ExerciseSession? _session;
-  
+
   final Color _accentColor = const Color(0xFFEC4899);
-  
+
   @override
   void initState() {
     super.initState();
@@ -43,7 +43,7 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
     _textController.dispose();
     super.dispose();
   }
-  
+
   Future<void> _loadSection() async {
     try {
       final progress = context.read<ProgressProvider>().userProgress;
@@ -70,11 +70,12 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
   Future<void> _submitWriting() async {
     final text = _textController.text.trim();
     if (text.isEmpty || _session == null || _session!.exercises.isEmpty) return;
-    
-    final prompt = _session!.exercises.first.context ?? _session!.exercises.first.question;
-    
+
+    final prompt =
+        _session!.exercises.first.context ?? _session!.exercises.first.question;
+
     setState(() => _isEvaluating = true);
-    
+
     try {
       final evaluation = await _gemini.evaluateWriting(text, prompt);
       if (mounted) {
@@ -82,13 +83,18 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
         // Navigate or handle evaluation
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => ExamResultScreen(writingResult: evaluation)),
+          MaterialPageRoute(
+            builder: (_) => ExamResultScreen(writingResult: evaluation),
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Evaluation failed: $e'), backgroundColor: AppColors.error),
+          SnackBar(
+            content: Text('Evaluation failed: $e'),
+            backgroundColor: AppColors.error,
+          ),
         );
         setState(() => _isEvaluating = false);
       }
@@ -102,7 +108,10 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
         title: const Text('Exit Practice?'),
         content: const Text('Your session progress will be lost.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Continue')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Continue'),
+          ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
@@ -134,14 +143,19 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
       );
     }
 
-    if (_session == null || _session!.exercises.isEmpty) return const Scaffold();
+    if (_session == null || _session!.exercises.isEmpty)
+      return const Scaffold();
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final exercise = _session!.exercises.first;
     final String promptText = exercise.context ?? exercise.question;
     final String? imageUrl = exercise.imageUrl;
-    final int wordCount = _textController.text.trim().split(RegExp(r'\s+')).where((s) => s.isNotEmpty).length;
-    
+    final int wordCount = _textController.text
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((s) => s.isNotEmpty)
+        .length;
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -179,47 +193,63 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
                                   style: GoogleFonts.inter(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
-                                    color: isDark ? Colors.white : AppColors.lightText,
+                                    color: isDark
+                                        ? Colors.white
+                                        : AppColors.lightText,
                                   ),
                                 ),
-                                if (imageUrl != null && imageUrl.isNotEmpty) ...[
+                                if (imageUrl != null &&
+                                    imageUrl.isNotEmpty) ...[
                                   const SizedBox(height: 16),
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: ConstrainedBox(
-                                      constraints: const BoxConstraints(maxHeight: 250),
+                                      constraints: const BoxConstraints(
+                                        maxHeight: 250,
+                                      ),
                                       child: Image.asset(
                                         imageUrl,
                                         width: double.infinity,
                                         fit: BoxFit.contain,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Container(
-                                            height: 200,
-                                            width: double.infinity,
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              color: isDark
-                                                  ? Colors.white.withValues(alpha: 0.05)
-                                                  : Colors.black.withValues(alpha: 0.05),
-                                              borderRadius: BorderRadius.circular(12),
-                                            ),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                const Icon(Icons.broken_image_rounded,
-                                                    color: Colors.grey, size: 32),
-                                                const SizedBox(height: 4),
-                                                Text(
-                                                  'Image failed to load',
-                                                  style: GoogleFonts.inter(
-                                                    fontSize: 12,
-                                                    color: Colors.grey,
-                                                  ),
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                              return Container(
+                                                height: 200,
+                                                width: double.infinity,
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                  color: isDark
+                                                      ? Colors.white.withValues(
+                                                          alpha: 0.05,
+                                                        )
+                                                      : Colors.black.withValues(
+                                                          alpha: 0.05,
+                                                        ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
                                                 ),
-                                              ],
-                                            ),
-                                          );
-                                        },
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    const Icon(
+                                                      Icons
+                                                          .broken_image_rounded,
+                                                      color: Colors.grey,
+                                                      size: 32,
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Text(
+                                                      'Image failed to load',
+                                                      style: GoogleFonts.inter(
+                                                        fontSize: 12,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
                                       ),
                                     ),
                                   ),
@@ -245,14 +275,19 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
                             color: isDark ? Colors.white30 : Colors.black26,
                           ),
                           filled: true,
-                          fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+                          fillColor: isDark
+                              ? const Color(0xFF1E293B)
+                              : const Color(0xFFF1F5F9),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide.none,
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(color: _accentColor, width: 2),
+                            borderSide: BorderSide(
+                              color: _accentColor,
+                              width: 2,
+                            ),
                           ),
                           contentPadding: const EdgeInsets.all(20),
                         ),
@@ -290,8 +325,13 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text('Writing',
-                style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700)),
+            child: Text(
+              'Writing',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
           Text(
             '$wordCount words',
@@ -326,15 +366,33 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
         width: double.infinity,
         height: 54,
         child: ElevatedButton(
-          onPressed: _isEvaluating || _textController.text.trim().isEmpty ? null : _submitWriting,
+          onPressed: _isEvaluating || _textController.text.trim().isEmpty
+              ? null
+              : _submitWriting,
           style: ElevatedButton.styleFrom(
             backgroundColor: _accentColor,
             disabledBackgroundColor: _accentColor.withValues(alpha: 0.5),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
           ),
           child: _isEvaluating
-              ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-              : Text('Submit for Evaluation', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+              ? const SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              : Text(
+                  'Submit for Evaluation',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
         ),
       ),
     );

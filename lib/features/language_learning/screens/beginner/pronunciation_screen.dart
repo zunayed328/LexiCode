@@ -38,28 +38,64 @@ class _PronunciationScreenState extends State<PronunciationScreen> {
     switch (widget.mode) {
       case PronunciationMode.words:
         return [
-          _PronItem('Comfortable', '/ˈkʌmf.tə.bəl/', 'Not stressed — many syllables'),
+          _PronItem(
+            'Comfortable',
+            '/ˈkʌmf.tə.bəl/',
+            'Not stressed — many syllables',
+          ),
           _PronItem('Wednesday', '/ˈwenz.deɪ/', 'Silent "d" in the middle'),
           _PronItem('February', '/ˈfeb.ru.er.i/', 'Don\'t skip the first "r"'),
-          _PronItem('Pronunciation', '/prəˌnʌn.siˈeɪ.ʃən/', 'Note: "nun" not "noun"'),
+          _PronItem(
+            'Pronunciation',
+            '/prəˌnʌn.siˈeɪ.ʃən/',
+            'Note: "nun" not "noun"',
+          ),
           _PronItem('Colonel', '/ˈkɜː.nəl/', 'Sounds like "kernel"'),
           _PronItem('Receipt', '/rɪˈsiːt/', 'Silent "p"'),
           _PronItem('Entrepreneur', '/ˌɒn.trə.prəˈnɜːr/', 'French origin word'),
           _PronItem('Thoroughly', '/ˈθʌr.ə.li/', 'TH sound + silent "ough"'),
           _PronItem('Vegetable', '/ˈvedʒ.tə.bəl/', 'Three syllables, not four'),
-          _PronItem('Archipelago', '/ˌɑː.kɪˈpel.ə.ɡəʊ/', '"ch" sounds like "k"'),
+          _PronItem(
+            'Archipelago',
+            '/ˌɑː.kɪˈpel.ə.ɡəʊ/',
+            '"ch" sounds like "k"',
+          ),
         ];
       case PronunciationMode.sentences:
         return [
-          _PronItem('The weather is nice today.', '', 'Rising intonation for statements'),
-          _PronItem('Can you help me, please?', '', 'Rising intonation for questions'),
-          _PronItem('I\'ve been studying English for two years.', '', 'Stress on "studying" and "years"'),
-          _PronItem('She said she would come tomorrow.', '', 'Connected speech: "she_said"'),
-          _PronItem('What are you going to do this weekend?', '', '"Going to" → "gonna" in casual speech'),
+          _PronItem(
+            'The weather is nice today.',
+            '',
+            'Rising intonation for statements',
+          ),
+          _PronItem(
+            'Can you help me, please?',
+            '',
+            'Rising intonation for questions',
+          ),
+          _PronItem(
+            'I\'ve been studying English for two years.',
+            '',
+            'Stress on "studying" and "years"',
+          ),
+          _PronItem(
+            'She said she would come tomorrow.',
+            '',
+            'Connected speech: "she_said"',
+          ),
+          _PronItem(
+            'What are you going to do this weekend?',
+            '',
+            '"Going to" → "gonna" in casual speech',
+          ),
         ];
       case PronunciationMode.minimalPairs:
         return [
-          _PronItem('ship / sheep', '/ʃɪp/ vs /ʃiːp/', 'Short "i" vs long "ee"'),
+          _PronItem(
+            'ship / sheep',
+            '/ʃɪp/ vs /ʃiːp/',
+            'Short "i" vs long "ee"',
+          ),
           _PronItem('bit / beat', '/bɪt/ vs /biːt/', 'Short "i" vs long "ee"'),
           _PronItem('pen / pan', '/pen/ vs /pæn/', '"e" vs "a" vowel sound'),
           _PronItem('bat / bet', '/bæt/ vs /bet/', '"a" vs "e" vowel sound'),
@@ -128,7 +164,9 @@ class _PronunciationScreenState extends State<PronunciationScreen> {
             child: Text(
               title,
               style: GoogleFonts.inter(
-                  fontSize: 18, fontWeight: FontWeight.w700),
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
           Text(
@@ -150,18 +188,16 @@ class _PronunciationScreenState extends State<PronunciationScreen> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
         child: TweenAnimationBuilder<double>(
-          tween: Tween(
-              begin: 0,
-              end: (_currentIndex + 1) / _items.length),
+          tween: Tween(begin: 0, end: (_currentIndex + 1) / _items.length),
           duration: const Duration(milliseconds: 400),
           builder: (_, value, _) {
             return LinearProgressIndicator(
               value: value,
               minHeight: 8,
-              backgroundColor:
-                  isDark ? AppColors.darkBorder : AppColors.lightBorder,
-              valueColor:
-                  const AlwaysStoppedAnimation(AppColors.info),
+              backgroundColor: isDark
+                  ? AppColors.darkBorder
+                  : AppColors.lightBorder,
+              valueColor: const AlwaysStoppedAnimation(AppColors.info),
             );
           },
         ),
@@ -268,11 +304,13 @@ class _PronunciationScreenState extends State<PronunciationScreen> {
           feedback: _getFeedback(score),
         );
       } else {
-        _results.add(_PronResult(
-          spokenText: spokenText,
-          score: score,
-          feedback: _getFeedback(score),
-        ));
+        _results.add(
+          _PronResult(
+            spokenText: spokenText,
+            score: score,
+            feedback: _getFeedback(score),
+          ),
+        );
       }
     });
   }
@@ -301,8 +339,8 @@ class _PronunciationScreenState extends State<PronunciationScreen> {
     final color = result.score >= 70
         ? AppColors.success
         : result.score >= 50
-            ? AppColors.warning
-            : AppColors.error;
+        ? AppColors.warning
+        : AppColors.error;
 
     return GlassCard(
       borderColor: color.withValues(alpha: 0.3),
@@ -409,9 +447,7 @@ class _PronunciationScreenState extends State<PronunciationScreen> {
                 ),
               ),
               child: Text(
-                _currentIndex < _items.length - 1
-                    ? 'Next'
-                    : 'See Results',
+                _currentIndex < _items.length - 1 ? 'Next' : 'See Results',
                 style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,

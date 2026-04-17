@@ -26,7 +26,9 @@ class ProgressHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final progress = totalQuestions > 0 ? currentQuestion / totalQuestions : 0.0;
+    final progress = totalQuestions > 0
+        ? currentQuestion / totalQuestions
+        : 0.0;
     final color = accentColor ?? AppColors.primary;
 
     return Container(
@@ -115,9 +117,7 @@ class ProgressHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: isLow
             ? AppColors.error.withValues(alpha: 0.15)
-            : (isDark
-                ? AppColors.darkCard
-                : AppColors.lightBackground),
+            : (isDark ? AppColors.darkCard : AppColors.lightBackground),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(

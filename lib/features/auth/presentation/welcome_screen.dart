@@ -60,15 +60,10 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       ),
     );
 
-    _buttonSlide = Tween<Offset>(
-      begin: const Offset(0, 0.5),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _slideController,
-        curve: Curves.easeOutCubic,
-      ),
-    );
+    _buttonSlide = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero)
+        .animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
 
     _fadeController.forward();
     Future.delayed(const Duration(milliseconds: 400), () {

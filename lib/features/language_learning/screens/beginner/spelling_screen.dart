@@ -40,18 +40,90 @@ class _SpellingScreenState extends State<SpellingScreen> {
 
   List<_SpellWord> _generateWords() {
     return [
-      _SpellWord('necessary', '/ˈnes.ə.ser.i/', 'Needed or required', 'It is necessary to study every day.', 'neccessary'),
-      _SpellWord('accommodate', '/əˈkɒm.ə.deɪt/', 'Provide lodging or room', 'The hotel can accommodate 200 guests.', 'accomodate'),
-      _SpellWord('separate', '/ˈsep.ər.ət/', 'Set apart from each other', 'Please separate the colors from whites.', 'seperate'),
-      _SpellWord('definitely', '/ˈdef.ɪ.nət.li/', 'Without any doubt', 'I will definitely be there.', 'definately'),
-      _SpellWord('occurred', '/əˈkɜːd/', 'Happened or took place', 'The accident occurred yesterday.', 'occured'),
-      _SpellWord('receive', '/rɪˈsiːv/', 'Get or be given something', 'Did you receive my email?', 'recieve'),
-      _SpellWord('beginning', '/bɪˈɡɪn.ɪŋ/', 'The start of something', 'This is only the beginning.', 'begining'),
-      _SpellWord('believe', '/bɪˈliːv/', 'Accept as true', 'I believe in your ability.', 'beleive'),
-      _SpellWord('disappear', '/ˌdɪs.əˈpɪər/', 'Cease to be visible', 'The sun disappeared behind clouds.', 'dissapear'),
-      _SpellWord('knowledge', '/ˈnɒl.ɪdʒ/', 'Information and understanding', 'Knowledge is power.', 'knowlege'),
-      _SpellWord('apparently', '/əˈpær.ənt.li/', 'As far as one knows', 'Apparently, the meeting is canceled.', 'apparantly'),
-      _SpellWord('temperature', '/ˈtem.prə.tʃər/', 'Degree of heat', 'The temperature is dropping.', 'temprature'),
+      _SpellWord(
+        'necessary',
+        '/ˈnes.ə.ser.i/',
+        'Needed or required',
+        'It is necessary to study every day.',
+        'neccessary',
+      ),
+      _SpellWord(
+        'accommodate',
+        '/əˈkɒm.ə.deɪt/',
+        'Provide lodging or room',
+        'The hotel can accommodate 200 guests.',
+        'accomodate',
+      ),
+      _SpellWord(
+        'separate',
+        '/ˈsep.ər.ət/',
+        'Set apart from each other',
+        'Please separate the colors from whites.',
+        'seperate',
+      ),
+      _SpellWord(
+        'definitely',
+        '/ˈdef.ɪ.nət.li/',
+        'Without any doubt',
+        'I will definitely be there.',
+        'definately',
+      ),
+      _SpellWord(
+        'occurred',
+        '/əˈkɜːd/',
+        'Happened or took place',
+        'The accident occurred yesterday.',
+        'occured',
+      ),
+      _SpellWord(
+        'receive',
+        '/rɪˈsiːv/',
+        'Get or be given something',
+        'Did you receive my email?',
+        'recieve',
+      ),
+      _SpellWord(
+        'beginning',
+        '/bɪˈɡɪn.ɪŋ/',
+        'The start of something',
+        'This is only the beginning.',
+        'begining',
+      ),
+      _SpellWord(
+        'believe',
+        '/bɪˈliːv/',
+        'Accept as true',
+        'I believe in your ability.',
+        'beleive',
+      ),
+      _SpellWord(
+        'disappear',
+        '/ˌdɪs.əˈpɪər/',
+        'Cease to be visible',
+        'The sun disappeared behind clouds.',
+        'dissapear',
+      ),
+      _SpellWord(
+        'knowledge',
+        '/ˈnɒl.ɪdʒ/',
+        'Information and understanding',
+        'Knowledge is power.',
+        'knowlege',
+      ),
+      _SpellWord(
+        'apparently',
+        '/əˈpær.ənt.li/',
+        'As far as one knows',
+        'Apparently, the meeting is canceled.',
+        'apparantly',
+      ),
+      _SpellWord(
+        'temperature',
+        '/ˈtem.prə.tʃər/',
+        'Degree of heat',
+        'The temperature is dropping.',
+        'temprature',
+      ),
     ];
   }
 
@@ -100,16 +172,22 @@ class _SpellingScreenState extends State<SpellingScreen> {
             icon: const Icon(Icons.arrow_back_rounded),
           ),
           Expanded(
-            child: Text(title,
-                style: GoogleFonts.inter(
-                    fontSize: 18, fontWeight: FontWeight.w700)),
-          ),
-          Text('${_currentIndex + 1}/${_words.length}',
+            child: Text(
+              title,
               style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppColors.secondary,
-              )),
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          Text(
+            '${_currentIndex + 1}/${_words.length}',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.secondary,
+            ),
+          ),
         ],
       ),
     );
@@ -123,7 +201,9 @@ class _SpellingScreenState extends State<SpellingScreen> {
         child: LinearProgressIndicator(
           value: (_currentIndex + 1) / _words.length,
           minHeight: 8,
-          backgroundColor: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+          backgroundColor: isDark
+              ? AppColors.darkBorder
+              : AppColors.lightBorder,
           valueColor: const AlwaysStoppedAnimation(AppColors.secondary),
         ),
       ),
@@ -152,8 +232,11 @@ class _SpellingScreenState extends State<SpellingScreen> {
           borderColor: AppColors.info.withValues(alpha: 0.2),
           child: Column(
             children: [
-              Icon(Icons.hearing_rounded,
-                  size: 48, color: AppColors.info.withValues(alpha: 0.6)),
+              Icon(
+                Icons.hearing_rounded,
+                size: 48,
+                color: AppColors.info.withValues(alpha: 0.6),
+              ),
               const SizedBox(height: 12),
               Text(
                 'Listen to the word and spell it',
@@ -179,7 +262,9 @@ class _SpellingScreenState extends State<SpellingScreen> {
           style: GoogleFonts.inter(
             fontSize: 14,
             fontStyle: FontStyle.italic,
-            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
           ),
         ),
         const SizedBox(height: 16),
@@ -188,7 +273,11 @@ class _SpellingScreenState extends State<SpellingScreen> {
           controller: _inputController,
           enabled: !_showAnswer,
           textAlign: TextAlign.center,
-          style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w600, letterSpacing: 3),
+          style: GoogleFonts.inter(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 3,
+          ),
           decoration: InputDecoration(
             hintText: 'Type the word...',
             hintStyle: GoogleFonts.inter(fontSize: 18, letterSpacing: 1),
@@ -199,8 +288,8 @@ class _SpellingScreenState extends State<SpellingScreen> {
               borderSide: BorderSide(
                 color: _showAnswer
                     ? (_results.isNotEmpty && _results.last.isCorrect
-                        ? AppColors.success
-                        : AppColors.error)
+                          ? AppColors.success
+                          : AppColors.error)
                     : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
                 width: 2,
               ),
@@ -250,14 +339,19 @@ class _SpellingScreenState extends State<SpellingScreen> {
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   fontStyle: FontStyle.italic,
-                  color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 '📝 ${word.example}',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.inter(fontSize: 13, color: isDark ? Colors.white60 : Colors.black45),
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: isDark ? Colors.white60 : Colors.black45,
+                ),
               ),
             ],
           ),
@@ -267,7 +361,11 @@ class _SpellingScreenState extends State<SpellingScreen> {
           controller: _inputController,
           enabled: !_showAnswer,
           textAlign: TextAlign.center,
-          style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w600, letterSpacing: 3),
+          style: GoogleFonts.inter(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 3,
+          ),
           decoration: InputDecoration(
             hintText: 'Complete the word...',
             hintStyle: GoogleFonts.inter(fontSize: 18),
@@ -297,13 +395,17 @@ class _SpellingScreenState extends State<SpellingScreen> {
               colors: _currentIndex < 4
                   ? [AppColors.success, const Color(0xFF059669)]
                   : _currentIndex < 8
-                      ? [AppColors.warning, const Color(0xFFD97706)]
-                      : [AppColors.error, const Color(0xFFDC2626)],
+                  ? [AppColors.warning, const Color(0xFFD97706)]
+                  : [AppColors.error, const Color(0xFFDC2626)],
             ),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
-            _currentIndex < 4 ? 'Easy' : _currentIndex < 8 ? 'Medium' : 'Hard',
+            _currentIndex < 4
+                ? 'Easy'
+                : _currentIndex < 8
+                ? 'Medium'
+                : 'Hard',
             style: GoogleFonts.inter(
               fontSize: 12,
               fontWeight: FontWeight.w700,
@@ -315,13 +417,18 @@ class _SpellingScreenState extends State<SpellingScreen> {
         GlassCard(
           child: Column(
             children: [
-              const Icon(Icons.emoji_events_rounded,
-                  size: 48, color: AppColors.xpColor),
+              const Icon(
+                Icons.emoji_events_rounded,
+                size: 48,
+                color: AppColors.xpColor,
+              ),
               const SizedBox(height: 12),
               Text(
                 'Spelling Bee Challenge',
                 style: GoogleFonts.inter(
-                    fontSize: 18, fontWeight: FontWeight.w700),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: 16),
               // Definition
@@ -329,16 +436,27 @@ class _SpellingScreenState extends State<SpellingScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkSurface : AppColors.lightBackground,
+                  color: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightBackground,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Definition:', style: GoogleFonts.inter(
-                        fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.info)),
+                    Text(
+                      'Definition:',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.info,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Text(word.definition, style: GoogleFonts.inter(fontSize: 15, height: 1.4)),
+                    Text(
+                      word.definition,
+                      style: GoogleFonts.inter(fontSize: 15, height: 1.4),
+                    ),
                   ],
                 ),
               ),
@@ -347,16 +465,30 @@ class _SpellingScreenState extends State<SpellingScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkSurface : AppColors.lightBackground,
+                  color: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightBackground,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Example:', style: GoogleFonts.inter(
-                        fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.accentGreen)),
+                    Text(
+                      'Example:',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.accentGreen,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Text(word.example, style: GoogleFonts.inter(fontSize: 14, fontStyle: FontStyle.italic)),
+                    Text(
+                      word.example,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -375,7 +507,11 @@ class _SpellingScreenState extends State<SpellingScreen> {
           controller: _inputController,
           enabled: !_showAnswer,
           textAlign: TextAlign.center,
-          style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w600, letterSpacing: 3),
+          style: GoogleFonts.inter(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 3,
+          ),
           decoration: InputDecoration(
             hintText: 'Spell the word...',
             hintStyle: GoogleFonts.inter(fontSize: 18),
@@ -414,11 +550,13 @@ class _SpellingScreenState extends State<SpellingScreen> {
     final isCorrect = userInput == correct;
 
     setState(() {
-      _results.add(_SpellResult(
-        word: _words[_currentIndex].word,
-        userInput: _inputController.text.trim(),
-        isCorrect: isCorrect,
-      ));
+      _results.add(
+        _SpellResult(
+          word: _words[_currentIndex].word,
+          userInput: _inputController.text.trim(),
+          isCorrect: isCorrect,
+        ),
+      );
       _showAnswer = true;
     });
   }
@@ -452,18 +590,23 @@ class _SpellingScreenState extends State<SpellingScreen> {
                 ),
               ),
               if (result.isCorrect)
-                Text('+10 XP',
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.xpColor,
-                    )),
+                Text(
+                  '+10 XP',
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.xpColor,
+                  ),
+                ),
             ],
           ),
           if (!result.isCorrect) ...[
             const SizedBox(height: 10),
             RichText(
               text: TextSpan(
-                style: GoogleFonts.inter(fontSize: 14, color: isDark ? Colors.white70 : Colors.black87),
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: isDark ? Colors.white70 : Colors.black87,
+                ),
                 children: [
                   const TextSpan(text: 'Correct spelling: '),
                   TextSpan(
@@ -481,7 +624,9 @@ class _SpellingScreenState extends State<SpellingScreen> {
               'Common misspelling: ${word.commonMisspelling}',
               style: GoogleFonts.inter(
                 fontSize: 12,
-                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
               ),
             ),
           ],
@@ -498,15 +643,24 @@ class _SpellingScreenState extends State<SpellingScreen> {
           if (!_showAnswer)
             Expanded(
               child: ElevatedButton(
-                onPressed: _inputController.text.isNotEmpty ? _checkSpelling : null,
+                onPressed: _inputController.text.isNotEmpty
+                    ? _checkSpelling
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.secondary,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
-                child: Text('Check',
-                    style: GoogleFonts.inter(
-                        fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+                child: Text(
+                  'Check',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           if (_showAnswer)
@@ -526,12 +680,19 @@ class _SpellingScreenState extends State<SpellingScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
                 child: Text(
-                  _currentIndex < _words.length - 1 ? 'Next Word' : 'See Results',
+                  _currentIndex < _words.length - 1
+                      ? 'Next Word'
+                      : 'See Results',
                   style: GoogleFonts.inter(
-                      fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -565,10 +726,18 @@ class _SpellingScreenState extends State<SpellingScreen> {
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.secondary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
-                  child: Text('Back to Dashboard',
-                      style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+                  child: Text(
+                    'Back to Dashboard',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -581,11 +750,21 @@ class _SpellingScreenState extends State<SpellingScreen> {
 
 class _SpellWord {
   final String word, phonetic, definition, example, commonMisspelling;
-  const _SpellWord(this.word, this.phonetic, this.definition, this.example, this.commonMisspelling);
+  const _SpellWord(
+    this.word,
+    this.phonetic,
+    this.definition,
+    this.example,
+    this.commonMisspelling,
+  );
 }
 
 class _SpellResult {
   final String word, userInput;
   final bool isCorrect;
-  const _SpellResult({required this.word, required this.userInput, required this.isCorrect});
+  const _SpellResult({
+    required this.word,
+    required this.userInput,
+    required this.isCorrect,
+  });
 }

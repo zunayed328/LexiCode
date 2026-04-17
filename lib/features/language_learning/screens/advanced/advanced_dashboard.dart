@@ -24,13 +24,16 @@ class AdvancedDashboard extends StatelessWidget {
             SliverToBoxAdapter(child: _buildAppBar(context, isDark)),
             SliverToBoxAdapter(child: _buildExamOverview(context, isDark)),
             SliverToBoxAdapter(
-                child: _buildSectionTitle('Practice by Section', isDark)),
+              child: _buildSectionTitle('Practice by Section', isDark),
+            ),
             SliverToBoxAdapter(child: _buildSectionCards(context, isDark)),
             SliverToBoxAdapter(
-                child: _buildSectionTitle('Target Band Score', isDark)),
+              child: _buildSectionTitle('Target Band Score', isDark),
+            ),
             SliverToBoxAdapter(child: _buildTargetBand(isDark)),
             SliverToBoxAdapter(
-                child: _buildSectionTitle('Exam History', isDark)),
+              child: _buildSectionTitle('Exam History', isDark),
+            ),
             SliverToBoxAdapter(child: _buildExamHistory(context, isDark)),
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
@@ -57,24 +60,33 @@ class AdvancedDashboard extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.workspace_premium_rounded,
-                color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.workspace_premium_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Advanced Level',
-                    style: GoogleFonts.inter(
-                        fontSize: 20, fontWeight: FontWeight.w800)),
-                Text('C1–C2 • IELTS-Style Assessment',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
-                    )),
+                Text(
+                  'Advanced Level',
+                  style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  'C1–C2 • IELTS-Style Assessment',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
               ],
             ),
           ),
@@ -109,34 +121,39 @@ class AdvancedDashboard extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text('IELTS Practice',
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      )),
-                ),
-                const Spacer(),
-                Text('~2h 45min',
+                  child: Text(
+                    'IELTS Practice',
                     style: GoogleFonts.inter(
                       fontSize: 13,
-                      color: Colors.white70,
-                    )),
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  '~2h 45min',
+                  style: GoogleFonts.inter(fontSize: 13, color: Colors.white70),
+                ),
               ],
             ),
             const SizedBox(height: 20),
-            Text('Full IELTS Mock Exam',
-                style: GoogleFonts.inter(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                )),
+            Text(
+              'Full IELTS Mock Exam',
+              style: GoogleFonts.inter(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ),
+            ),
             const SizedBox(height: 8),
             Text(
               'Complete all 4 sections: Listening, Reading, Writing, and Speaking. Get AI-powered band score evaluation.',
@@ -167,17 +184,24 @@ class AdvancedDashboard extends StatelessWidget {
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (_) => const IeltsListeningScreen(isFullExam: true)),
+                    builder: (_) =>
+                        const IeltsListeningScreen(isFullExam: true),
+                  ),
                 ),
                 icon: const Icon(Icons.play_arrow_rounded),
-                label: Text('Start Full Exam',
-                    style: GoogleFonts.inter(
-                        fontSize: 16, fontWeight: FontWeight.w700)),
+                label: Text(
+                  'Start Full Exam',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: const Color(0xFF7C3AED),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
               ),
             ),
@@ -190,36 +214,45 @@ class AdvancedDashboard extends StatelessWidget {
   Widget _buildSectionTitle(String title, bool isDark) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-      child: Text(title,
-          style:
-              GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+      child: Text(
+        title,
+        style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+      ),
     );
   }
 
   Widget _buildSectionCards(BuildContext context, bool isDark) {
     final sections = [
       _SectionInfo(
-        'Listening', Icons.headphones_rounded,
+        'Listening',
+        Icons.headphones_rounded,
         [const Color(0xFF3B82F6), const Color(0xFF2563EB)],
-        '30 min', '40 questions',
+        '30 min',
+        '40 questions',
         'Fill-blank, MCQ, note completion from audio passages',
       ),
       _SectionInfo(
-        'Reading', Icons.menu_book_rounded,
+        'Reading',
+        Icons.menu_book_rounded,
         [const Color(0xFF10B981), const Color(0xFF059669)],
-        '60 min', '40 questions',
+        '60 min',
+        '40 questions',
         'True/False, MCQ, matching from academic passages',
       ),
       _SectionInfo(
-        'Writing', Icons.edit_rounded,
+        'Writing',
+        Icons.edit_rounded,
         [const Color(0xFFF59E0B), const Color(0xFFD97706)],
-        '60 min', '2 tasks',
+        '60 min',
+        '2 tasks',
         'Task 1: 150 words (data description) • Task 2: 250 words (essay)',
       ),
       _SectionInfo(
-        'Speaking', Icons.mic_rounded,
+        'Speaking',
+        Icons.mic_rounded,
         [const Color(0xFFEC4899), const Color(0xFFDB2777)],
-        '15 min', '3 parts',
+        '15 min',
+        '3 parts',
         'Introduction, cue card, discussion with AI interviewer',
       ),
     ];
@@ -281,44 +314,53 @@ class AdvancedDashboard extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Text(section.title,
-                                style: GoogleFonts.inter(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700)),
+                            Text(
+                              section.title,
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                             const Spacer(),
-                            Text(section.duration,
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  color: section.gradient.first,
-                                  fontWeight: FontWeight.w600,
-                                )),
+                            Text(
+                              section.duration,
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                                color: section.gradient.first,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 2),
-                        Text(section.questionCount,
-                            style: GoogleFonts.inter(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.lightTextSecondary,
-                            )),
+                        Text(
+                          section.questionCount,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                        ),
                         const SizedBox(height: 4),
-                        Text(section.description,
-                            style: GoogleFonts.inter(
-                              fontSize: 11,
-                              color: isDark
-                                  ? Colors.white38
-                                  : Colors.black38,
-                            )),
+                        Text(
+                          section.description,
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            color: isDark ? Colors.white38 : Colors.black38,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  Icon(Icons.arrow_forward_ios_rounded,
-                      size: 16,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 16,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
                 ],
               ),
             ),
@@ -340,8 +382,11 @@ class AdvancedDashboard extends StatelessWidget {
                 _BandTarget('Current', 5.5, AppColors.warning),
                 SizedBox(
                   width: 60,
-                  child: const Icon(Icons.arrow_forward_rounded,
-                      color: AppColors.primary, size: 28),
+                  child: const Icon(
+                    Icons.arrow_forward_rounded,
+                    color: AppColors.primary,
+                    size: 28,
+                  ),
                 ),
                 _BandTarget('Target', 7.0, AppColors.success),
               ],
@@ -378,8 +423,10 @@ class AdvancedDashboard extends StatelessWidget {
             children: [
               const Icon(Icons.history_rounded, size: 40, color: Colors.grey),
               const SizedBox(height: 8),
-              Text('No exams taken yet',
-                  style: GoogleFonts.inter(color: Colors.grey)),
+              Text(
+                'No exams taken yet',
+                style: GoogleFonts.inter(color: Colors.grey),
+              ),
             ],
           ),
         ),
@@ -391,8 +438,10 @@ class AdvancedDashboard extends StatelessWidget {
       child: Column(
         children: history.map((exam) {
           return GestureDetector(
-            onTap: () => Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const ExamResultScreen())),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ExamResultScreen()),
+            ),
             child: GlassCard(
               padding: const EdgeInsets.all(14),
               child: Row(
@@ -401,8 +450,9 @@ class AdvancedDashboard extends StatelessWidget {
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: _getBandColor(exam.bandScore)
-                          .withValues(alpha: 0.12),
+                      color: _getBandColor(
+                        exam.bandScore,
+                      ).withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Center(
@@ -421,40 +471,52 @@ class AdvancedDashboard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(exam.title,
-                            style: GoogleFonts.inter(
-                                fontSize: 14, fontWeight: FontWeight.w600)),
-                        Text(exam.date,
-                            style: GoogleFonts.inter(
-                              fontSize: 12,
-                              color: isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.lightTextSecondary,
-                            )),
+                        Text(
+                          exam.title,
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          exam.date,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   if (exam.isFullExam)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF8B5CF6).withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text('Full',
-                          style: GoogleFonts.inter(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF8B5CF6),
-                          )),
+                      child: Text(
+                        'Full',
+                        style: GoogleFonts.inter(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF8B5CF6),
+                        ),
+                      ),
                     ),
                   const SizedBox(width: 8),
-                  Icon(Icons.arrow_forward_ios_rounded,
-                      size: 14,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 14,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
                 ],
               ),
             ),
@@ -491,9 +553,10 @@ class _SectionIcon extends StatelessWidget {
           child: Icon(icon, color: Colors.white, size: 20),
         ),
         const SizedBox(height: 4),
-        Text(label,
-            style: GoogleFonts.inter(
-                fontSize: 10, color: Colors.white70)),
+        Text(
+          label,
+          style: GoogleFonts.inter(fontSize: 10, color: Colors.white70),
+        ),
       ],
     );
   }
@@ -509,14 +572,17 @@ class _BandTarget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(label,
-            style: GoogleFonts.inter(fontSize: 12, color: Colors.grey)),
+        Text(label, style: GoogleFonts.inter(fontSize: 12, color: Colors.grey)),
         const SizedBox(height: 4),
-        Text(band.toString(),
-            style: GoogleFonts.inter(
-                fontSize: 36, fontWeight: FontWeight.w800, color: color)),
-        Text('Band',
-            style: GoogleFonts.inter(fontSize: 12, color: color)),
+        Text(
+          band.toString(),
+          style: GoogleFonts.inter(
+            fontSize: 36,
+            fontWeight: FontWeight.w800,
+            color: color,
+          ),
+        ),
+        Text('Band', style: GoogleFonts.inter(fontSize: 12, color: color)),
       ],
     );
   }
@@ -526,8 +592,14 @@ class _SectionInfo {
   final String title, duration, questionCount, description;
   final IconData icon;
   final List<Color> gradient;
-  const _SectionInfo(this.title, this.icon, this.gradient,
-      this.duration, this.questionCount, this.description);
+  const _SectionInfo(
+    this.title,
+    this.icon,
+    this.gradient,
+    this.duration,
+    this.questionCount,
+    this.description,
+  );
 }
 
 class _ExamRecord {

@@ -160,8 +160,9 @@ class _SttRecorderState extends State<SttRecorder>
             child: AnimatedBuilder(
               animation: _pulseController,
               builder: (context, child) {
-                final scale =
-                    _isListening ? 1.0 + _pulseController.value * 0.08 : 1.0;
+                final scale = _isListening
+                    ? 1.0 + _pulseController.value * 0.08
+                    : 1.0;
                 return Transform.scale(
                   scale: scale,
                   child: Container(
@@ -311,18 +312,14 @@ class _WaveformPainter extends CustomPainter {
       final x = i * (size.width / barCount) + barWidth / 2;
       final heightFactor = isActive
           ? (0.3 +
-              random.nextDouble() *
-                  0.7 *
-                  sin((progress * pi * 4) + (i * pi / barCount)).abs())
+                random.nextDouble() *
+                    0.7 *
+                    sin((progress * pi * 4) + (i * pi / barCount)).abs())
           : 0.15;
       final barHeight = size.height * heightFactor;
       final y = (size.height - barHeight) / 2;
 
-      canvas.drawLine(
-        Offset(x, y),
-        Offset(x, y + barHeight),
-        paint,
-      );
+      canvas.drawLine(Offset(x, y), Offset(x, y + barHeight), paint);
     }
   }
 

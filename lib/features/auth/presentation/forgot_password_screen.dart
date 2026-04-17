@@ -38,8 +38,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     setState(() => _isSubmitting = true);
 
     final authProvider = context.read<AuthProvider>();
-    final success =
-        await authProvider.resetPassword(_emailController.text.trim());
+    final success = await authProvider.resetPassword(
+      _emailController.text.trim(),
+    );
 
     if (!mounted) return;
 
@@ -61,10 +62,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-          style: GoogleFonts.inter(color: Colors.white),
-        ),
+        content: Text(message, style: GoogleFonts.inter(color: Colors.white)),
         backgroundColor: isError ? AppColors.error : AppColors.accentGreenAuth,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -83,8 +81,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded,
-                color: AppColors.textPrimary),
+            icon: const Icon(
+              Icons.arrow_back_rounded,
+              color: AppColors.textPrimary,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
         ),

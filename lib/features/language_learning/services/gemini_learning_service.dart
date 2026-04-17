@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/foundation.dart';
 import '../models/user_progress_model.dart';
 import '../models/lesson_model.dart';
 import '../models/exercise_model.dart';
@@ -14,6 +15,8 @@ import '../models/exercise_types_model.dart';
 ///
 /// Handles all AI content generation, evaluation, and analysis
 /// using the Groq API (OpenAI-compatible) with the Llama 4 Scout model.
+/// This service orchestrates prompt construction, dynamic vocabulary injection,
+/// and JSON parsing to fuel the application's personalized learning algorithms.
 class GeminiLearningService {
   static const String _groqEndpoint =
       'https://api.groq.com/openai/v1/chat/completions';
@@ -32,7 +35,8 @@ class GeminiLearningService {
     UserProgress progress,
   ) async {
     final exclusions = _buildExclusionBlock(progress);
-    final prompt = '''
+    final prompt =
+        '''
 Generate a beginner-level English grammar lesson on "$topic".
 
 Requirements:
@@ -81,7 +85,8 @@ Ensure: Different examples from previous sessions, culturally neutral content.
   }) async {
     final exclusions = _buildExclusionBlock(progress);
     final diffLabel = level.label;
-    final prompt = '''
+    final prompt =
+        '''
 Generate an English practice session.
 
 Parameters:
@@ -122,8 +127,15 @@ Generate entirely new scenarios and sentences. Avoid textbook clichés.
     DateTime date,
     UserProgress progress,
   ) async {
-    final dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday',
-        'Friday', 'Saturday', 'Sunday'];
+    final dayNames = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
     final dayName = dayNames[date.weekday - 1];
     final focusMap = {
       'Monday': 'Reading comprehension',
@@ -137,7 +149,8 @@ Generate entirely new scenarios and sentences. Avoid textbook clichés.
     final focus = focusMap[dayName] ?? 'Mixed skills';
     final exclusions = _buildExclusionBlock(progress);
 
-    final prompt = '''
+    final prompt =
+        '''
 Generate a daily English practice session.
 
 User Profile:
@@ -180,8 +193,10 @@ $exclusions
           const Exercise(
             id: 'task1',
             type: ExerciseType.writingPrompt,
-            question: 'The chart below shows the percentage of people who ate five portions of fruit and vegetables per day in the UK from 2001 to 2008. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.',
-            context: 'The chart below shows the percentage of people who ate five portions of fruit and vegetables per day in the UK from 2001 to 2008. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.',
+            question:
+                'The chart below shows the percentage of people who ate five portions of fruit and vegetables per day in the UK from 2001 to 2008. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.',
+            context:
+                'The chart below shows the percentage of people who ate five portions of fruit and vegetables per day in the UK from 2001 to 2008. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.',
             imageUrl: 'assets/images/task1_chart.png',
             correctAnswer: '',
             difficulty: ExerciseDifficulty.challenging,
@@ -189,8 +204,10 @@ $exclusions
           const Exercise(
             id: 'task2',
             type: ExerciseType.writingPrompt,
-            question: 'Some people think that university education should be free for everyone. Others think that students should pay for their higher education. Discuss both these views and give your own opinion.',
-            context: 'Some people think that university education should be free for everyone. Others think that students should pay for their higher education. Discuss both these views and give your own opinion.',
+            question:
+                'Some people think that university education should be free for everyone. Others think that students should pay for their higher education. Discuss both these views and give your own opinion.',
+            context:
+                'Some people think that university education should be free for everyone. Others think that students should pay for their higher education. Discuss both these views and give your own opinion.',
             correctAnswer: '',
             difficulty: ExerciseDifficulty.challenging,
           ),
@@ -199,8 +216,9 @@ $exclusions
     }
 
     final exclusions = _buildExclusionBlock(progress);
-    
-    final prompt = '''
+
+    final prompt =
+        '''
 Generate an IELTS simulation section practice test for ${sectionType.name}.
 
 Requirements:
@@ -235,7 +253,8 @@ $exclusions
   }) async {
     final exclusions = _buildExclusionBlock(progress);
     final diffLabel = level.label;
-    final prompt = '''
+    final prompt =
+        '''
 Generate an English reading passage.
 
 Parameters:
@@ -267,7 +286,8 @@ $exclusions
   }) async {
     final exclusions = _buildExclusionBlock(progress);
     final diffLabel = level.label;
-    final prompt = '''
+    final prompt =
+        '''
 Generate an English writing task.
 
 Parameters:
@@ -299,7 +319,8 @@ $exclusions
   }) async {
     final exclusions = _buildExclusionBlock(progress);
     final diffLabel = level.label;
-    final prompt = '''
+    final prompt =
+        '''
 Generate speaking prompts for English practice.
 
 Parameters:
@@ -320,7 +341,9 @@ $exclusions
 
     return _generate(prompt, (data) {
       final list = data['prompts'] as List<dynamic>;
-      return list.map((e) => SpeakingPrompt.fromJson(Map<String, dynamic>.from(e))).toList();
+      return list
+          .map((e) => SpeakingPrompt.fromJson(Map<String, dynamic>.from(e)))
+          .toList();
     });
   }
 
@@ -331,7 +354,8 @@ $exclusions
     String userText,
     String taskPrompt,
   ) async {
-    final prompt = '''
+    final prompt =
+        '''
 Evaluate this English writing response using IELTS-style criteria.
 
 Task: $taskPrompt
@@ -362,7 +386,8 @@ Tone: Supportive and educational.
     String transcript,
     String expectedTopic,
   ) async {
-    final prompt = '''
+    final prompt =
+        '''
 Evaluate this spoken English response (transcribed from speech).
 
 Topic: $expectedTopic
@@ -390,7 +415,8 @@ Note: Be realistic about speech-to-text limitations.
     String userAnswer,
     Exercise exercise,
   ) async {
-    final prompt = '''
+    final prompt =
+        '''
 Validate this answer for an English exercise.
 
 Question: ${exercise.question}
@@ -413,13 +439,12 @@ Provide JSON:
   // ─── Analysis & Suggestions ───────────────────────────────────
 
   /// Analyzes user performance and identifies weaknesses.
-  Future<WeaknessAnalysis> analyzePerformance(
-    UserProgress progress,
-  ) async {
+  Future<WeaknessAnalysis> analyzePerformance(UserProgress progress) async {
     final skillData = progress.skillScores.map(
       (k, v) => MapEntry(k, '${v.currentScore}/100'),
     );
-    final prompt = '''
+    final prompt =
+        '''
 Analyze English learning performance and identify weaknesses.
 
 User Profile:
@@ -446,7 +471,8 @@ Provide JSON:
     String goal,
     String timeline,
   ) async {
-    final prompt = '''
+    final prompt =
+        '''
 Create a personalized English learning roadmap.
 
 User:
@@ -469,10 +495,9 @@ Provide JSON:
   }
 
   /// Generates daily practice suggestions.
-  Future<DailySuggestion> generateDailySuggestion(
-    UserProgress progress,
-  ) async {
-    final prompt = '''
+  Future<DailySuggestion> generateDailySuggestion(UserProgress progress) async {
+    final prompt =
+        '''
 Generate a daily personalized practice suggestion.
 
 User:
@@ -540,12 +565,14 @@ Provide JSON:
         _ => 'audio/webm',
       };
 
-      request.files.add(http.MultipartFile.fromBytes(
-        'file',
-        audioBytes,
-        filename: fileName,
-        contentType: _parseMediaType(mimeType),
-      ));
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'file',
+          audioBytes,
+          filename: fileName,
+          contentType: _parseMediaType(mimeType),
+        ),
+      );
       request.fields['model'] = _whisperModel;
       request.fields['language'] = language;
       request.fields['response_format'] = 'json';
@@ -557,7 +584,9 @@ Provide JSON:
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         final text = (data['text'] as String?)?.trim() ?? '';
         if (text.isEmpty) {
-          throw Exception('Whisper returned empty transcription. Please speak more clearly.');
+          throw Exception(
+            'Whisper returned empty transcription. Please speak more clearly.',
+          );
         }
         return text;
       } else {
@@ -612,10 +641,7 @@ Provide JSON:
               'You are an expert English language teacher and educational content creator. '
               'You always respond with valid JSON only.',
         },
-        {
-          'role': 'user',
-          'content': prompt,
-        },
+        {'role': 'user', 'content': prompt},
       ],
       'response_format': {'type': 'json_object'},
       'temperature': 0.4,
@@ -631,14 +657,13 @@ Provide JSON:
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
-        final content =
-            data['choices'][0]['message']['content'] as String;
+        final content = data['choices'][0]['message']['content'] as String;
         return jsonDecode(content) as Map<String, dynamic>;
       } else {
-        print('Groq API error ${response.statusCode}: ${response.body}');
+        debugPrint('Groq API error ${response.statusCode}: ${response.body}');
       }
     } catch (e) {
-      print('Error calling Groq API: $e');
+      debugPrint('Error calling Groq API: $e');
     }
     return null;
   }
@@ -655,13 +680,9 @@ Provide JSON:
       'messages': [
         {
           'role': 'system',
-          'content':
-              'You are an encouraging English language learning mentor.',
+          'content': 'You are an encouraging English language learning mentor.',
         },
-        {
-          'role': 'user',
-          'content': prompt,
-        },
+        {'role': 'user', 'content': prompt},
       ],
       'temperature': 0.7,
       'max_tokens': 512,
@@ -678,10 +699,10 @@ Provide JSON:
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         return data['choices'][0]['message']['content'] as String;
       } else {
-        print('Groq API error ${response.statusCode}: ${response.body}');
+        debugPrint('Groq API error ${response.statusCode}: ${response.body}');
       }
     } catch (e) {
-      print('Error calling Groq text API: $e');
+      debugPrint('Error calling Groq text API: $e');
     }
     return null;
   }

@@ -38,7 +38,9 @@ class WeaknessAnalysisScreen extends StatelessWidget {
             SliverToBoxAdapter(child: _buildAppBar(context, isDark)),
             if (analysis.hiddenPatterns.isNotEmpty)
               SliverToBoxAdapter(child: _buildPatternsAlert(isDark, analysis)),
-            SliverToBoxAdapter(child: _buildSectionTitle('Detailed Breakdown', isDark)),
+            SliverToBoxAdapter(
+              child: _buildSectionTitle('Detailed Breakdown', isDark),
+            ),
             ...allWeaknesses.map(
               (w) => SliverToBoxAdapter(
                 child: Padding(
@@ -72,20 +74,33 @@ class WeaknessAnalysisScreen extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.troubleshoot_rounded, color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.troubleshoot_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Deep Dive',
-                    style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800)),
-                Text('Detailed weakness breakdown',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
-                    )),
+                Text(
+                  'Deep Dive',
+                  style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  'Detailed weakness breakdown',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
               ],
             ),
           ),
@@ -109,34 +124,47 @@ class WeaknessAnalysisScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.insights_rounded, color: AppColors.info, size: 24),
+                const Icon(
+                  Icons.insights_rounded,
+                  color: AppColors.info,
+                  size: 24,
+                ),
                 const SizedBox(width: 12),
-                Text('AI Identified Patterns',
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: isDark ? Colors.white : Colors.black87,
-                    )),
+                Text(
+                  'AI Identified Patterns',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 12),
-            ...analysis.hiddenPatterns.map((p) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('• ', style: TextStyle(color: AppColors.info.withOpacity(0.8))),
-                      Expanded(
-                        child: Text(p,
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              height: 1.4,
-                              color: isDark ? Colors.white70 : Colors.black87,
-                            )),
+            ...analysis.hiddenPatterns.map(
+              (p) => Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '• ',
+                      style: TextStyle(color: AppColors.info.withOpacity(0.8)),
+                    ),
+                    Expanded(
+                      child: Text(
+                        p,
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          height: 1.4,
+                          color: isDark ? Colors.white70 : Colors.black87,
+                        ),
                       ),
-                    ],
-                  ),
-                )),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -146,7 +174,10 @@ class WeaknessAnalysisScreen extends StatelessWidget {
   Widget _buildSectionTitle(String title, bool isDark) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-      child: Text(title, style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+      child: Text(
+        title,
+        style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+      ),
     );
   }
 
@@ -175,18 +206,29 @@ class WeaknessAnalysisScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(w.area,
-                          style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700)),
-                      Text('${w.skill} Issue',
-                          style: GoogleFonts.inter(
-                              fontSize: 12,
-                              color: isDark ? Colors.white60 : Colors.black54,
-                              fontWeight: FontWeight.w500)),
+                      Text(
+                        w.area,
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        '${w.skill} Issue',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: isDark ? Colors.white60 : Colors.black54,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: color,
                     borderRadius: BorderRadius.circular(8),
@@ -194,18 +236,23 @@ class WeaknessAnalysisScreen extends StatelessWidget {
                   child: Text(
                     w.urgency.name.toUpperCase(),
                     style: GoogleFonts.inter(
-                        fontSize: 10, fontWeight: FontWeight.w800, color: Colors.white),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            Text(w.description,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  height: 1.5,
-                  color: isDark ? Colors.white70 : Colors.black87,
-                )),
+            Text(
+              w.description,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                height: 1.5,
+                color: isDark ? Colors.white70 : Colors.black87,
+              ),
+            ),
             if (w.evidence.isNotEmpty) ...[
               const SizedBox(height: 16),
               Container(
@@ -214,39 +261,55 @@ class WeaknessAnalysisScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isDark ? Colors.black26 : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: isDark ? Colors.white10 : Colors.black12),
+                  border: Border.all(
+                    color: isDark ? Colors.white10 : Colors.black12,
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('EVIDENCE',
-                        style: GoogleFonts.inter(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: isDark ? Colors.white54 : Colors.black45)),
+                    Text(
+                      'EVIDENCE',
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: isDark ? Colors.white54 : Colors.black45,
+                      ),
+                    ),
                     const SizedBox(height: 6),
-                    Text('"$w.evidence"',
-                        style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontStyle: FontStyle.italic,
-                            color: color.withOpacity(0.9))),
+                    Text(
+                      '"$w.evidence"',
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        fontStyle: FontStyle.italic,
+                        color: color.withOpacity(0.9),
+                      ),
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               height: 44,
               child: OutlinedButton.icon(
-                onPressed: () => _launchTargetedPractice(context, w.skill, w.area),
+                onPressed: () =>
+                    _launchTargetedPractice(context, w.skill, w.area),
                 icon: Icon(Icons.rocket_launch_rounded, color: color, size: 18),
-                label: Text('Practice This Now',
-                    style: GoogleFonts.inter(
-                        fontSize: 14, fontWeight: FontWeight.w600, color: color)),
+                label: Text(
+                  'Practice This Now',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: color,
+                  ),
+                ),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: color.withOpacity(0.5)),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ),
@@ -256,7 +319,11 @@ class WeaknessAnalysisScreen extends StatelessWidget {
     );
   }
 
-  void _launchTargetedPractice(BuildContext context, String skill, String area) {
+  void _launchTargetedPractice(
+    BuildContext context,
+    String skill,
+    String area,
+  ) {
     SessionType targetType;
     switch (skill.toLowerCase()) {
       case 'grammar':

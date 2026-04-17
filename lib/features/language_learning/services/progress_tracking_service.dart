@@ -160,8 +160,9 @@ class ProgressTrackingService {
     return progress.copyWith(
       streak: streak.copyWith(
         currentStreak: newStreak,
-        longestStreak:
-            newStreak > streak.longestStreak ? newStreak : streak.longestStreak,
+        longestStreak: newStreak > streak.longestStreak
+            ? newStreak
+            : streak.longestStreak,
         lastPracticeDate: now,
       ),
     );
@@ -178,9 +179,7 @@ class ProgressTrackingService {
         goalDate.month != now.month ||
         goalDate.day != now.day) {
       // New day — reset daily goals
-      return progress.copyWith(
-        dailyGoal: DailyGoal(date: now),
-      );
+      return progress.copyWith(dailyGoal: DailyGoal(date: now));
     }
     return progress;
   }
@@ -195,12 +194,10 @@ class ProgressTrackingService {
     final goal = progress.dailyGoal;
     return progress.copyWith(
       dailyGoal: goal.copyWith(
-        grammarLessonsCompleted:
-            goal.grammarLessonsCompleted + grammarLessons,
+        grammarLessonsCompleted: goal.grammarLessonsCompleted + grammarLessons,
         pronunciationMinutesCompleted:
             goal.pronunciationMinutesCompleted + pronunciationMinutes,
-        spellingWordsCompleted:
-            goal.spellingWordsCompleted + spellingWords,
+        spellingWordsCompleted: goal.spellingWordsCompleted + spellingWords,
       ),
     );
   }

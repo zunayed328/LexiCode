@@ -64,8 +64,9 @@ class IssueCard extends StatelessWidget {
                             width: 28,
                             height: 28,
                             decoration: BoxDecoration(
-                              color:
-                                  issue.severityColor.withValues(alpha: 0.12),
+                              color: issue.severityColor.withValues(
+                                alpha: 0.12,
+                              ),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Icon(
@@ -83,8 +84,7 @@ class IssueCard extends StatelessWidget {
                               vertical: 3,
                             ),
                             decoration: BoxDecoration(
-                              color:
-                                  issue.typeColor.withValues(alpha: 0.1),
+                              color: issue.typeColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
@@ -122,8 +122,9 @@ class IssueCard extends StatelessWidget {
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: CodeReviewTheme.textMuted
-                                    .withValues(alpha: 0.15),
+                                color: CodeReviewTheme.textMuted.withValues(
+                                  alpha: 0.15,
+                                ),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
@@ -178,10 +179,7 @@ class IssueCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Divider
-          Container(
-            height: 1,
-            color: CodeReviewTheme.borderSubtle,
-          ),
+          Container(height: 1, color: CodeReviewTheme.borderSubtle),
           const SizedBox(height: 12),
 
           // Description
@@ -258,8 +256,7 @@ class IssueCard extends StatelessWidget {
           ],
 
           // Code example
-          if (issue.codeExample != null &&
-              issue.codeExample!.isNotEmpty) ...[
+          if (issue.codeExample != null && issue.codeExample!.isNotEmpty) ...[
             const SizedBox(height: 10),
             Container(
               width: double.infinity,
@@ -322,10 +319,7 @@ class IssueSectionHeader extends StatelessWidget {
           Container(
             width: 8,
             height: 8,
-            decoration: BoxDecoration(
-              color: _color,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: _color, shape: BoxShape.circle),
           ),
           const SizedBox(width: 8),
           Text(

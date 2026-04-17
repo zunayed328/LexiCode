@@ -106,9 +106,7 @@ class _ScoreRevealState extends State<ScoreReveal>
                         value: 1,
                         strokeWidth: 8,
                         valueColor: AlwaysStoppedAnimation(
-                          isDark
-                              ? AppColors.darkBorder
-                              : AppColors.lightBorder,
+                          isDark ? AppColors.darkBorder : AppColors.lightBorder,
                         ),
                       ),
                     ),

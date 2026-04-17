@@ -7,7 +7,6 @@ import '../../widgets/answer_feedback.dart';
 import '../../widgets/progress_header.dart';
 import '../../widgets/score_reveal.dart';
 
-
 /// Unified exercise session screen for all practice types.
 ///
 /// Loads exercises, renders them one-by-one, tracks answers, and shows results.
@@ -52,7 +51,7 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
       });
       return;
     }
-    
+
     // Generate sample exercises if none provided
     Future.delayed(const Duration(milliseconds: 800), () {
       if (!mounted) return;
@@ -89,7 +88,8 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
           'She isn\'t like coffee.',
         ],
         correctAnswer: 'She doesn\'t like coffee.',
-        explanation: 'With third person singular (she/he/it), we use "doesn\'t" for negation.',
+        explanation:
+            'With third person singular (she/he/it), we use "doesn\'t" for negation.',
         hint: 'Think about the subject-verb agreement in present tense.',
         points: 10,
         difficulty: ExerciseDifficulty.medium,
@@ -99,7 +99,8 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
         type: ExerciseType.fillBlank,
         question: 'If I _____ (know) the answer, I would have told you.',
         correctAnswer: 'had known',
-        explanation: 'This is a third conditional (past unreal). The "if" clause uses past perfect.',
+        explanation:
+            'This is a third conditional (past unreal). The "if" clause uses past perfect.',
         hint: 'This is about an unreal past situation.',
         points: 15,
         difficulty: ExerciseDifficulty.hard,
@@ -108,16 +109,20 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
         id: 'g3',
         type: ExerciseType.errorCorrection,
         question: 'Find and correct the error in this sentence:',
-        context: 'The team have been working on the project since three months.',
-        correctAnswer: 'The team has been working on the project for three months.',
-        explanation: '"Team" as a collective noun takes "has" in American English. "Since" is for a specific point in time; "for" is for a duration.',
+        context:
+            'The team have been working on the project since three months.',
+        correctAnswer:
+            'The team has been working on the project for three months.',
+        explanation:
+            '"Team" as a collective noun takes "has" in American English. "Since" is for a specific point in time; "for" is for a duration.',
         points: 20,
         difficulty: ExerciseDifficulty.hard,
       ),
       Exercise(
         id: 'g4',
         type: ExerciseType.mcq,
-        question: 'Choose the correct relative pronoun: "The book _____ I borrowed from the library was fascinating."',
+        question:
+            'Choose the correct relative pronoun: "The book _____ I borrowed from the library was fascinating."',
         options: ['who', 'which', 'whom', 'whose'],
         correctAnswer: 'which',
         explanation: '"Which" is used for things. "Who" is for people.',
@@ -127,20 +132,25 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
       Exercise(
         id: 'g5',
         type: ExerciseType.trueFalse,
-        question: 'True or False: "Neither the students nor the teacher were ready" is grammatically correct.',
+        question:
+            'True or False: "Neither the students nor the teacher were ready" is grammatically correct.',
         options: ['True', 'False'],
         correctAnswer: 'False',
-        explanation: 'When "neither...nor" is used, the verb agrees with the nearest subject. "Teacher" is singular, so it should be "was ready".',
+        explanation:
+            'When "neither...nor" is used, the verb agrees with the nearest subject. "Teacher" is singular, so it should be "was ready".',
         points: 10,
         difficulty: ExerciseDifficulty.medium,
       ),
       Exercise(
         id: 'g6',
         type: ExerciseType.fillBlank,
-        question: 'By the time we arrive, they _____ (finish) the presentation.',
+        question:
+            'By the time we arrive, they _____ (finish) the presentation.',
         correctAnswer: 'will have finished',
-        explanation: 'Future perfect tense is used for an action that will be completed before another future event.',
-        hint: 'Think about what tense describes completion before a future event.',
+        explanation:
+            'Future perfect tense is used for an action that will be completed before another future event.',
+        hint:
+            'Think about what tense describes completion before a future event.',
         points: 15,
         difficulty: ExerciseDifficulty.hard,
       ),
@@ -155,17 +165,20 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
           'The report wrote by the intern.',
         ],
         correctAnswer: 'The report was written by the intern.',
-        explanation: 'Passive voice: Subject + be (was) + past participle (written) + by + agent.',
+        explanation:
+            'Passive voice: Subject + be (was) + past participle (written) + by + agent.',
         points: 10,
         difficulty: ExerciseDifficulty.easy,
       ),
       Exercise(
         id: 'g8',
         type: ExerciseType.mcq,
-        question: 'Select the correct modal verb: "You _____ wear a seatbelt. It\'s the law."',
+        question:
+            'Select the correct modal verb: "You _____ wear a seatbelt. It\'s the law."',
         options: ['should', 'must', 'might', 'could'],
         correctAnswer: 'must',
-        explanation: '"Must" indicates obligation or requirement. "Should" is advice. "Might" and "could" indicate possibility.',
+        explanation:
+            '"Must" indicates obligation or requirement. "Should" is advice. "Might" and "could" indicate possibility.',
         points: 10,
         difficulty: ExerciseDifficulty.easy,
       ),
@@ -175,22 +188,31 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
   List<Exercise> _spellingExercises() {
     return [
       Exercise(
-        id: 's1', type: ExerciseType.spelling,
+        id: 's1',
+        type: ExerciseType.spelling,
         question: 'Spell the word that means "to make something better"',
         correctAnswer: 'improve',
-        hint: 'Starts with "im-"', points: 10, difficulty: ExerciseDifficulty.easy,
+        hint: 'Starts with "im-"',
+        points: 10,
+        difficulty: ExerciseDifficulty.easy,
       ),
       Exercise(
-        id: 's2', type: ExerciseType.spelling,
+        id: 's2',
+        type: ExerciseType.spelling,
         question: 'Spell the word that means "happening immediately"',
         correctAnswer: 'immediately',
-        hint: 'Ends with "-ately"', points: 15, difficulty: ExerciseDifficulty.medium,
+        hint: 'Ends with "-ately"',
+        points: 15,
+        difficulty: ExerciseDifficulty.medium,
       ),
       Exercise(
-        id: 's3', type: ExerciseType.spelling,
+        id: 's3',
+        type: ExerciseType.spelling,
         question: 'Spell the word for "a formal request for something"',
         correctAnswer: 'application',
-        hint: 'Related to "apply"', points: 10, difficulty: ExerciseDifficulty.medium,
+        hint: 'Related to "apply"',
+        points: 10,
+        difficulty: ExerciseDifficulty.medium,
       ),
     ];
   }
@@ -198,9 +220,12 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
   List<Exercise> _readingExercises() {
     return [
       Exercise(
-        id: 'r1', type: ExerciseType.mcq,
-        question: 'Based on the passage, what was the main cause of the problem?',
-        context: 'The Great Barrier Reef, the world\'s largest coral reef system, has experienced significant bleaching events due to rising ocean temperatures. Scientists warn that without immediate action to reduce carbon emissions, the reef could suffer irreversible damage within decades.',
+        id: 'r1',
+        type: ExerciseType.mcq,
+        question:
+            'Based on the passage, what was the main cause of the problem?',
+        context:
+            'The Great Barrier Reef, the world\'s largest coral reef system, has experienced significant bleaching events due to rising ocean temperatures. Scientists warn that without immediate action to reduce carbon emissions, the reef could suffer irreversible damage within decades.',
         options: [
           'Rising ocean temperatures',
           'Overfishing',
@@ -208,13 +233,18 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
           'Tourism',
         ],
         correctAnswer: 'Rising ocean temperatures',
-        explanation: 'The passage explicitly states "bleaching events due to rising ocean temperatures."',
-        points: 10, difficulty: ExerciseDifficulty.medium,
+        explanation:
+            'The passage explicitly states "bleaching events due to rising ocean temperatures."',
+        points: 10,
+        difficulty: ExerciseDifficulty.medium,
       ),
       Exercise(
-        id: 'r2', type: ExerciseType.mcq,
-        question: 'What does "irreversible" mean in the context of the passage?',
-        context: 'The Great Barrier Reef, the world\'s largest coral reef system, has experienced significant bleaching events due to rising ocean temperatures. Scientists warn that without immediate action to reduce carbon emissions, the reef could suffer irreversible damage within decades.',
+        id: 'r2',
+        type: ExerciseType.mcq,
+        question:
+            'What does "irreversible" mean in the context of the passage?',
+        context:
+            'The Great Barrier Reef, the world\'s largest coral reef system, has experienced significant bleaching events due to rising ocean temperatures. Scientists warn that without immediate action to reduce carbon emissions, the reef could suffer irreversible damage within decades.',
         options: [
           'Cannot be undone',
           'Very expensive',
@@ -222,8 +252,10 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
           'Not important',
         ],
         correctAnswer: 'Cannot be undone',
-        explanation: '"Irreversible" means something that cannot be reversed or changed back to its original state.',
-        points: 10, difficulty: ExerciseDifficulty.easy,
+        explanation:
+            '"Irreversible" means something that cannot be reversed or changed back to its original state.',
+        points: 10,
+        difficulty: ExerciseDifficulty.easy,
       ),
     ];
   }
@@ -301,16 +333,19 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
   }
 
   void _submitAnswer(String answer, Exercise exercise) {
-    final isCorrect = answer.trim().toLowerCase() ==
+    final isCorrect =
+        answer.trim().toLowerCase() ==
         exercise.correctAnswer.trim().toLowerCase();
 
     setState(() {
-      _answers.add(_SessionAnswer(
-        userAnswer: answer,
-        isCorrect: isCorrect,
-        exerciseId: exercise.id,
-        pointsEarned: isCorrect ? exercise.points : 0,
-      ));
+      _answers.add(
+        _SessionAnswer(
+          userAnswer: answer,
+          isCorrect: isCorrect,
+          exerciseId: exercise.id,
+          pointsEarned: isCorrect ? exercise.points : 0,
+        ),
+      );
       _showFeedback = true;
       if (isCorrect) {
         _correctStreak++;
@@ -341,20 +376,27 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  _getAccentColor(),
-                  _getAccentColor().withValues(alpha: 0.8),
-                ]),
+                gradient: LinearGradient(
+                  colors: [
+                    _getAccentColor(),
+                    _getAccentColor().withValues(alpha: 0.8),
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: const Icon(Icons.auto_awesome_rounded,
-                  color: Colors.white, size: 36),
+              child: const Icon(
+                Icons.auto_awesome_rounded,
+                color: Colors.white,
+                size: 36,
+              ),
             ),
             const SizedBox(height: 24),
             Text(
               'Preparing your session...',
               style: GoogleFonts.inter(
-                  fontSize: 18, fontWeight: FontWeight.w600),
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 32),
             SizedBox(
@@ -375,8 +417,7 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
     final correct = _answers.where((a) => a.isCorrect).length;
     final total = _answers.length;
     final score = total > 0 ? (correct / total * 100) : 0.0;
-    final totalXp =
-        _answers.fold<int>(0, (sum, a) => sum + a.pointsEarned);
+    final totalXp = _answers.fold<int>(0, (sum, a) => sum + a.pointsEarned);
 
     return Scaffold(
       body: SafeArea(
@@ -397,8 +438,7 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildStat('Correct', '$correct', AppColors.success),
-                  _buildStat(
-                      'Wrong', '${total - correct}', AppColors.error),
+                  _buildStat('Wrong', '${total - correct}', AppColors.error),
                   _buildStat('XP', '+$totalXp', AppColors.xpColor),
                 ],
               ),
@@ -414,12 +454,14 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: Text('Back to Dashboard',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      )),
+                  child: Text(
+                    'Back to Dashboard',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -432,11 +474,15 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
   Widget _buildStat(String label, String value, Color color) {
     return Column(
       children: [
-        Text(value,
-            style: GoogleFonts.inter(
-                fontSize: 28, fontWeight: FontWeight.w800, color: color)),
-        Text(label,
-            style: GoogleFonts.inter(fontSize: 13, color: Colors.grey)),
+        Text(
+          value,
+          style: GoogleFonts.inter(
+            fontSize: 28,
+            fontWeight: FontWeight.w800,
+            color: color,
+          ),
+        ),
+        Text(label, style: GoogleFonts.inter(fontSize: 13, color: Colors.grey)),
       ],
     );
   }
@@ -457,8 +503,7 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
               Navigator.pop(ctx);
               Navigator.pop(context);
             },
-            child: const Text('Exit',
-                style: TextStyle(color: AppColors.error)),
+            child: const Text('Exit', style: TextStyle(color: AppColors.error)),
           ),
         ],
       ),

@@ -252,8 +252,7 @@ class PracticeProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _dailySuggestion =
-          await _contentService.getDailySuggestion(progress);
+      _dailySuggestion = await _contentService.getDailySuggestion(progress);
     } catch (_) {
       // Silently fail — suggestion is optional
     }

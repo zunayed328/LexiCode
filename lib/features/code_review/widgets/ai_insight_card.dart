@@ -175,7 +175,9 @@ class _AiInsightCardState extends State<AiInsightCard>
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: CodeReviewTheme.textPrimary.withValues(alpha: 0.9),
+                        color: CodeReviewTheme.textPrimary.withValues(
+                          alpha: 0.9,
+                        ),
                         height: 1.5,
                       ),
                     ),
@@ -205,7 +207,8 @@ class _AiInsightCardState extends State<AiInsightCard>
       }
 
       // Bullet points
-      if (line.trimLeft().startsWith('- ') || line.trimLeft().startsWith('• ')) {
+      if (line.trimLeft().startsWith('- ') ||
+          line.trimLeft().startsWith('• ')) {
         widgets.add(
           Padding(
             padding: const EdgeInsets.only(left: 4, bottom: 4),
@@ -222,7 +225,9 @@ class _AiInsightCardState extends State<AiInsightCard>
                   ),
                 ),
                 Expanded(
-                  child: _buildInlineFormattedText(line.trimLeft().substring(2)),
+                  child: _buildInlineFormattedText(
+                    line.trimLeft().substring(2),
+                  ),
                 ),
               ],
             ),
@@ -252,37 +257,45 @@ class _AiInsightCardState extends State<AiInsightCard>
     for (final match in regex.allMatches(text)) {
       if (match.group(1) != null) {
         // Bold
-        spans.add(TextSpan(
-          text: match.group(1),
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            color: CodeReviewTheme.textPrimary,
-            height: 1.6,
+        spans.add(
+          TextSpan(
+            text: match.group(1),
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: CodeReviewTheme.textPrimary,
+              height: 1.6,
+            ),
           ),
-        ));
+        );
       } else if (match.group(2) != null) {
         // Inline code
-        spans.add(TextSpan(
-          text: ' ${match.group(2)} ',
-          style: GoogleFonts.firaCode(
-            fontSize: 12,
-            color: CodeReviewTheme.accentPurple,
-            backgroundColor: CodeReviewTheme.accentPurple.withValues(alpha: 0.1),
-            height: 1.6,
+        spans.add(
+          TextSpan(
+            text: ' ${match.group(2)} ',
+            style: GoogleFonts.firaCode(
+              fontSize: 12,
+              color: CodeReviewTheme.accentPurple,
+              backgroundColor: CodeReviewTheme.accentPurple.withValues(
+                alpha: 0.1,
+              ),
+              height: 1.6,
+            ),
           ),
-        ));
+        );
       } else if (match.group(3) != null) {
         // Normal text
-        spans.add(TextSpan(
-          text: match.group(3),
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
-            color: CodeReviewTheme.textSecondary,
-            height: 1.6,
+        spans.add(
+          TextSpan(
+            text: match.group(3),
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+              color: CodeReviewTheme.textSecondary,
+              height: 1.6,
+            ),
           ),
-        ));
+        );
       }
     }
 

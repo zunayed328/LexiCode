@@ -45,13 +45,10 @@ class _AnswerFeedbackState extends State<AnswerFeedback>
       duration: const Duration(milliseconds: 350),
       vsync: this,
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+        .animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
 
     _bounceController = AnimationController(
       duration: const Duration(milliseconds: 600),
@@ -80,22 +77,24 @@ class _AnswerFeedbackState extends State<AnswerFeedback>
   void _generateConfetti() {
     final random = Random();
     for (int i = 0; i < 30; i++) {
-      _particles.add(_ConfettiParticle(
-        x: random.nextDouble() * 400,
-        y: -random.nextDouble() * 100,
-        velocityX: (random.nextDouble() - 0.5) * 6,
-        velocityY: random.nextDouble() * 8 + 2,
-        color: [
-          AppColors.primary,
-          AppColors.secondary,
-          AppColors.accentGreen,
-          AppColors.xpColor,
-          AppColors.info,
-          AppColors.accent,
-        ][random.nextInt(6)],
-        size: random.nextDouble() * 8 + 4,
-        rotation: random.nextDouble() * pi * 2,
-      ));
+      _particles.add(
+        _ConfettiParticle(
+          x: random.nextDouble() * 400,
+          y: -random.nextDouble() * 100,
+          velocityX: (random.nextDouble() - 0.5) * 6,
+          velocityY: random.nextDouble() * 8 + 2,
+          color: [
+            AppColors.primary,
+            AppColors.secondary,
+            AppColors.accentGreen,
+            AppColors.xpColor,
+            AppColors.info,
+            AppColors.accent,
+          ][random.nextInt(6)],
+          size: random.nextDouble() * 8 + 4,
+          rotation: random.nextDouble() * pi * 2,
+        ),
+      );
     }
   }
 
@@ -118,15 +117,9 @@ class _AnswerFeedbackState extends State<AnswerFeedback>
         padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
         decoration: BoxDecoration(
           color: widget.isCorrect
-              ? (isDark
-                  ? const Color(0xFF0A2E1A)
-                  : const Color(0xFFECFDF5))
-              : (isDark
-                  ? const Color(0xFF2E0A0A)
-                  : const Color(0xFFFEF2F2)),
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(28),
-          ),
+              ? (isDark ? const Color(0xFF0A2E1A) : const Color(0xFFECFDF5))
+              : (isDark ? const Color(0xFF2E0A0A) : const Color(0xFFFEF2F2)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
           boxShadow: [
             BoxShadow(
               color: (widget.isCorrect ? AppColors.success : AppColors.error)
@@ -148,10 +141,11 @@ class _AnswerFeedbackState extends State<AnswerFeedback>
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: (widget.isCorrect
-                              ? AppColors.success
-                              : AppColors.error)
-                          .withValues(alpha: 0.15),
+                      color:
+                          (widget.isCorrect
+                                  ? AppColors.success
+                                  : AppColors.error)
+                              .withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Icon(
@@ -194,7 +188,9 @@ class _AnswerFeedbackState extends State<AnswerFeedback>
                   if (widget.isCorrect && widget.streakCount >= 3)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         gradient: AppColors.goldGradient,
                         borderRadius: BorderRadius.circular(20),
@@ -202,8 +198,7 @@ class _AnswerFeedbackState extends State<AnswerFeedback>
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text('🔥',
-                              style: TextStyle(fontSize: 16)),
+                          const Text('🔥', style: TextStyle(fontSize: 16)),
                           const SizedBox(width: 4),
                           Text(
                             '${widget.streakCount}',
@@ -226,10 +221,9 @@ class _AnswerFeedbackState extends State<AnswerFeedback>
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: (widget.isCorrect
-                          ? AppColors.success
-                          : AppColors.error)
-                      .withValues(alpha: 0.08),
+                  color:
+                      (widget.isCorrect ? AppColors.success : AppColors.error)
+                          .withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Text(

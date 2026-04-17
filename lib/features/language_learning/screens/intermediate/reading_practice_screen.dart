@@ -22,7 +22,7 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
   bool _isLoading = true;
   String? _error;
   ReadingPassage? _passage;
-  
+
   bool _showQuestions = false;
   int _currentQuestionIndex = 0;
   bool _showFeedback = false;
@@ -60,10 +60,12 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
 
   void _submitAnswer(String answer) {
     if (_showFeedback) return;
-    
+
     final currentQ = _passage!.comprehensionQuestions[_currentQuestionIndex];
-    final isCorrect = answer.trim().toLowerCase() == currentQ.correctAnswer.trim().toLowerCase();
-    
+    final isCorrect =
+        answer.trim().toLowerCase() ==
+        currentQ.correctAnswer.trim().toLowerCase();
+
     setState(() {
       _showFeedback = true;
       _answersCorrect.add(isCorrect);
@@ -111,10 +113,13 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
 
   Widget _buildPassageScreen() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reading Practice', style: GoogleFonts.inter(fontWeight: FontWeight.w700)),
+        title: Text(
+          'Reading Practice',
+          style: GoogleFonts.inter(fontWeight: FontWeight.w700),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -124,10 +129,24 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(_passage!.title, style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w800, color: const Color(0xFFEA580C))),
+              Text(
+                _passage!.title,
+                style: GoogleFonts.inter(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  color: const Color(0xFFEA580C),
+                ),
+              ),
               if (_passage!.subtitle != null) ...[
                 const SizedBox(height: 8),
-                Text(_passage!.subtitle!, style: GoogleFonts.inter(fontSize: 16, fontStyle: FontStyle.italic, color: isDark ? Colors.white70 : Colors.black54)),
+                Text(
+                  _passage!.subtitle!,
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontStyle: FontStyle.italic,
+                    color: isDark ? Colors.white70 : Colors.black54,
+                  ),
+                ),
               ],
               const SizedBox(height: 24),
               GlassCard(
@@ -135,19 +154,34 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
                   padding: const EdgeInsets.all(4.0),
                   child: Text(
                     _passage!.content,
-                    style: GoogleFonts.inter(fontSize: 16, height: 1.6, color: isDark ? Colors.white : Colors.black87),
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      height: 1.6,
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 32),
               if (_passage!.vocabularyWords.isNotEmpty) ...[
-                Text('Vocabulary', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+                Text(
+                  'Vocabulary',
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 const SizedBox(height: 12),
-                ..._passage!.vocabularyWords.map((v) => ListTile(
-                  title: Text(v.word, style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
-                  subtitle: Text(v.definition),
-                  dense: true,
-                )),
+                ..._passage!.vocabularyWords.map(
+                  (v) => ListTile(
+                    title: Text(
+                      v.word,
+                      style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(v.definition),
+                    dense: true,
+                  ),
+                ),
                 const SizedBox(height: 32),
               ],
               SizedBox(
@@ -157,9 +191,18 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
                   onPressed: () => setState(() => _showQuestions = true),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFEA580C),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
-                  child: Text('Start Questions', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+                  child: Text(
+                    'Start Questions',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
@@ -173,10 +216,12 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
   Widget _buildQuestionsScreen() {
     final currentQ = _passage!.comprehensionQuestions[_currentQuestionIndex];
     final isCorrect = _showFeedback ? _answersCorrect.last : false;
-    
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Question ${_currentQuestionIndex + 1} of ${_passage!.comprehensionQuestions.length}'), 
+        title: Text(
+          'Question ${_currentQuestionIndex + 1} of ${_passage!.comprehensionQuestions.length}',
+        ),
         automaticallyImplyLeading: false,
       ),
       body: SafeArea(
@@ -188,13 +233,15 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
                 questionNumber: _currentQuestionIndex + 1,
                 totalQuestions: _passage!.comprehensionQuestions.length,
                 showFeedback: _showFeedback,
-                result: _showFeedback ? ExerciseResult(
-                  exerciseId: currentQ.id,
-                  userAnswer: '',
-                  isCorrect: isCorrect,
-                  scoreEarned: isCorrect ? currentQ.points : 0,
-                  feedback: currentQ.explanation,
-                ) : null,
+                result: _showFeedback
+                    ? ExerciseResult(
+                        exerciseId: currentQ.id,
+                        userAnswer: '',
+                        isCorrect: isCorrect,
+                        scoreEarned: isCorrect ? currentQ.points : 0,
+                        feedback: currentQ.explanation,
+                      )
+                    : null,
                 onAnswer: _submitAnswer,
               ),
             ),
@@ -202,8 +249,15 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: isCorrect ? AppColors.success.withValues(alpha: 0.1) : AppColors.error.withValues(alpha: 0.1),
-                  border: Border(top: BorderSide(color: isCorrect ? AppColors.success : AppColors.error, width: 2)),
+                  color: isCorrect
+                      ? AppColors.success.withValues(alpha: 0.1)
+                      : AppColors.error.withValues(alpha: 0.1),
+                  border: Border(
+                    top: BorderSide(
+                      color: isCorrect ? AppColors.success : AppColors.error,
+                      width: 2,
+                    ),
+                  ),
                 ),
                 child: SafeArea(
                   top: false,
@@ -214,30 +268,54 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
                       Row(
                         children: [
                           Icon(
-                            isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                            color: isCorrect ? AppColors.success : AppColors.error,
+                            isCorrect
+                                ? Icons.check_circle_rounded
+                                : Icons.cancel_rounded,
+                            color: isCorrect
+                                ? AppColors.success
+                                : AppColors.error,
                             size: 28,
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               isCorrect ? 'Correct!' : 'Incorrect',
-                              style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800, color: isCorrect ? AppColors.success : AppColors.error),
+                              style: GoogleFonts.inter(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                                color: isCorrect
+                                    ? AppColors.success
+                                    : AppColors.error,
+                              ),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 12),
-                      Text(currentQ.explanation, style: GoogleFonts.inter(fontSize: 15)),
+                      Text(
+                        currentQ.explanation,
+                        style: GoogleFonts.inter(fontSize: 15),
+                      ),
                       const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: _nextQuestion,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isCorrect ? AppColors.success : AppColors.error,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          backgroundColor: isCorrect
+                              ? AppColors.success
+                              : AppColors.error,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        child: Text('Continue', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+                        child: Text(
+                          'Continue',
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -251,7 +329,7 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
 
   Widget _buildResultsScreen() {
     final score = _correctCount / _passage!.comprehensionQuestions.length * 100;
-    
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -263,7 +341,8 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
                 score: score,
                 maxScore: 100,
                 label: 'Reading Comprehension',
-                subtitle: '$_correctCount/${_passage!.comprehensionQuestions.length} correct',
+                subtitle:
+                    '$_correctCount/${_passage!.comprehensionQuestions.length} correct',
               ),
               const SizedBox(height: 32),
               SizedBox(
@@ -273,9 +352,18 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFEA580C),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
-                  child: Text('Finish Practicing', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+                  child: Text(
+                    'Finish Practicing',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ],

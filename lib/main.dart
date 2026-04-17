@@ -176,13 +176,9 @@ class _AppEntryState extends State<AppEntry> {
 
     switch (_screen) {
       case 0:
-        return SplashScreen(
-          onFinished: _onSplashFinished,
-        );
+        return SplashScreen(onFinished: _onSplashFinished);
       case 1:
-        return OnboardingScreen(
-          onComplete: _onOnboardingComplete,
-        );
+        return OnboardingScreen(onComplete: _onOnboardingComplete);
       case 2:
         return const WelcomeScreen();
       default:
@@ -208,10 +204,7 @@ class MainShell extends StatelessWidget {
     ];
 
     return Scaffold(
-      body: IndexedStack(
-        index: provider.currentIndex,
-        children: screens,
-      ),
+      body: IndexedStack(index: provider.currentIndex, children: screens),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
@@ -229,15 +222,39 @@ class MainShell extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildNavItem(context, 0, Icons.dashboard_rounded,
-                    Icons.dashboard_outlined, 'Home', provider),
-                _buildNavItem(context, 1, Icons.code_rounded,
-                    Icons.code_outlined, 'Review', provider),
+                _buildNavItem(
+                  context,
+                  0,
+                  Icons.dashboard_rounded,
+                  Icons.dashboard_outlined,
+                  'Home',
+                  provider,
+                ),
+                _buildNavItem(
+                  context,
+                  1,
+                  Icons.code_rounded,
+                  Icons.code_outlined,
+                  'Review',
+                  provider,
+                ),
                 _buildCenterNavItem(context, provider),
-                _buildNavItem(context, 3, Icons.emoji_events_rounded,
-                    Icons.emoji_events_outlined, 'Progress', provider),
-                _buildNavItem(context, 4, Icons.person_rounded,
-                    Icons.person_outlined, 'Profile', provider),
+                _buildNavItem(
+                  context,
+                  3,
+                  Icons.emoji_events_rounded,
+                  Icons.emoji_events_outlined,
+                  'Progress',
+                  provider,
+                ),
+                _buildNavItem(
+                  context,
+                  4,
+                  Icons.person_rounded,
+                  Icons.person_outlined,
+                  'Profile',
+                  provider,
+                ),
               ],
             ),
           ),
@@ -246,8 +263,14 @@ class MainShell extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(BuildContext context, int index, IconData activeIcon,
-      IconData inactiveIcon, String label, AppProvider provider) {
+  Widget _buildNavItem(
+    BuildContext context,
+    int index,
+    IconData activeIcon,
+    IconData inactiveIcon,
+    String label,
+    AppProvider provider,
+  ) {
     final isSelected = provider.currentIndex == index;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
@@ -270,8 +293,8 @@ class MainShell extends StatelessWidget {
               color: isSelected
                   ? AppColors.primary
                   : (isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary),
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary),
               size: 24,
             ),
             const SizedBox(height: 4),
@@ -283,8 +306,8 @@ class MainShell extends StatelessWidget {
                 color: isSelected
                     ? AppColors.primary
                     : (isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary),
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary),
               ),
             ),
           ],

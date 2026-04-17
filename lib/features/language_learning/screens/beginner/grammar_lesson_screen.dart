@@ -49,14 +49,14 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
         child: provider.isLoadingLesson
             ? _buildLoading(isDark)
             : provider.lessonError != null
-                ? _buildError(isDark, provider.lessonError!)
-                : provider.currentLesson == null
-                    ? _buildLoading(isDark)
-                    : _sessionComplete
-                        ? _buildResults(isDark)
-                        : _inPracticeMode
-                            ? _buildPractice(isDark, provider)
-                            : _buildLesson(isDark, provider),
+            ? _buildError(isDark, provider.lessonError!)
+            : provider.currentLesson == null
+            ? _buildLoading(isDark)
+            : _sessionComplete
+            ? _buildResults(isDark)
+            : _inPracticeMode
+            ? _buildPractice(isDark, provider)
+            : _buildLesson(isDark, provider),
       ),
     );
   }
@@ -77,8 +77,11 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
               ),
               borderRadius: BorderRadius.circular(24),
             ),
-            child: const Icon(Icons.auto_awesome_rounded,
-                color: Colors.white, size: 36),
+            child: const Icon(
+              Icons.auto_awesome_rounded,
+              color: Colors.white,
+              size: 36,
+            ),
           ),
           const SizedBox(height: 24),
           Text(
@@ -120,8 +123,11 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.error_outline_rounded,
-                size: 64, color: AppColors.error.withValues(alpha: 0.6)),
+            Icon(
+              Icons.error_outline_rounded,
+              size: 64,
+              color: AppColors.error.withValues(alpha: 0.6),
+            ),
             const SizedBox(height: 16),
             Text(
               'Oops! Something went wrong',
@@ -185,7 +191,9 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 4),
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.xpColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
@@ -213,7 +221,9 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
                 // Topic badge
                 Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 6),
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [Color(0xFF10B981), Color(0xFF059669)],
@@ -266,62 +276,64 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  ...lesson.grammarPoints.map((point) => Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: GlassCard(
-                          padding: const EdgeInsets.all(14),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.accentGreen,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Text(
-                                      point.rule,
-                                      style: GoogleFonts.inter(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              if (point.examples.isNotEmpty) ...[
-                                const SizedBox(height: 8),
+                  ...lesson.grammarPoints.map(
+                    (point) => Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: GlassCard(
+                        padding: const EdgeInsets.all(14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
                                 Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.accentGreen
-                                        .withValues(alpha: 0.08),
-                                    borderRadius:
-                                        BorderRadius.circular(10),
+                                  width: 8,
+                                  height: 8,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.accentGreen,
+                                    shape: BoxShape.circle,
                                   ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
                                   child: Text(
-                                    '✏️ ${point.examples.first}',
+                                    point.rule,
                                     style: GoogleFonts.inter(
-                                      fontSize: 13,
-                                      fontStyle: FontStyle.italic,
-                                      color: isDark
-                                          ? Colors.white70
-                                          : Colors.black54,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
                               ],
+                            ),
+                            if (point.examples.isNotEmpty) ...[
+                              const SizedBox(height: 8),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: AppColors.accentGreen.withValues(
+                                    alpha: 0.08,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  '✏️ ${point.examples.first}',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 13,
+                                    fontStyle: FontStyle.italic,
+                                    color: isDark
+                                        ? Colors.white70
+                                        : Colors.black54,
+                                  ),
+                                ),
+                              ),
                             ],
-                          ),
+                          ],
                         ),
-                      )),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 16),
                 ],
 
@@ -365,8 +377,7 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     ex.sentence,
@@ -389,10 +400,7 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
                                 ],
                               ),
                             ),
-                            TtsControls(
-                              text: ex.sentence,
-                              compact: true,
-                            ),
+                            TtsControls(text: ex.sentence, compact: true),
                           ],
                         ),
                       ),
@@ -412,27 +420,27 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  ...lesson.commonMistakes.map((m) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text('❌ ', style: TextStyle(fontSize: 14)),
-                            Expanded(
-                              child: Text(
-                                m,
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  height: 1.4,
-                                  color: isDark
-                                      ? Colors.white70
-                                      : Colors.black87,
-                                ),
+                  ...lesson.commonMistakes.map(
+                    (m) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('❌ ', style: TextStyle(fontSize: 14)),
+                          Expanded(
+                            child: Text(
+                              m,
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                height: 1.4,
+                                color: isDark ? Colors.white70 : Colors.black87,
                               ),
                             ),
-                          ],
-                        ),
-                      )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 16),
                 ],
 
@@ -447,27 +455,27 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  ...lesson.tips.map((tip) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text('✅ ', style: TextStyle(fontSize: 14)),
-                            Expanded(
-                              child: Text(
-                                tip,
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  height: 1.4,
-                                  color: isDark
-                                      ? Colors.white70
-                                      : Colors.black87,
-                                ),
+                  ...lesson.tips.map(
+                    (tip) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('✅ ', style: TextStyle(fontSize: 14)),
+                          Expanded(
+                            child: Text(
+                              tip,
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                height: 1.4,
+                                color: isDark ? Colors.white70 : Colors.black87,
                               ),
                             ),
-                          ],
-                        ),
-                      )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
                 const SizedBox(height: 32),
 
@@ -479,9 +487,11 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
                     onPressed: lesson.exercises.isEmpty
                         ? null
                         : () => setState(() => _inPracticeMode = true),
-                    icon: Icon(lesson.exercises.isEmpty
-                        ? Icons.hourglass_empty_rounded
-                        : Icons.play_arrow_rounded),
+                    icon: Icon(
+                      lesson.exercises.isEmpty
+                          ? Icons.hourglass_empty_rounded
+                          : Icons.play_arrow_rounded,
+                    ),
                     label: Text(
                       lesson.exercises.isEmpty
                           ? 'No practice questions available'
@@ -585,17 +595,21 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
 
   void _submitAnswer(String answer, Exercise exercise) {
     final isCorrect =
-        answer.trim().toLowerCase() == exercise.correctAnswer.trim().toLowerCase() ||
-            (exercise.alternateCorrectAnswers?.any(
-                    (a) => a.trim().toLowerCase() == answer.trim().toLowerCase()) ??
-                false);
+        answer.trim().toLowerCase() ==
+            exercise.correctAnswer.trim().toLowerCase() ||
+        (exercise.alternateCorrectAnswers?.any(
+              (a) => a.trim().toLowerCase() == answer.trim().toLowerCase(),
+            ) ??
+            false);
 
     setState(() {
-      _answers.add(_AnswerRecord(
-        userAnswer: answer,
-        isCorrect: isCorrect,
-        exerciseId: exercise.id,
-      ));
+      _answers.add(
+        _AnswerRecord(
+          userAnswer: answer,
+          isCorrect: isCorrect,
+          exerciseId: exercise.id,
+        ),
+      );
       _showFeedback = true;
     });
   }
@@ -617,8 +631,7 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
               context.read<LearningProvider>().clearLesson();
               Navigator.pop(context);
             },
-            child: const Text('Exit',
-                style: TextStyle(color: AppColors.error)),
+            child: const Text('Exit', style: TextStyle(color: AppColors.error)),
           ),
         ],
       ),
@@ -635,10 +648,7 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
 
     // Complete lesson
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      provider.completeLesson(
-        provider.currentLesson?.id ?? '',
-        score,
-      );
+      provider.completeLesson(provider.currentLesson?.id ?? '', score);
     });
 
     return SingleChildScrollView(
@@ -660,9 +670,10 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
               _buildResultStat('Correct', '$correct', AppColors.success),
               _buildResultStat('Wrong', '${total - correct}', AppColors.error),
               _buildResultStat(
-                  'XP Earned',
-                  '+${_answers.where((a) => a.isCorrect).length * 10}',
-                  AppColors.xpColor),
+                'XP Earned',
+                '+${_answers.where((a) => a.isCorrect).length * 10}',
+                AppColors.xpColor,
+              ),
             ],
           ),
           const SizedBox(height: 32),
@@ -707,13 +718,7 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
             color: color,
           ),
         ),
-        Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            color: Colors.grey,
-          ),
-        ),
+        Text(label, style: GoogleFonts.inter(fontSize: 13, color: Colors.grey)),
       ],
     );
   }

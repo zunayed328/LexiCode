@@ -29,7 +29,8 @@ class IntermediateDashboard extends StatelessWidget {
             SliverToBoxAdapter(child: _buildAppBar(context, isDark)),
             SliverToBoxAdapter(child: _buildDailySuggestion(isDark)),
             SliverToBoxAdapter(
-                child: _buildSectionTitle('Practice Categories', isDark)),
+              child: _buildSectionTitle('Practice Categories', isDark),
+            ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               sliver: SliverGrid.count(
@@ -42,73 +43,97 @@ class IntermediateDashboard extends StatelessWidget {
                     title: 'Grammar\nPractice',
                     subtitle: 'MCQ & rules',
                     icon: Icons.check_circle_outline_rounded,
-                    gradient: const [Color(0xFF3B82F6), Color(0xFF2563EB)], // Blue
+                    gradient: const [
+                      Color(0xFF3B82F6),
+                      Color(0xFF2563EB),
+                    ], // Blue
                     timeEstimate: '10 min',
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => const McqPracticeScreen()),
+                        builder: (_) => const McqPracticeScreen(),
+                      ),
                     ),
                   ),
                   _PracticeCard(
                     title: 'Fill in the\nBlanks',
                     subtitle: 'Contextual vocab',
                     icon: Icons.text_fields_rounded,
-                    gradient: const [Color(0xFF14B8A6), Color(0xFF0D9488)], // Teal
+                    gradient: const [
+                      Color(0xFF14B8A6),
+                      Color(0xFF0D9488),
+                    ], // Teal
                     timeEstimate: '10 min',
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => const FillBlanksScreen()),
+                        builder: (_) => const FillBlanksScreen(),
+                      ),
                     ),
                   ),
                   _PracticeCard(
                     title: 'Story\nReading',
                     subtitle: 'Interactive mysteries & adventure',
                     icon: Icons.auto_stories_rounded,
-                    gradient: const [Color(0xFF10B981), Color(0xFF059669)], // Green
+                    gradient: const [
+                      Color(0xFF10B981),
+                      Color(0xFF059669),
+                    ], // Green
                     timeEstimate: '15 min',
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => const StoryPracticeScreen()),
+                        builder: (_) => const StoryPracticeScreen(),
+                      ),
                     ),
                   ),
                   _PracticeCard(
                     title: 'Article\nReading',
                     subtitle: 'Science, history & culture',
                     icon: Icons.article_rounded,
-                    gradient: const [Color(0xFFF97316), Color(0xFFEA580C)], // Orange
+                    gradient: const [
+                      Color(0xFFF97316),
+                      Color(0xFFEA580C),
+                    ], // Orange
                     timeEstimate: '15 min',
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => const ReadingPracticeScreen()),
+                        builder: (_) => const ReadingPracticeScreen(),
+                      ),
                     ),
                   ),
                   _PracticeCard(
                     title: 'Writing\nLab',
                     subtitle: 'AI-guided writing practice',
                     icon: Icons.edit_note_rounded,
-                    gradient: const [Color(0xFFEC4899), Color(0xFFDB2777)], // Pink
+                    gradient: const [
+                      Color(0xFFEC4899),
+                      Color(0xFFDB2777),
+                    ], // Pink
                     timeEstimate: '20 min',
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => const WritingPracticeScreen()),
+                        builder: (_) => const WritingPracticeScreen(),
+                      ),
                     ),
                   ),
                   _PracticeCard(
                     title: 'Pronunciation\nDrill',
                     subtitle: 'Intonation & tongue twisters',
                     icon: Icons.record_voice_over_rounded,
-                    gradient: const [Color(0xFF8B5CF6), Color(0xFF7C3AED)], // Purple
+                    gradient: const [
+                      Color(0xFF8B5CF6),
+                      Color(0xFF7C3AED),
+                    ], // Purple
                     timeEstimate: '10 min',
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => const PronunciationScreen(
-                            mode: PronunciationMode.sentences),
+                          mode: PronunciationMode.sentences,
+                        ),
                       ),
                     ),
                   ),
@@ -116,7 +141,8 @@ class IntermediateDashboard extends StatelessWidget {
               ),
             ),
             SliverToBoxAdapter(
-                child: _buildAdaptiveDifficulty(isDark, progressProvider)),
+              child: _buildAdaptiveDifficulty(isDark, progressProvider),
+            ),
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
         ),
@@ -144,24 +170,33 @@ class IntermediateDashboard extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.trending_up_rounded,
-                color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.trending_up_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Intermediate Level',
-                    style: GoogleFonts.inter(
-                        fontSize: 20, fontWeight: FontWeight.w800)),
-                Text('B1–B2 • Practice & Application',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
-                    )),
+                Text(
+                  'Intermediate Level',
+                  style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  'B1–B2 • Practice & Application',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
               ],
             ),
           ),
@@ -184,20 +219,25 @@ class IntermediateDashboard extends StatelessWidget {
                 color: AppColors.xpColor.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.auto_awesome_rounded,
-                  color: AppColors.xpColor, size: 22),
+              child: const Icon(
+                Icons.auto_awesome_rounded,
+                color: AppColors.xpColor,
+                size: 22,
+              ),
             ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Today's Challenge",
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.xpColor,
-                      )),
+                  Text(
+                    "Today's Challenge",
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.xpColor,
+                    ),
+                  ),
                   Text(
                     'Complete a reading passage and answer 8 comprehension questions',
                     style: GoogleFonts.inter(
@@ -217,20 +257,20 @@ class IntermediateDashboard extends StatelessWidget {
   Widget _buildSectionTitle(String title, bool isDark) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
-      child: Text(title,
-          style: GoogleFonts.inter(
-              fontSize: 18, fontWeight: FontWeight.w700)),
+      child: Text(
+        title,
+        style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+      ),
     );
   }
 
-  Widget _buildAdaptiveDifficulty(
-      bool isDark, ProgressProvider provider) {
+  Widget _buildAdaptiveDifficulty(bool isDark, ProgressProvider provider) {
     final score = provider.overallProgress;
     final difficulty = score >= 0.8
         ? 'Advanced'
         : score >= 0.5
-            ? 'Intermediate'
-            : 'Building Foundation';
+        ? 'Intermediate'
+        : 'Building Foundation';
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -240,26 +280,37 @@ class IntermediateDashboard extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.auto_graph_rounded,
-                    color: AppColors.primary, size: 20),
+                const Icon(
+                  Icons.auto_graph_rounded,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
                 const SizedBox(width: 8),
-                Text('Adaptive Difficulty',
-                    style: GoogleFonts.inter(
-                        fontSize: 16, fontWeight: FontWeight.w700)),
+                Text(
+                  'Adaptive Difficulty',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 const Spacer(),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Text(difficulty,
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      )),
+                  child: Text(
+                    difficulty,
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -269,10 +320,10 @@ class IntermediateDashboard extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: score.clamp(0.0, 1.0),
                 minHeight: 8,
-                backgroundColor:
-                    isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                valueColor:
-                    const AlwaysStoppedAnimation(AppColors.primary),
+                backgroundColor: isDark
+                    ? AppColors.darkBorder
+                    : AppColors.lightBorder,
+                valueColor: const AlwaysStoppedAnimation(AppColors.primary),
               ),
             ),
             const SizedBox(height: 8),
@@ -362,8 +413,7 @@ class _PracticeCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(8),

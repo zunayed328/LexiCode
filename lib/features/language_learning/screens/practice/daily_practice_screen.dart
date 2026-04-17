@@ -39,9 +39,9 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
         DateTime.now(),
         progress,
       );
-      
+
       if (!mounted) return;
-      
+
       final exercises = session.exercises;
       final steps = <_PracticeStep>[];
 
@@ -52,53 +52,65 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
         int mainCount = exercises.length - warmupCount - challengeCount;
 
         if (warmupCount > 0) {
-          steps.add(_PracticeStep(
-            title: 'Warm-up',
-            subtitle: session.warmupText ?? 'Quick vocabulary review',
-            icon: Icons.wb_sunny_rounded,
-            color: const Color(0xFFF59E0B),
-            duration: '${warmupCount * 2} min',
-            type: SessionType.mixedSkills,
-            exercises: exercises.sublist(0, warmupCount),
-          ));
+          steps.add(
+            _PracticeStep(
+              title: 'Warm-up',
+              subtitle: session.warmupText ?? 'Quick vocabulary review',
+              icon: Icons.wb_sunny_rounded,
+              color: const Color(0xFFF59E0B),
+              duration: '${warmupCount * 2} min',
+              type: SessionType.mixedSkills,
+              exercises: exercises.sublist(0, warmupCount),
+            ),
+          );
         }
-        
+
         if (mainCount > 0) {
-          steps.add(_PracticeStep(
-            title: 'Main Practice',
-            subtitle: session.topic ?? 'Core exercises',
-            icon: Icons.fitness_center_rounded,
-            color: const Color(0xFF3B82F6),
-            duration: '${mainCount * 2} min',
-            type: SessionType.grammarPractice,
-            exercises: exercises.sublist(warmupCount, warmupCount + mainCount),
-          ));
+          steps.add(
+            _PracticeStep(
+              title: 'Main Practice',
+              subtitle: session.topic ?? 'Core exercises',
+              icon: Icons.fitness_center_rounded,
+              color: const Color(0xFF3B82F6),
+              duration: '${mainCount * 2} min',
+              type: SessionType.grammarPractice,
+              exercises: exercises.sublist(
+                warmupCount,
+                warmupCount + mainCount,
+              ),
+            ),
+          );
         }
 
         if (challengeCount > 0) {
-          steps.add(_PracticeStep(
-            title: 'Challenge',
-            subtitle: 'Apply what you learned',
-            icon: Icons.bolt_rounded,
-            color: const Color(0xFFEF4444),
-            duration: '${challengeCount * 2} min',
-            type: SessionType.grammarPractice,
-            exercises: exercises.sublist(warmupCount + mainCount),
-          ));
+          steps.add(
+            _PracticeStep(
+              title: 'Challenge',
+              subtitle: 'Apply what you learned',
+              icon: Icons.bolt_rounded,
+              color: const Color(0xFFEF4444),
+              duration: '${challengeCount * 2} min',
+              type: SessionType.grammarPractice,
+              exercises: exercises.sublist(warmupCount + mainCount),
+            ),
+          );
         }
 
         // Add Cooldown reflection if present
-        if (session.cooldownReflection != null && session.cooldownReflection!.isNotEmpty) {
-           steps.add(_PracticeStep(
-            title: 'Cool-down',
-            subtitle: 'Reflection & review',
-            icon: Icons.nightlight_rounded,
-            color: const Color(0xFF8B5CF6),
-            duration: '2 min',
-            type: SessionType.readingPractice,
-            exercises: [],
-            reflectionText: session.cooldownReflection,
-          ));
+        if (session.cooldownReflection != null &&
+            session.cooldownReflection!.isNotEmpty) {
+          steps.add(
+            _PracticeStep(
+              title: 'Cool-down',
+              subtitle: 'Reflection & review',
+              icon: Icons.nightlight_rounded,
+              color: const Color(0xFF8B5CF6),
+              duration: '2 min',
+              type: SessionType.readingPractice,
+              exercises: [],
+              reflectionText: session.cooldownReflection,
+            ),
+          );
         }
       }
 
@@ -221,9 +233,17 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline_rounded, color: AppColors.error, size: 48),
+            const Icon(
+              Icons.error_outline_rounded,
+              color: AppColors.error,
+              size: 48,
+            ),
             const SizedBox(height: 16),
-            Text(_error ?? 'Error', textAlign: TextAlign.center, style: GoogleFonts.inter(color: AppColors.error)),
+            Text(
+              _error ?? 'Error',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(color: AppColors.error),
+            ),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
@@ -242,7 +262,10 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
   }
 
   Widget _buildAppBar(BuildContext context, bool isDark) {
-    int totalTime = _steps.fold<int>(0, (sum, step) => sum + int.parse(step.duration.split(' ')[0]));
+    int totalTime = _steps.fold<int>(
+      0,
+      (sum, step) => sum + int.parse(step.duration.split(' ')[0]),
+    );
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 8, 20, 8),
       child: Row(
@@ -260,24 +283,33 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.today_rounded,
-                color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.today_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Today's Practice",
-                    style: GoogleFonts.inter(
-                        fontSize: 20, fontWeight: FontWeight.w800)),
-                Text('~$totalTime minutes • ${_steps.length} activities',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
-                    )),
+                Text(
+                  "Today's Practice",
+                  style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  '~$totalTime minutes • ${_steps.length} activities',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
               ],
             ),
           ),
@@ -307,10 +339,10 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
                     color: isComplete
                         ? step.color
                         : isActive
-                            ? step.color.withOpacity(0.5)
-                            : (isDark
-                                ? AppColors.darkBorder
-                                : AppColors.lightBorder),
+                        ? step.color.withOpacity(0.5)
+                        : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
                     borderRadius: BorderRadius.circular(3),
                   ),
                 ),
@@ -330,7 +362,7 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
               ),
               const Spacer(),
               Text(
-                  '${_currentStep * 100 ~/ _steps.length}% complete',
+                '${_currentStep * 100 ~/ _steps.length}% complete',
                 style: GoogleFonts.inter(
                   fontSize: 12,
                   color: isDark
@@ -380,25 +412,31 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
               child: Icon(step.icon, color: Colors.white, size: 32),
             ),
             const SizedBox(height: 14),
-            Text(step.title,
-                style: GoogleFonts.inter(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                )),
-            Text(step.subtitle,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  color: Colors.white.withOpacity(0.8),
-                )),
+            Text(
+              step.title,
+              style: GoogleFonts.inter(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              step.subtitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: Colors.white.withOpacity(0.8),
+              ),
+            ),
             const SizedBox(height: 4),
-            Text(step.duration,
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white.withOpacity(0.7),
-                )),
+            Text(
+              step.duration,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Colors.white.withOpacity(0.7),
+              ),
+            ),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
@@ -409,11 +447,16 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
                   backgroundColor: Colors.white,
                   foregroundColor: step.color,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
-                child: Text('Start ${step.title}',
-                    style: GoogleFonts.inter(
-                        fontSize: 16, fontWeight: FontWeight.w700)),
+                child: Text(
+                  'Start ${step.title}',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ),
           ],
@@ -442,8 +485,8 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
                 color: isActive
                     ? step.color.withOpacity(0.3)
                     : isDark
-                        ? AppColors.darkBorder
-                        : AppColors.lightBorder,
+                    ? AppColors.darkBorder
+                    : AppColors.lightBorder,
                 width: isActive ? 2 : 1,
               ),
             ),
@@ -469,32 +512,38 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(step.title,
-                          style: GoogleFonts.inter(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: isComplete
-                                ? (isDark ? Colors.white54 : Colors.black45)
-                                : (isDark ? Colors.white : Colors.black87),
-                          )),
-                      Text(step.subtitle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            color: isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary,
-                          )),
+                      Text(
+                        step.title,
+                        style: GoogleFonts.inter(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: isComplete
+                              ? (isDark ? Colors.white54 : Colors.black45)
+                              : (isDark ? Colors.white : Colors.black87),
+                        ),
+                      ),
+                      Text(
+                        step.subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                Text(step.duration,
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white54 : Colors.black45,
-                    )),
+                Text(
+                  step.duration,
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.white54 : Colors.black45,
+                  ),
+                ),
               ],
             ),
           );
@@ -516,24 +565,33 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
                 color: AppColors.info.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child:
-                  const Icon(Icons.event_rounded, color: AppColors.info, size: 22),
+              child: const Icon(
+                Icons.event_rounded,
+                color: AppColors.info,
+                size: 22,
+              ),
             ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Tomorrow's Preview",
-                      style: GoogleFonts.inter(
-                          fontSize: 14, fontWeight: FontWeight.w600)),
-                  Text('Keep building your streak!',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
-                      )),
+                  Text(
+                    "Tomorrow's Preview",
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    'Keep building your streak!',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -553,29 +611,44 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 StreakCelebration(
-                  streakDays: context.read<ProgressProvider>().userProgress.streak.currentStreak + 1,
+                  streakDays:
+                      context
+                          .read<ProgressProvider>()
+                          .userProgress
+                          .streak
+                          .currentStreak +
+                      1,
                   onDismiss: () {},
                 ),
                 const SizedBox(height: 24),
-                Text('Daily Practice Complete! 🎉',
-                    style: GoogleFonts.inter(
-                        fontSize: 24, fontWeight: FontWeight.w800),
-                    textAlign: TextAlign.center),
+                Text(
+                  'Daily Practice Complete! 🎉',
+                  style: GoogleFonts.inter(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 12),
-                Text('You completed all ${_steps.length} activities today.',
-                    style: GoogleFonts.inter(
-                      fontSize: 15,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
-                    )),
+                Text(
+                  'You completed all ${_steps.length} activities today.',
+                  style: GoogleFonts.inter(
+                    fontSize: 15,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildCompleteStat('+$_xpEarned XP', AppColors.xpColor),
                     _buildCompleteStat('🔥', AppColors.streakColor),
-                    _buildCompleteStat('${_steps.length}/${_steps.length}', AppColors.success),
+                    _buildCompleteStat(
+                      '${_steps.length}/${_steps.length}',
+                      AppColors.success,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 32),
@@ -587,14 +660,17 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFEC4899),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
-                    child: Text('Done',
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        )),
+                    child: Text(
+                      'Done',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -606,12 +682,14 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
   }
 
   Widget _buildCompleteStat(String value, Color color) {
-    return Text(value,
-        style: GoogleFonts.inter(
-          fontSize: 28,
-          fontWeight: FontWeight.w800,
-          color: color,
-        ));
+    return Text(
+      value,
+      style: GoogleFonts.inter(
+        fontSize: 28,
+        fontWeight: FontWeight.w800,
+        color: color,
+      ),
+    );
   }
 }
 
@@ -624,8 +702,13 @@ class _PracticeStep {
   final String? reflectionText;
 
   const _PracticeStep({
-    required this.title, required this.subtitle, required this.duration,
-    required this.icon, required this.color, required this.type,
-    required this.exercises, this.reflectionText,
+    required this.title,
+    required this.subtitle,
+    required this.duration,
+    required this.icon,
+    required this.color,
+    required this.type,
+    required this.exercises,
+    this.reflectionText,
   });
 }

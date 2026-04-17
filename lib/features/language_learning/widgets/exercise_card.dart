@@ -97,7 +97,10 @@ class _ExerciseCardState extends State<ExerciseCard>
       animation: _shakeAnimation,
       builder: (context, child) {
         return Transform.translate(
-          offset: Offset(_shakeAnimation.value * (widget.result?.isCorrect == false ? 1 : 0), 0),
+          offset: Offset(
+            _shakeAnimation.value * (widget.result?.isCorrect == false ? 1 : 0),
+            0,
+          ),
           child: child,
         );
       },
@@ -125,8 +128,11 @@ class _ExerciseCardState extends State<ExerciseCard>
             // Points indicator
             Row(
               children: [
-                Icon(Icons.star_rounded,
-                    size: 16, color: AppColors.xpColor.withValues(alpha: 0.7)),
+                Icon(
+                  Icons.star_rounded,
+                  size: 16,
+                  color: AppColors.xpColor.withValues(alpha: 0.7),
+                ),
                 const SizedBox(width: 4),
                 Text(
                   '${ex.points} XP',
@@ -140,8 +146,10 @@ class _ExerciseCardState extends State<ExerciseCard>
                     ex.difficulty == ExerciseDifficulty.challenging) ...[
                   const SizedBox(width: 12),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.secondary.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(6),
@@ -249,10 +257,8 @@ class _ExerciseCardState extends State<ExerciseCard>
     return Column(
       children: options.map((option) {
         final isSelected = _selectedOption == option;
-        final isCorrect =
-            widget.showFeedback && option == ex.correctAnswer;
-        final isWrong =
-            widget.showFeedback && isSelected && !isCorrect;
+        final isCorrect = widget.showFeedback && option == ex.correctAnswer;
+        final isWrong = widget.showFeedback && isSelected && !isCorrect;
 
         Color bgColor;
         Color borderColor;
@@ -269,8 +275,7 @@ class _ExerciseCardState extends State<ExerciseCard>
           bgColor = isDark
               ? AppColors.darkCard.withValues(alpha: 0.5)
               : Colors.white;
-          borderColor =
-              isDark ? AppColors.darkBorder : AppColors.lightBorder;
+          borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
         }
 
         return Padding(
@@ -295,27 +300,39 @@ class _ExerciseCardState extends State<ExerciseCard>
                       option,
                       style: GoogleFonts.inter(
                         fontSize: 15,
-                        fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.w400,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w400,
                         color: isDark ? Colors.white : AppColors.lightText,
                       ),
                     ),
                   ),
                   if (widget.showFeedback && isCorrect)
-                    const Icon(Icons.check_circle_rounded,
-                        color: AppColors.success, size: 22),
+                    const Icon(
+                      Icons.check_circle_rounded,
+                      color: AppColors.success,
+                      size: 22,
+                    ),
                   if (isWrong)
-                    const Icon(Icons.cancel_rounded,
-                        color: AppColors.error, size: 22),
+                    const Icon(
+                      Icons.cancel_rounded,
+                      color: AppColors.error,
+                      size: 22,
+                    ),
                   if (!widget.showFeedback && isSelected)
-                    Icon(Icons.radio_button_checked_rounded,
-                        color: AppColors.primary, size: 22),
+                    Icon(
+                      Icons.radio_button_checked_rounded,
+                      color: AppColors.primary,
+                      size: 22,
+                    ),
                   if (!widget.showFeedback && !isSelected)
-                    Icon(Icons.radio_button_off_rounded,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
-                        size: 22),
+                    Icon(
+                      Icons.radio_button_off_rounded,
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
+                      size: 22,
+                    ),
                 ],
               ),
             ),
@@ -346,8 +363,7 @@ class _ExerciseCardState extends State<ExerciseCard>
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide:
-                  const BorderSide(color: AppColors.primary, width: 2),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
             ),
             suffixIcon: widget.showFeedback
                 ? Icon(
@@ -373,12 +389,16 @@ class _ExerciseCardState extends State<ExerciseCard>
               color: AppColors.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                  color: AppColors.success.withValues(alpha: 0.3)),
+                color: AppColors.success.withValues(alpha: 0.3),
+              ),
             ),
             child: Row(
               children: [
-                const Icon(Icons.lightbulb_rounded,
-                    color: AppColors.success, size: 18),
+                const Icon(
+                  Icons.lightbulb_rounded,
+                  color: AppColors.success,
+                  size: 18,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -408,17 +428,18 @@ class _ExerciseCardState extends State<ExerciseCard>
           decoration: BoxDecoration(
             color: AppColors.error.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-                color: AppColors.error.withValues(alpha: 0.2)),
+            border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Icon(Icons.error_outline_rounded,
-                      color: AppColors.error.withValues(alpha: 0.7),
-                      size: 18),
+                  Icon(
+                    Icons.error_outline_rounded,
+                    color: AppColors.error.withValues(alpha: 0.7),
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'Find and correct the error:',
@@ -460,8 +481,7 @@ class _ExerciseCardState extends State<ExerciseCard>
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide:
-                  const BorderSide(color: AppColors.primary, width: 2),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
             ),
           ),
         ),
@@ -478,18 +498,18 @@ class _ExerciseCardState extends State<ExerciseCard>
           _hasRecorded
               ? '✅ Recording complete!'
               : _isRecording
-                  ? '🔴 Recording... Tap to stop'
-                  : 'Tap the microphone to start speaking',
+              ? '🔴 Recording... Tap to stop'
+              : 'Tap the microphone to start speaking',
           style: GoogleFonts.inter(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: _hasRecorded
                 ? AppColors.success
                 : _isRecording
-                    ? const Color(0xFFEF4444)
-                    : (isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary),
+                ? const Color(0xFFEF4444)
+                : (isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary),
           ),
         ),
         const SizedBox(height: 24),
@@ -518,10 +538,7 @@ class _ExerciseCardState extends State<ExerciseCard>
               animation: _pulseAnimation,
               builder: (context, child) {
                 final scale = _isRecording ? _pulseAnimation.value : 1.0;
-                return Transform.scale(
-                  scale: scale,
-                  child: child,
-                );
+                return Transform.scale(scale: scale, child: child);
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
@@ -536,27 +553,28 @@ class _ExerciseCardState extends State<ExerciseCard>
                           end: Alignment.bottomRight,
                         )
                       : _isRecording
-                          ? const LinearGradient(
-                              colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            )
-                          : LinearGradient(
-                              colors: [
-                                AppColors.primary,
-                                AppColors.primary.withValues(alpha: 0.8),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
+                      ? const LinearGradient(
+                          colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : LinearGradient(
+                          colors: [
+                            AppColors.primary,
+                            AppColors.primary.withValues(alpha: 0.8),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
                   boxShadow: [
                     BoxShadow(
-                      color: (_isRecording
-                              ? const Color(0xFFEF4444)
-                              : _hasRecorded
+                      color:
+                          (_isRecording
+                                  ? const Color(0xFFEF4444)
+                                  : _hasRecorded
                                   ? const Color(0xFF10B981)
                                   : AppColors.primary)
-                          .withValues(alpha: 0.35),
+                              .withValues(alpha: 0.35),
                       blurRadius: _isRecording ? 24 : 16,
                       spreadRadius: _isRecording ? 4 : 0,
                       offset: const Offset(0, 4),
@@ -567,8 +585,8 @@ class _ExerciseCardState extends State<ExerciseCard>
                   _hasRecorded
                       ? Icons.check_rounded
                       : _isRecording
-                          ? Icons.stop_rounded
-                          : Icons.mic_rounded,
+                      ? Icons.stop_rounded
+                      : Icons.mic_rounded,
                   color: Colors.white,
                   size: 44,
                 ),
@@ -629,8 +647,11 @@ class _ExerciseCardState extends State<ExerciseCard>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.check_circle_rounded,
-                    color: AppColors.success, size: 18),
+                const Icon(
+                  Icons.check_circle_rounded,
+                  color: AppColors.success,
+                  size: 18,
+                ),
                 const SizedBox(width: 10),
                 Text(
                   'Your answer has been recorded',
@@ -675,8 +696,11 @@ class _ExerciseCardState extends State<ExerciseCard>
           onTap: () => setState(() => _showHint = !_showHint),
           child: Row(
             children: [
-              Icon(Icons.lightbulb_outline_rounded,
-                  color: AppColors.warning, size: 18),
+              Icon(
+                Icons.lightbulb_outline_rounded,
+                color: AppColors.warning,
+                size: 18,
+              ),
               const SizedBox(width: 6),
               Text(
                 _showHint ? 'Hide Hint' : 'Show Hint',
@@ -698,7 +722,8 @@ class _ExerciseCardState extends State<ExerciseCard>
               color: AppColors.warning.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                  color: AppColors.warning.withValues(alpha: 0.2)),
+                color: AppColors.warning.withValues(alpha: 0.2),
+              ),
             ),
             child: Text(
               ex.hint!,
@@ -715,7 +740,8 @@ class _ExerciseCardState extends State<ExerciseCard>
   }
 
   Widget _buildSubmitButton(bool isDark) {
-    final hasAnswer = _selectedOption != null ||
+    final hasAnswer =
+        _selectedOption != null ||
         _textController.text.trim().isNotEmpty ||
         _hasRecorded;
 
@@ -733,8 +759,9 @@ class _ExerciseCardState extends State<ExerciseCard>
             : null,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          disabledBackgroundColor:
-              isDark ? AppColors.darkBorder : AppColors.lightBorder,
+          disabledBackgroundColor: isDark
+              ? AppColors.darkBorder
+              : AppColors.lightBorder,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -748,8 +775,8 @@ class _ExerciseCardState extends State<ExerciseCard>
             color: hasAnswer
                 ? Colors.white
                 : (isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary),
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary),
           ),
         ),
       ),

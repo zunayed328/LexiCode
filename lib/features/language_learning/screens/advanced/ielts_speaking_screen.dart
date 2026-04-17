@@ -17,7 +17,7 @@ import 'exam_result_screen.dart';
 
 class IeltsSpeakingScreen extends StatefulWidget {
   final bool isFullExam;
-  
+
   const IeltsSpeakingScreen({super.key, this.isFullExam = false});
 
   @override
@@ -30,7 +30,7 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
   final GeminiLearningService _gemini = GeminiLearningService();
   final TextEditingController _transcriptController = TextEditingController();
   final AudioRecorder _recorder = AudioRecorder();
-  
+
   bool _isLoading = true;
   bool _isEvaluating = false;
   bool _isRecording = false;
@@ -39,12 +39,12 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
   String? _recordingError;
   ExerciseSession? _session;
   int _currentQuestionIndex = 0;
-  
+
   final List<String> _transcripts = [];
   final Color _accentColor = const Color(0xFFEF4444);
 
   late AnimationController _pulseController;
-  
+
   @override
   void initState() {
     super.initState();
@@ -62,7 +62,7 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
     _recorder.dispose();
     super.dispose();
   }
-  
+
   Future<void> _loadSection() async {
     try {
       final progress = context.read<ProgressProvider>().userProgress;
@@ -92,10 +92,10 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
     } else {
       _transcripts.add("No response provided.");
     }
-    
+
     _transcriptController.clear();
     setState(() => _recordingError = null);
-    
+
     if (_currentQuestionIndex < _session!.exercises.length - 1) {
       setState(() => _currentQuestionIndex++);
     } else {
@@ -105,17 +105,24 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
 
   Future<void> _submitSpeaking() async {
     setState(() => _isEvaluating = true);
-    
+
     try {
       final String fullTranscript = _transcripts.join("\n\n");
-      final String fullPrompt = _session!.exercises.map((e) => e.question).join("\n\n");
-      
-      final evaluation = await _gemini.evaluateSpeech(fullTranscript, fullPrompt);
+      final String fullPrompt = _session!.exercises
+          .map((e) => e.question)
+          .join("\n\n");
+
+      final evaluation = await _gemini.evaluateSpeech(
+        fullTranscript,
+        fullPrompt,
+      );
       if (mounted) {
         setState(() => _isEvaluating = false);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => ExamResultScreen(speakingResult: evaluation)),
+          MaterialPageRoute(
+            builder: (_) => ExamResultScreen(speakingResult: evaluation),
+          ),
         );
       }
     } catch (e) {
@@ -143,7 +150,9 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
       // Check microphone permission
       final hasPermission = await _recorder.hasPermission();
       if (!hasPermission) {
-        _showError('Microphone permission denied. Please allow microphone access in your browser/device settings.');
+        _showError(
+          'Microphone permission denied. Please allow microphone access in your browser/device settings.',
+        );
         return;
       }
 
@@ -176,7 +185,7 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
 
       // Stop recording and get the path (blob URL on web, file path on mobile)
       final path = await _recorder.stop();
-      
+
       if (mounted) {
         setState(() {
           _isRecording = false;
@@ -263,7 +272,10 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
         title: const Text('Exit Practice?'),
         content: const Text('Your session progress will be lost.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Continue')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Continue'),
+          ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
@@ -295,11 +307,12 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
       );
     }
 
-    if (_session == null || _session!.exercises.isEmpty) return const Scaffold();
+    if (_session == null || _session!.exercises.isEmpty)
+      return const Scaffold();
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final currentQ = _session!.exercises[_currentQuestionIndex];
-    
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -331,7 +344,9 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
                               style: GoogleFonts.inter(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
-                                color: isDark ? Colors.white : AppColors.lightText,
+                                color: isDark
+                                    ? Colors.white
+                                    : AppColors.lightText,
                               ),
                             ),
                           ],
@@ -339,7 +354,7 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
                       ),
                     ),
                     const SizedBox(height: 32),
-                    
+
                     // Recording area
                     Expanded(
                       child: Center(
@@ -359,7 +374,9 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
                                     return Transform.scale(
                                       scale: scale,
                                       child: AnimatedContainer(
-                                        duration: const Duration(milliseconds: 300),
+                                        duration: const Duration(
+                                          milliseconds: 300,
+                                        ),
                                         width: 100,
                                         height: 100,
                                         decoration: BoxDecoration(
@@ -368,17 +385,22 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
                                               ? LinearGradient(
                                                   colors: [
                                                     _accentColor,
-                                                    _accentColor.withValues(alpha: 0.8),
+                                                    _accentColor.withValues(
+                                                      alpha: 0.8,
+                                                    ),
                                                   ],
                                                 )
                                               : null,
                                           color: _isRecording
                                               ? null
-                                              : _accentColor.withValues(alpha: 0.1),
+                                              : _accentColor.withValues(
+                                                  alpha: 0.1,
+                                                ),
                                           boxShadow: _isRecording
                                               ? [
                                                   BoxShadow(
-                                                    color: _accentColor.withValues(alpha: 0.5),
+                                                    color: _accentColor
+                                                        .withValues(alpha: 0.5),
                                                     blurRadius: 20,
                                                     spreadRadius: 5,
                                                   ),
@@ -433,7 +455,9 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
                                   style: GoogleFonts.inter(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: isDark ? Colors.white70 : Colors.black54,
+                                    color: isDark
+                                        ? Colors.white70
+                                        : Colors.black54,
                                   ),
                                 ),
 
@@ -446,16 +470,23 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
                                     vertical: 10,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: AppColors.error.withValues(alpha: 0.1),
+                                    color: AppColors.error.withValues(
+                                      alpha: 0.1,
+                                    ),
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color: AppColors.error.withValues(alpha: 0.3),
+                                      color: AppColors.error.withValues(
+                                        alpha: 0.3,
+                                      ),
                                     ),
                                   ),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.error_outline,
-                                          color: AppColors.error, size: 18),
+                                      const Icon(
+                                        Icons.error_outline,
+                                        color: AppColors.error,
+                                        size: 18,
+                                      ),
                                       const SizedBox(width: 8),
                                       Expanded(
                                         child: Text(
@@ -474,7 +505,8 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
                               ],
 
                               // Transcript display / edit
-                              if (!_isRecording && !_isTranscribing &&
+                              if (!_isRecording &&
+                                  !_isTranscribing &&
                                   _transcriptController.text.isNotEmpty) ...[
                                 const SizedBox(height: 24),
                                 Container(
@@ -486,7 +518,8 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         mainAxisAlignment:
@@ -561,8 +594,13 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text('Speaking',
-                style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700)),
+            child: Text(
+              'Speaking',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
           Text(
             'Q${_currentQuestionIndex + 1}/${_session!.exercises.length}',
@@ -586,7 +624,7 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
 
   Widget _buildBottomBar() {
     final bool canProceed = !_isEvaluating && !_isRecording && !_isTranscribing;
-    
+
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
       child: SizedBox(
@@ -597,13 +635,28 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
           style: ElevatedButton.styleFrom(
             backgroundColor: _accentColor,
             disabledBackgroundColor: _accentColor.withValues(alpha: 0.5),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
           ),
           child: _isEvaluating
-              ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+              ? const SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
               : Text(
-                  _currentQuestionIndex < _session!.exercises.length - 1 ? 'Next Question' : 'Submit Evaluation',
-                  style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
+                  _currentQuestionIndex < _session!.exercises.length - 1
+                      ? 'Next Question'
+                      : 'Submit Evaluation',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
                 ),
         ),
       ),

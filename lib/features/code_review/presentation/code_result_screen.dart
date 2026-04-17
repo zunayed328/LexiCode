@@ -55,10 +55,12 @@ class _CodeResultScreenState extends State<CodeResultScreen>
       return Tween<Offset>(
         begin: const Offset(0, 0.08),
         end: Offset.zero,
-      ).animate(CurvedAnimation(
-        parent: _staggerController,
-        curve: Interval(start, end, curve: Curves.easeOut),
-      ));
+      ).animate(
+        CurvedAnimation(
+          parent: _staggerController,
+          curve: Interval(start, end, curve: Curves.easeOut),
+        ),
+      );
     });
 
     // Start animation after a short delay for the screen transition
@@ -177,13 +179,19 @@ class _CodeResultScreenState extends State<CodeResultScreen>
                           value: 'diff',
                           child: Row(
                             children: [
-                              const Icon(Icons.compare_arrows_rounded,
-                                  size: 18, color: CodeReviewTheme.textSecondary),
+                              const Icon(
+                                Icons.compare_arrows_rounded,
+                                size: 18,
+                                color: CodeReviewTheme.textSecondary,
+                              ),
                               const SizedBox(width: 10),
-                              Text('View Diff',
-                                  style: GoogleFonts.inter(
-                                      fontSize: 13,
-                                      color: CodeReviewTheme.textPrimary)),
+                              Text(
+                                'View Diff',
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  color: CodeReviewTheme.textPrimary,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -191,13 +199,19 @@ class _CodeResultScreenState extends State<CodeResultScreen>
                           value: 'export',
                           child: Row(
                             children: [
-                              const Icon(Icons.download_rounded,
-                                  size: 18, color: CodeReviewTheme.textSecondary),
+                              const Icon(
+                                Icons.download_rounded,
+                                size: 18,
+                                color: CodeReviewTheme.textSecondary,
+                              ),
                               const SizedBox(width: 10),
-                              Text('Export Report',
-                                  style: GoogleFonts.inter(
-                                      fontSize: 13,
-                                      color: CodeReviewTheme.textPrimary)),
+                              Text(
+                                'Export Report',
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  color: CodeReviewTheme.textPrimary,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -207,9 +221,8 @@ class _CodeResultScreenState extends State<CodeResultScreen>
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => DiffComparisonScreen(
-                                result: widget.result!,
-                              ),
+                              builder: (_) =>
+                                  DiffComparisonScreen(result: widget.result!),
                             ),
                           );
                         }
@@ -233,9 +246,7 @@ class _CodeResultScreenState extends State<CodeResultScreen>
 
       case CodeResultState.error:
         return SafeArea(
-          child: ErrorStateWidget(
-            onRetry: () => Navigator.pop(context),
-          ),
+          child: ErrorStateWidget(onRetry: () => Navigator.pop(context)),
         );
 
       case CodeResultState.empty:
@@ -339,8 +350,9 @@ class _CodeResultScreenState extends State<CodeResultScreen>
                           width: 32,
                           height: 32,
                           decoration: BoxDecoration(
-                            color: CodeReviewTheme.accentWarning
-                                .withValues(alpha: 0.12),
+                            color: CodeReviewTheme.accentWarning.withValues(
+                              alpha: 0.12,
+                            ),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Icon(
@@ -365,8 +377,9 @@ class _CodeResultScreenState extends State<CodeResultScreen>
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: CodeReviewTheme.textMuted
-                                .withValues(alpha: 0.15),
+                            color: CodeReviewTheme.textMuted.withValues(
+                              alpha: 0.15,
+                            ),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -482,10 +495,7 @@ class _CodeResultScreenState extends State<CodeResultScreen>
 
     for (final entry in viewModel.groupedIssues.entries) {
       widgets.add(
-        IssueSectionHeader(
-          severity: entry.key,
-          count: entry.value.length,
-        ),
+        IssueSectionHeader(severity: entry.key, count: entry.value.length),
       );
 
       for (final issue in entry.value) {
@@ -549,8 +559,7 @@ class _CodeResultScreenState extends State<CodeResultScreen>
                   color: CodeReviewTheme.accentPurple.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color:
-                        CodeReviewTheme.accentPurple.withValues(alpha: 0.2),
+                    color: CodeReviewTheme.accentPurple.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Text(
@@ -602,10 +611,7 @@ class _CodeResultScreenState extends State<CodeResultScreen>
           const SizedBox(height: 14),
           ...ratings.entries.map((entry) {
             final label = entry.key
-                .replaceAllMapped(
-                  RegExp(r'([A-Z])'),
-                  (m) => ' ${m[1]}',
-                )
+                .replaceAllMapped(RegExp(r'([A-Z])'), (m) => ' ${m[1]}')
                 .trim();
             final capitalizedLabel =
                 label[0].toUpperCase() + label.substring(1);
@@ -613,8 +619,8 @@ class _CodeResultScreenState extends State<CodeResultScreen>
             final color = value >= 80
                 ? CodeReviewTheme.accentSuccess
                 : value >= 60
-                    ? CodeReviewTheme.accentWarning
-                    : CodeReviewTheme.accentError;
+                ? CodeReviewTheme.accentWarning
+                : CodeReviewTheme.accentError;
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -647,8 +653,9 @@ class _CodeResultScreenState extends State<CodeResultScreen>
                     borderRadius: BorderRadius.circular(4),
                     child: LinearProgressIndicator(
                       value: value / 100,
-                      backgroundColor:
-                          CodeReviewTheme.textMuted.withValues(alpha: 0.12),
+                      backgroundColor: CodeReviewTheme.textMuted.withValues(
+                        alpha: 0.12,
+                      ),
                       valueColor: AlwaysStoppedAnimation(color),
                       minHeight: 6,
                     ),

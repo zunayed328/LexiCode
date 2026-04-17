@@ -35,12 +35,12 @@ class _FillBlanksScreenState extends State<FillBlanksScreen> {
     final progress = context.read<ProgressProvider>().userProgress;
     _provider = context.read<PracticeProvider>();
     await _provider.startSession(
-          SessionType.grammarPractice,
-          progress.currentLevel,
-          progress,
-          focusTopic: 'Fill in the blanks context vocabulary',
-          questionCount: 10,
-        );
+      SessionType.grammarPractice,
+      progress.currentLevel,
+      progress,
+      focusTopic: 'Fill in the blanks context vocabulary',
+      questionCount: 10,
+    );
     if (mounted) {
       setState(() => _initialized = true);
     }
@@ -133,7 +133,7 @@ class _FillBlanksScreenState extends State<FillBlanksScreen> {
     final score = provider.totalExercises > 0
         ? (provider.correctCount / provider.totalExercises * 100)
         : 0.0;
-    
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -145,7 +145,8 @@ class _FillBlanksScreenState extends State<FillBlanksScreen> {
                 score: score,
                 maxScore: 100,
                 label: 'Fill in the Blanks',
-                subtitle: '${provider.correctCount}/${provider.totalExercises} correct',
+                subtitle:
+                    '${provider.correctCount}/${provider.totalExercises} correct',
               ),
               const SizedBox(height: 32),
               SizedBox(
@@ -162,7 +163,14 @@ class _FillBlanksScreenState extends State<FillBlanksScreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: Text('Done', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+                  child: Text(
+                    'Done',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ],

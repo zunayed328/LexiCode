@@ -12,7 +12,7 @@ import 'exam_result_screen.dart';
 
 class IeltsReadingScreen extends StatefulWidget {
   final bool isFullExam;
-  
+
   const IeltsReadingScreen({super.key, this.isFullExam = false});
 
   @override
@@ -24,18 +24,18 @@ class _IeltsReadingScreenState extends State<IeltsReadingScreen> {
   bool _isLoading = true;
   String? _error;
   ExerciseSession? _session;
-  
+
   int _currentQuestionIndex = 0;
   final List<ExerciseResult> _results = [];
   final Color _accentColor = const Color(0xFF10B981);
   String _selectedAnswer = '';
-  
+
   @override
   void initState() {
     super.initState();
     _loadSection();
   }
-  
+
   Future<void> _loadSection() async {
     try {
       final progress = context.read<ProgressProvider>().userProgress;
@@ -65,20 +65,24 @@ class _IeltsReadingScreenState extends State<IeltsReadingScreen> {
 
   void _nextQuestion() {
     if (_session == null) return;
-    
+
     final currentQ = _session!.exercises[_currentQuestionIndex];
-    final isCorrect = _selectedAnswer.trim().toLowerCase() == currentQ.correctAnswer.trim().toLowerCase();
-    
-    _results.add(ExerciseResult(
-      exerciseId: currentQ.id,
-      userAnswer: _selectedAnswer,
-      isCorrect: isCorrect,
-      scoreEarned: isCorrect ? currentQ.points : 0,
-      feedback: currentQ.explanation,
-    ));
-    
+    final isCorrect =
+        _selectedAnswer.trim().toLowerCase() ==
+        currentQ.correctAnswer.trim().toLowerCase();
+
+    _results.add(
+      ExerciseResult(
+        exerciseId: currentQ.id,
+        userAnswer: _selectedAnswer,
+        isCorrect: isCorrect,
+        scoreEarned: isCorrect ? currentQ.points : 0,
+        feedback: currentQ.explanation,
+      ),
+    );
+
     _selectedAnswer = '';
-    
+
     if (_currentQuestionIndex < _session!.exercises.length - 1) {
       setState(() => _currentQuestionIndex++);
     } else {
@@ -100,7 +104,10 @@ class _IeltsReadingScreenState extends State<IeltsReadingScreen> {
         title: const Text('Exit Practice?'),
         content: const Text('Your session progress will be lost.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Continue')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Continue'),
+          ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
@@ -132,10 +139,11 @@ class _IeltsReadingScreenState extends State<IeltsReadingScreen> {
       );
     }
 
-    if (_session == null || _session!.exercises.isEmpty) return const Scaffold();
+    if (_session == null || _session!.exercises.isEmpty)
+      return const Scaffold();
 
     final currentQ = _session!.exercises[_currentQuestionIndex];
-    
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -146,8 +154,15 @@ class _IeltsReadingScreenState extends State<IeltsReadingScreen> {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    if (_session!.warmupText != null && _currentQuestionIndex == 0) ...[
-                      Text(_session!.warmupText!, style: GoogleFonts.inter(fontSize: 14, color: Colors.grey)),
+                    if (_session!.warmupText != null &&
+                        _currentQuestionIndex == 0) ...[
+                      Text(
+                        _session!.warmupText!,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
                       const SizedBox(height: 16),
                     ],
                     ExerciseCard(
@@ -188,8 +203,13 @@ class _IeltsReadingScreenState extends State<IeltsReadingScreen> {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text('Reading',
-                style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700)),
+            child: Text(
+              'Reading',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
           Text(
             'Q${_currentQuestionIndex + 1}/${_session!.exercises.length}',
@@ -222,11 +242,19 @@ class _IeltsReadingScreenState extends State<IeltsReadingScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: _accentColor,
             disabledBackgroundColor: _accentColor.withValues(alpha: 0.5),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
           ),
           child: Text(
-            _currentQuestionIndex < _session!.exercises.length - 1 ? 'Next Question' : 'Submit Section',
-            style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
+            _currentQuestionIndex < _session!.exercises.length - 1
+                ? 'Next Question'
+                : 'Submit Section',
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
           ),
         ),
       ),

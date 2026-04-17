@@ -39,9 +39,10 @@ class _GradientButtonState extends State<GradientButton>
       duration: const Duration(milliseconds: 150),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -56,10 +57,8 @@ class _GradientButtonState extends State<GradientButton>
 
     return AnimatedBuilder(
       animation: _scaleAnimation,
-      builder: (context, child) => Transform.scale(
-        scale: _scaleAnimation.value,
-        child: child,
-      ),
+      builder: (context, child) =>
+          Transform.scale(scale: _scaleAnimation.value, child: child),
       child: GestureDetector(
         onTapDown: (_) => _controller.forward(),
         onTapUp: (_) {

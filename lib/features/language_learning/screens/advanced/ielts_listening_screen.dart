@@ -11,7 +11,7 @@ import 'exam_result_screen.dart';
 
 class IeltsListeningScreen extends StatefulWidget {
   final bool isFullExam;
-  
+
   const IeltsListeningScreen({super.key, this.isFullExam = false});
 
   @override
@@ -23,7 +23,7 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
   bool _isLoading = true;
   String? _error;
   ExerciseSession? _session;
-  
+
   int _currentQuestionIndex = 0;
   final List<ExerciseResult> _results = [];
   final Color _accentColor = const Color(0xFF3B82F6);
@@ -32,7 +32,7 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
   String? _selectedOption;
   final TextEditingController _answerController = TextEditingController();
   bool _showFeedback = false;
-  
+
   @override
   void initState() {
     super.initState();
@@ -50,7 +50,7 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
   void _onTextChanged() {
     setState(() {});
   }
-  
+
   Future<void> _loadSection() async {
     try {
       final progress = context.read<ProgressProvider>().userProgress;
@@ -97,16 +97,19 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
     final currentQ = _session!.exercises[_currentQuestionIndex];
     final answer = _currentAnswer;
 
-    final isCorrect = answer.trim().toLowerCase() ==
+    final isCorrect =
+        answer.trim().toLowerCase() ==
         currentQ.correctAnswer.trim().toLowerCase();
 
-    _results.add(ExerciseResult(
-      exerciseId: currentQ.id,
-      userAnswer: answer,
-      isCorrect: isCorrect,
-      scoreEarned: isCorrect ? currentQ.points : 0,
-      feedback: currentQ.explanation,
-    ));
+    _results.add(
+      ExerciseResult(
+        exerciseId: currentQ.id,
+        userAnswer: answer,
+        isCorrect: isCorrect,
+        scoreEarned: isCorrect ? currentQ.points : 0,
+        feedback: currentQ.explanation,
+      ),
+    );
 
     setState(() => _showFeedback = true);
   }
@@ -122,7 +125,7 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
     _selectedOption = null;
     _answerController.clear();
     _showFeedback = false;
-    
+
     if (_currentQuestionIndex < _session!.exercises.length - 1) {
       setState(() => _currentQuestionIndex++);
     } else {
@@ -144,7 +147,10 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
         title: const Text('Exit Practice?'),
         content: const Text('Your session progress will be lost.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Continue')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Continue'),
+          ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
@@ -178,10 +184,11 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
       );
     }
 
-    if (_session == null || _session!.exercises.isEmpty) return const Scaffold();
+    if (_session == null || _session!.exercises.isEmpty)
+      return const Scaffold();
 
     final currentQ = _session!.exercises[_currentQuestionIndex];
-    
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -194,15 +201,24 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Warmup text
-                    if (_session!.warmupText != null && _currentQuestionIndex == 0) ...[
-                      Text(_session!.warmupText!,
-                          style: GoogleFonts.inter(fontSize: 14, color: Colors.grey)),
+                    if (_session!.warmupText != null &&
+                        _currentQuestionIndex == 0) ...[
+                      Text(
+                        _session!.warmupText!,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
                       const SizedBox(height: 16),
                     ],
 
                     // Question badge
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         gradient: AppColors.primaryGradient,
                         borderRadius: BorderRadius.circular(20),
@@ -210,7 +226,9 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
                       child: Text(
                         'Question ${_currentQuestionIndex + 1} of ${_session!.exercises.length}',
                         style: GoogleFonts.inter(
-                          fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -223,20 +241,27 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
                     // Points
                     Row(
                       children: [
-                        Icon(Icons.star_rounded, size: 16,
-                            color: AppColors.xpColor.withValues(alpha: 0.7)),
+                        Icon(
+                          Icons.star_rounded,
+                          size: 16,
+                          color: AppColors.xpColor.withValues(alpha: 0.7),
+                        ),
                         const SizedBox(width: 4),
-                        Text('${currentQ.points} XP',
-                            style: GoogleFonts.inter(
-                              fontSize: 13, fontWeight: FontWeight.w600,
-                              color: AppColors.xpColor,
-                            )),
+                        Text(
+                          '${currentQ.points} XP',
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.xpColor,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 20),
 
                     // Context / audio transcript
-                    if (currentQ.audioText != null && currentQ.audioText!.isNotEmpty) ...[
+                    if (currentQ.audioText != null &&
+                        currentQ.audioText!.isNotEmpty) ...[
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(16),
@@ -246,7 +271,9 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
                               : AppColors.lightBackground,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                            color: isDark
+                                ? AppColors.darkBorder
+                                : AppColors.lightBorder,
                           ),
                         ),
                         child: Column(
@@ -254,20 +281,29 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.headphones_rounded,
-                                    color: _accentColor, size: 16),
+                                Icon(
+                                  Icons.headphones_rounded,
+                                  color: _accentColor,
+                                  size: 16,
+                                ),
                                 const SizedBox(width: 6),
-                                Text('Audio Transcript',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: _accentColor,
-                                    )),
+                                Text(
+                                  'Audio Transcript',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: _accentColor,
+                                  ),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 8),
-                            _buildRichQuestion(currentQ.audioText!, isDark,
-                                fontSize: 14, italic: true),
+                            _buildRichQuestion(
+                              currentQ.audioText!,
+                              isDark,
+                              fontSize: 14,
+                              italic: true,
+                            ),
                           ],
                         ),
                       ),
@@ -275,7 +311,8 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
                     ],
 
                     // Context passage
-                    if (currentQ.context != null && currentQ.context!.isNotEmpty) ...[
+                    if (currentQ.context != null &&
+                        currentQ.context!.isNotEmpty) ...[
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(16),
@@ -285,11 +322,17 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
                               : AppColors.lightBackground,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                            color: isDark
+                                ? AppColors.darkBorder
+                                : AppColors.lightBorder,
                           ),
                         ),
-                        child: _buildRichQuestion(currentQ.context!, isDark,
-                            fontSize: 14, italic: true),
+                        child: _buildRichQuestion(
+                          currentQ.context!,
+                          isDark,
+                          fontSize: 14,
+                          italic: true,
+                        ),
                       ),
                       const SizedBox(height: 20),
                     ],
@@ -313,8 +356,12 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
   }
 
   /// Builds rich text that renders **bold** markdown inline
-  Widget _buildRichQuestion(String text, bool isDark,
-      {double fontSize = 20, bool italic = false}) {
+  Widget _buildRichQuestion(
+    String text,
+    bool isDark, {
+    double fontSize = 20,
+    bool italic = false,
+  }) {
     // Parse **bold** markers into TextSpans
     final spans = <TextSpan>[];
     final regex = RegExp(r'\*\*(.*?)\*\*');
@@ -323,8 +370,40 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
     for (final match in regex.allMatches(text)) {
       // Text before the match
       if (match.start > lastEnd) {
-        spans.add(TextSpan(
-          text: text.substring(lastEnd, match.start),
+        spans.add(
+          TextSpan(
+            text: text.substring(lastEnd, match.start),
+            style: GoogleFonts.inter(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w500,
+              height: 1.4,
+              fontStyle: italic ? FontStyle.italic : FontStyle.normal,
+              color: isDark ? Colors.white : AppColors.lightText,
+            ),
+          ),
+        );
+      }
+      // Bold text
+      spans.add(
+        TextSpan(
+          text: match.group(1),
+          style: GoogleFonts.inter(
+            fontSize: fontSize,
+            fontWeight: FontWeight.w800,
+            height: 1.4,
+            fontStyle: italic ? FontStyle.italic : FontStyle.normal,
+            color: isDark ? Colors.white : AppColors.lightText,
+          ),
+        ),
+      );
+      lastEnd = match.end;
+    }
+
+    // Remaining text after the last match
+    if (lastEnd < text.length) {
+      spans.add(
+        TextSpan(
+          text: text.substring(lastEnd),
           style: GoogleFonts.inter(
             fontSize: fontSize,
             fontWeight: FontWeight.w500,
@@ -332,34 +411,8 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
             fontStyle: italic ? FontStyle.italic : FontStyle.normal,
             color: isDark ? Colors.white : AppColors.lightText,
           ),
-        ));
-      }
-      // Bold text
-      spans.add(TextSpan(
-        text: match.group(1),
-        style: GoogleFonts.inter(
-          fontSize: fontSize,
-          fontWeight: FontWeight.w800,
-          height: 1.4,
-          fontStyle: italic ? FontStyle.italic : FontStyle.normal,
-          color: isDark ? Colors.white : AppColors.lightText,
         ),
-      ));
-      lastEnd = match.end;
-    }
-
-    // Remaining text after the last match
-    if (lastEnd < text.length) {
-      spans.add(TextSpan(
-        text: text.substring(lastEnd),
-        style: GoogleFonts.inter(
-          fontSize: fontSize,
-          fontWeight: FontWeight.w500,
-          height: 1.4,
-          fontStyle: italic ? FontStyle.italic : FontStyle.normal,
-          color: isDark ? Colors.white : AppColors.lightText,
-        ),
-      ));
+      );
     }
 
     return RichText(text: TextSpan(children: spans));
@@ -387,7 +440,10 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
         ),
         filled: true,
         fillColor: isDark ? AppColors.darkCard : Colors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(
@@ -404,8 +460,11 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
             color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
           ),
         ),
-        prefixIcon: Icon(Icons.edit_rounded,
-            color: isDark ? Colors.white38 : Colors.black38, size: 20),
+        prefixIcon: Icon(
+          Icons.edit_rounded,
+          color: isDark ? Colors.white38 : Colors.black38,
+          size: 20,
+        ),
         suffixIcon: _showFeedback && _results.isNotEmpty
             ? Icon(
                 _results.last.isCorrect
@@ -465,28 +524,43 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(option,
-                        style: GoogleFonts.inter(
-                          fontSize: 15,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                          color: isDark ? Colors.white : AppColors.lightText,
-                        )),
+                    child: Text(
+                      option,
+                      style: GoogleFonts.inter(
+                        fontSize: 15,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                        color: isDark ? Colors.white : AppColors.lightText,
+                      ),
+                    ),
                   ),
                   if (_showFeedback && isCorrect)
-                    const Icon(Icons.check_circle_rounded,
-                        color: AppColors.success, size: 22),
+                    const Icon(
+                      Icons.check_circle_rounded,
+                      color: AppColors.success,
+                      size: 22,
+                    ),
                   if (isWrong)
-                    const Icon(Icons.cancel_rounded,
-                        color: AppColors.error, size: 22),
+                    const Icon(
+                      Icons.cancel_rounded,
+                      color: AppColors.error,
+                      size: 22,
+                    ),
                   if (!_showFeedback && isSelected)
-                    Icon(Icons.radio_button_checked_rounded,
-                        color: _accentColor, size: 22),
+                    Icon(
+                      Icons.radio_button_checked_rounded,
+                      color: _accentColor,
+                      size: 22,
+                    ),
                   if (!_showFeedback && !isSelected)
-                    Icon(Icons.radio_button_off_rounded,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
-                        size: 22),
+                    Icon(
+                      Icons.radio_button_off_rounded,
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
+                      size: 22,
+                    ),
                 ],
               ),
             ),
@@ -534,12 +608,14 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
               ),
               if (result.isCorrect) ...[
                 const Spacer(),
-                Text('+${result.scoreEarned} XP',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.xpColor,
-                    )),
+                Text(
+                  '+${result.scoreEarned} XP',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.xpColor,
+                  ),
+                ),
               ],
             ],
           ),
@@ -554,8 +630,11 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.lightbulb_rounded,
-                      color: AppColors.success, size: 18),
+                  const Icon(
+                    Icons.lightbulb_rounded,
+                    color: AppColors.success,
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -573,12 +652,14 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
           ],
           if (q.explanation.isNotEmpty) ...[
             const SizedBox(height: 12),
-            Text(q.explanation,
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  height: 1.5,
-                  color: isDark ? Colors.white70 : Colors.black87,
-                )),
+            Text(
+              q.explanation,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                height: 1.5,
+                color: isDark ? Colors.white70 : Colors.black87,
+              ),
+            ),
           ],
         ],
       ),
@@ -601,12 +682,21 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
               color: _accentColor.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(Icons.headphones_rounded, color: _accentColor, size: 18),
+            child: Icon(
+              Icons.headphones_rounded,
+              color: _accentColor,
+              size: 18,
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text('Listening',
-                style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700)),
+            child: Text(
+              'Listening',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
           Text(
             'Q${_currentQuestionIndex + 1}/${_session!.exercises.length}',
@@ -648,12 +738,17 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: _showFeedback ? AppColors.success : _accentColor,
             disabledBackgroundColor: _accentColor.withValues(alpha: 0.3),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
           ),
           child: Text(
             buttonLabel,
             style: GoogleFonts.inter(
-                fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
           ),
         ),
       ),

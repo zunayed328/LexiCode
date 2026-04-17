@@ -4,6 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 /// Authentication service with real Firebase integration.
+///
+/// Manages secure credential provisioning, token lifecycle, and authentication states
+/// across native Email/Password schemas and Google Sign-in OAuth flows.
+/// Features built-in email verification roadblocks and password resetting utilities.
 class AuthService {
   static const String _isLoggedInKey = 'is_logged_in';
   static const String _userNameKey = 'user_name';
@@ -20,10 +24,10 @@ class AuthService {
     try {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      
+
       await credential.user?.updateDisplayName(name);
       await credential.user?.sendEmailVerification();
-      
+
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_isLoggedInKey, true);
 
@@ -40,9 +44,11 @@ class AuthService {
     required String password,
   }) async {
     try {
-      final credential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-          
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
       final user = credential.user;
       if (user != null && !user.emailVerified) {
         await FirebaseAuth.instance.signOut();
@@ -53,9 +59,9 @@ class AuthService {
       await prefs.setBool(_isLoggedInKey, true);
 
       return _buildUserMap(
-        user!.uid, 
-        user.displayName ?? 'Developer', 
-        user.email ?? email, 
+        user!.uid,
+        user.displayName ?? 'Developer',
+        user.email ?? email,
         user.photoURL,
       );
     } catch (e) {
@@ -68,26 +74,28 @@ class AuthService {
   Future<Map<String, dynamic>> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) throw const AuthException('Google sign-in cancelled');
-      
+      if (googleUser == null)
+        throw const AuthException('Google sign-in cancelled');
+
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      
-      final userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-          
+
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
+
       final user = userCredential.user;
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_isLoggedInKey, true);
 
       return _buildUserMap(
-        user!.uid, 
-        user.displayName ?? 'Google User', 
-        user.email ?? '', 
+        user!.uid,
+        user.displayName ?? 'Google User',
+        user.email ?? '',
         user.photoURL,
       );
     } catch (e) {
@@ -111,8 +119,10 @@ class AuthService {
   /// Temporarily login, resend verification email, and logout.
   Future<void> resendVerificationEmail(String email, String password) async {
     try {
-      final credential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       await credential.user?.sendEmailVerification();
       await FirebaseAuth.instance.signOut();
     } catch (e) {
@@ -149,10 +159,14 @@ class AuthService {
   }) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user == null || user.email == null) throw const AuthException('User not logged in');
+      if (user == null || user.email == null)
+        throw const AuthException('User not logged in');
 
       // Re-authenticate
-      final cred = EmailAuthProvider.credential(email: user.email!, password: currentPassword);
+      final cred = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
       await user.reauthenticateWithCredential(cred);
 
       await user.updatePassword(newPassword);
@@ -204,7 +218,11 @@ class AuthService {
 
   /// Build the Firestore user document map.
   Map<String, dynamic> _buildUserMap(
-      String uid, String name, String email, String? photoURL) {
+    String uid,
+    String name,
+    String email,
+    String? photoURL,
+  ) {
     return {
       'uid': uid,
       'name': name,

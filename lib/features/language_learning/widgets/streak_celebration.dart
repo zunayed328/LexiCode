@@ -81,8 +81,7 @@ class _StreakCelebrationState extends State<StreakCelebration>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('🔥',
-                          style: TextStyle(fontSize: 36)),
+                      const Text('🔥', style: TextStyle(fontSize: 36)),
                       Text(
                         '${widget.streakDays}',
                         style: GoogleFonts.inter(
@@ -106,10 +105,7 @@ class _StreakCelebrationState extends State<StreakCelebration>
                 const SizedBox(height: 4),
                 Text(
                   'Keep it going! 💪',
-                  style: GoogleFonts.inter(
-                    fontSize: 15,
-                    color: Colors.grey,
-                  ),
+                  style: GoogleFonts.inter(fontSize: 15, color: Colors.grey),
                 ),
               ],
             ),

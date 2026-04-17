@@ -65,15 +65,39 @@ class _PersonalizedPlanScreenState extends State<PersonalizedPlanScreen> {
               SliverToBoxAdapter(child: _buildError(context, isDark))
             else if (_suggestion != null) ...[
               SliverToBoxAdapter(child: _buildHero(isDark, _suggestion!)),
-              SliverToBoxAdapter(child: _buildSectionTitle('Morning Focus', isDark)),
-              SliverToBoxAdapter(child: _buildActivityCard(isDark, _suggestion!.mainActivity, AppColors.primary)),
+              SliverToBoxAdapter(
+                child: _buildSectionTitle('Morning Focus', isDark),
+              ),
+              SliverToBoxAdapter(
+                child: _buildActivityCard(
+                  isDark,
+                  _suggestion!.mainActivity,
+                  AppColors.primary,
+                ),
+              ),
               if (_suggestion!.secondaryActivity != null) ...[
-                SliverToBoxAdapter(child: _buildSectionTitle('Afternoon Continuation', isDark)),
-                SliverToBoxAdapter(child: _buildActivityCard(isDark, _suggestion!.secondaryActivity!, AppColors.info)),
+                SliverToBoxAdapter(
+                  child: _buildSectionTitle('Afternoon Continuation', isDark),
+                ),
+                SliverToBoxAdapter(
+                  child: _buildActivityCard(
+                    isDark,
+                    _suggestion!.secondaryActivity!,
+                    AppColors.info,
+                  ),
+                ),
               ],
               if (_suggestion!.bonusActivity != null) ...[
-                SliverToBoxAdapter(child: _buildSectionTitle('Evening Bonus (Optional)', isDark)),
-                SliverToBoxAdapter(child: _buildActivityCard(isDark, _suggestion!.bonusActivity!, AppColors.secondary)),
+                SliverToBoxAdapter(
+                  child: _buildSectionTitle('Evening Bonus (Optional)', isDark),
+                ),
+                SliverToBoxAdapter(
+                  child: _buildActivityCard(
+                    isDark,
+                    _suggestion!.bonusActivity!,
+                    AppColors.secondary,
+                  ),
+                ),
               ],
             ],
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
@@ -101,20 +125,33 @@ class _PersonalizedPlanScreenState extends State<PersonalizedPlanScreen> {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.person_rounded, color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.person_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Personalized Plan',
-                    style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800)),
-                Text('Your daily AI curriculum',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
-                    )),
+                Text(
+                  'Personalized Plan',
+                  style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  'Your daily AI curriculum',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
               ],
             ),
           ),
@@ -131,11 +168,13 @@ class _PersonalizedPlanScreenState extends State<PersonalizedPlanScreen> {
           children: [
             const CircularProgressIndicator(color: Color(0xFF8B5CF6)),
             const SizedBox(height: 20),
-            Text('Curating your daily plan...',
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  color: isDark ? Colors.white70 : Colors.black54,
-                )),
+            Text(
+              'Curating your daily plan...',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                color: isDark ? Colors.white70 : Colors.black54,
+              ),
+            ),
           ],
         ),
       ),
@@ -148,9 +187,17 @@ class _PersonalizedPlanScreenState extends State<PersonalizedPlanScreen> {
         padding: const EdgeInsets.all(40.0),
         child: Column(
           children: [
-            const Icon(Icons.error_outline_rounded, color: AppColors.error, size: 48),
+            const Icon(
+              Icons.error_outline_rounded,
+              color: AppColors.error,
+              size: 48,
+            ),
             const SizedBox(height: 16),
-            Text(_error ?? 'Unknown error', textAlign: TextAlign.center, style: GoogleFonts.inter(color: AppColors.error)),
+            Text(
+              _error ?? 'Unknown error',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(color: AppColors.error),
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -193,17 +240,31 @@ class _PersonalizedPlanScreenState extends State<PersonalizedPlanScreen> {
           children: [
             Row(
               children: [
-                const Icon(Icons.wb_sunny_rounded, color: Colors.white, size: 28),
+                const Icon(
+                  Icons.wb_sunny_rounded,
+                  color: Colors.white,
+                  size: 28,
+                ),
                 const SizedBox(width: 12),
-                Text('Today\'s Objective',
-                    style: GoogleFonts.inter(
-                        fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white)),
+                Text(
+                  'Today\'s Objective',
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 16),
-            Text(suggestion.expectedOutcome,
-                style: GoogleFonts.inter(
-                    fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.9))),
+            Text(
+              suggestion.expectedOutcome,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.white.withOpacity(0.9),
+              ),
+            ),
             if (suggestion.motivationalMessage.isNotEmpty) ...[
               const SizedBox(height: 16),
               Container(
@@ -214,7 +275,11 @@ class _PersonalizedPlanScreenState extends State<PersonalizedPlanScreen> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 16),
+                    const Icon(
+                      Icons.auto_awesome_rounded,
+                      color: Colors.white,
+                      size: 16,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -233,12 +298,18 @@ class _PersonalizedPlanScreenState extends State<PersonalizedPlanScreen> {
             const SizedBox(height: 16),
             Row(
               children: [
-                const Icon(Icons.schedule_rounded, color: Colors.white70, size: 16),
+                const Icon(
+                  Icons.schedule_rounded,
+                  color: Colors.white70,
+                  size: 16,
+                ),
                 const SizedBox(width: 6),
-                Text('${suggestion.totalMinutes} Min Total',
-                    style: GoogleFonts.inter(fontSize: 13, color: Colors.white70)),
+                Text(
+                  '${suggestion.totalMinutes} Min Total',
+                  style: GoogleFonts.inter(fontSize: 13, color: Colors.white70),
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -248,11 +319,18 @@ class _PersonalizedPlanScreenState extends State<PersonalizedPlanScreen> {
   Widget _buildSectionTitle(String title, bool isDark) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
-      child: Text(title, style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700)),
+      child: Text(
+        title,
+        style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700),
+      ),
     );
   }
 
-  Widget _buildActivityCard(bool isDark, SuggestedActivity activity, Color accentColor) {
+  Widget _buildActivityCard(
+    bool isDark,
+    SuggestedActivity activity,
+    Color accentColor,
+  ) {
     IconData icon;
     SessionType sessionType;
     switch (activity.type.toLowerCase()) {
@@ -301,22 +379,33 @@ class _PersonalizedPlanScreenState extends State<PersonalizedPlanScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(activity.topic,
-                      style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700)),
-                  Text('${activity.type} • ${activity.durationMinutes} min',
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
-                      )),
+                  Text(
+                    activity.topic,
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    '${activity.type} • ${activity.durationMinutes} min',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
+                    ),
+                  ),
                   const SizedBox(height: 6),
-                  Text(activity.reason,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontStyle: FontStyle.italic,
-                        color: isDark ? Colors.white60 : Colors.black54,
-                      )),
+                  Text(
+                    activity.reason,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontStyle: FontStyle.italic,
+                      color: isDark ? Colors.white60 : Colors.black54,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -339,7 +428,11 @@ class _PersonalizedPlanScreenState extends State<PersonalizedPlanScreen> {
                   color: accentColor,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 20),
+                child: const Icon(
+                  Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
             ),
           ],

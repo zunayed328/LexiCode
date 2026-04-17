@@ -72,19 +72,13 @@ class CodeViewerWidget extends StatelessWidget {
                 ),
                 const Spacer(),
                 // Copy button
-                CopyButton(
-                  hasCopied: hasCopied,
-                  onPressed: onCopy,
-                ),
+                CopyButton(hasCopied: hasCopied, onPressed: onCopy),
               ],
             ),
           ),
 
           // Divider
-          Container(
-            height: 1,
-            color: CodeReviewTheme.borderSubtle,
-          ),
+          Container(height: 1, color: CodeReviewTheme.borderSubtle),
 
           // Code content with line numbers
           ConstrainedBox(
@@ -103,10 +97,12 @@ class CodeViewerWidget extends StatelessWidget {
                       return Container(
                         color: isChanged
                             ? (isFixed
-                                ? CodeReviewTheme.accentSuccess
-                                    .withValues(alpha: 0.06)
-                                : CodeReviewTheme.accentError
-                                    .withValues(alpha: 0.06))
+                                  ? CodeReviewTheme.accentSuccess.withValues(
+                                      alpha: 0.06,
+                                    )
+                                  : CodeReviewTheme.accentError.withValues(
+                                      alpha: 0.06,
+                                    ))
                             : null,
                         padding: const EdgeInsets.symmetric(horizontal: 2),
                         child: Row(
@@ -124,8 +120,9 @@ class CodeViewerWidget extends StatelessWidget {
                                     fontSize: 13,
                                     color: isChanged
                                         ? CodeReviewTheme.textSecondary
-                                        : CodeReviewTheme.textMuted
-                                            .withValues(alpha: 0.5),
+                                        : CodeReviewTheme.textMuted.withValues(
+                                            alpha: 0.5,
+                                          ),
                                     height: 1.6,
                                   ),
                                 ),
@@ -155,8 +152,9 @@ class CodeViewerWidget extends StatelessWidget {
                                 fontSize: 13,
                                 color: isChanged
                                     ? CodeReviewTheme.textPrimary
-                                    : CodeReviewTheme.textPrimary
-                                        .withValues(alpha: 0.75),
+                                    : CodeReviewTheme.textPrimary.withValues(
+                                        alpha: 0.75,
+                                      ),
                                 height: 1.6,
                                 fontWeight: isChanged
                                     ? FontWeight.w500
@@ -179,8 +177,9 @@ class CodeViewerWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 14),
             decoration: BoxDecoration(
               color: CodeReviewTheme.codeHeaderBg.withValues(alpha: 0.5),
-              borderRadius:
-                  const BorderRadius.vertical(bottom: Radius.circular(12)),
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(12),
+              ),
             ),
             child: Row(
               children: [

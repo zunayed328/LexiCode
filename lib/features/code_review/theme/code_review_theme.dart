@@ -78,33 +78,33 @@ class CodeReviewTheme {
 
   // ─── Shadows ────────────────────────────────────────────────────
   static List<BoxShadow> get cardShadow => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.3),
-          blurRadius: 20,
-          offset: const Offset(0, 8),
-        ),
-      ];
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.3),
+      blurRadius: 20,
+      offset: const Offset(0, 8),
+    ),
+  ];
 
   static List<BoxShadow> get glowShadow => [
-        BoxShadow(
-          color: accentIndigo.withValues(alpha: 0.15),
-          blurRadius: 24,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(
+      color: accentIndigo.withValues(alpha: 0.15),
+      blurRadius: 24,
+      offset: const Offset(0, 4),
+    ),
+  ];
 
   // ─── Decorations ────────────────────────────────────────────────
   static BoxDecoration get insightCardDecoration => BoxDecoration(
-        gradient: insightGradient,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: accentPurple.withValues(alpha: 0.25)),
-        boxShadow: glowShadow,
-      );
+    gradient: insightGradient,
+    borderRadius: BorderRadius.circular(16),
+    border: Border.all(color: accentPurple.withValues(alpha: 0.25)),
+    boxShadow: glowShadow,
+  );
 
   static BoxDecoration get codeBlockDecoration => BoxDecoration(
-        color: codeBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: borderSubtle),
-        boxShadow: cardShadow,
-      );
+    color: codeBg,
+    borderRadius: BorderRadius.circular(12),
+    border: Border.all(color: borderSubtle),
+    boxShadow: cardShadow,
+  );
 }

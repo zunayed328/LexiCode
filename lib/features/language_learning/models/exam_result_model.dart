@@ -106,20 +106,18 @@ class WritingEvaluation {
 
   factory WritingEvaluation.fromJson(Map<String, dynamic> json) =>
       WritingEvaluation(
-        taskAchievement:
-            (json['taskAchievement'] as num?)?.toDouble() ?? 0,
-        coherenceCohesion:
-            (json['coherenceCohesion'] as num?)?.toDouble() ?? 0,
-        lexicalResource:
-            (json['lexicalResource'] as num?)?.toDouble() ?? 0,
-        grammaticalRange:
-            (json['grammaticalRange'] as num?)?.toDouble() ?? 0,
+        taskAchievement: (json['taskAchievement'] as num?)?.toDouble() ?? 0,
+        coherenceCohesion: (json['coherenceCohesion'] as num?)?.toDouble() ?? 0,
+        lexicalResource: (json['lexicalResource'] as num?)?.toDouble() ?? 0,
+        grammaticalRange: (json['grammaticalRange'] as num?)?.toDouble() ?? 0,
         overallBand: (json['overallBand'] as num?)?.toDouble() ?? 0,
         strengths: List<String>.from(json['strengths'] ?? []),
         weaknesses: List<String>.from(json['weaknesses'] ?? []),
-        grammarErrors: (json['grammarErrors'] as List<dynamic>?)
-                ?.map((e) =>
-                    GrammarError.fromJson(Map<String, dynamic>.from(e)))
+        grammarErrors:
+            (json['grammarErrors'] as List<dynamic>?)
+                ?.map(
+                  (e) => GrammarError.fromJson(Map<String, dynamic>.from(e)),
+                )
                 .toList() ??
             [],
         correctedVersion: json['correctedVersion'],
@@ -128,18 +126,18 @@ class WritingEvaluation {
       );
 
   Map<String, dynamic> toJson() => {
-        'taskAchievement': taskAchievement,
-        'coherenceCohesion': coherenceCohesion,
-        'lexicalResource': lexicalResource,
-        'grammaticalRange': grammaticalRange,
-        'overallBand': overallBand,
-        'strengths': strengths,
-        'weaknesses': weaknesses,
-        'grammarErrors': grammarErrors.map((e) => e.toJson()).toList(),
-        'correctedVersion': correctedVersion,
-        'suggestions': suggestions,
-        'detailedFeedback': detailedFeedback,
-      };
+    'taskAchievement': taskAchievement,
+    'coherenceCohesion': coherenceCohesion,
+    'lexicalResource': lexicalResource,
+    'grammaticalRange': grammaticalRange,
+    'overallBand': overallBand,
+    'strengths': strengths,
+    'weaknesses': weaknesses,
+    'grammarErrors': grammarErrors.map((e) => e.toJson()).toList(),
+    'correctedVersion': correctedVersion,
+    'suggestions': suggestions,
+    'detailedFeedback': detailedFeedback,
+  };
 }
 
 class GrammarError {
@@ -155,20 +153,19 @@ class GrammarError {
     this.position,
   });
 
-  factory GrammarError.fromJson(Map<String, dynamic> json) =>
-      GrammarError(
-        original: json['original'] ?? '',
-        correction: json['correction'] ?? '',
-        explanation: json['explanation'] ?? '',
-        position: json['position'],
-      );
+  factory GrammarError.fromJson(Map<String, dynamic> json) => GrammarError(
+    original: json['original'] ?? '',
+    correction: json['correction'] ?? '',
+    explanation: json['explanation'] ?? '',
+    position: json['position'],
+  );
 
   Map<String, dynamic> toJson() => {
-        'original': original,
-        'correction': correction,
-        'explanation': explanation,
-        'position': position,
-      };
+    'original': original,
+    'correction': correction,
+    'explanation': explanation,
+    'position': position,
+  };
 }
 
 // ─── Speaking Evaluation ──────────────────────────────────────────
@@ -198,33 +195,30 @@ class SpeakingEvaluation {
 
   factory SpeakingEvaluation.fromJson(Map<String, dynamic> json) =>
       SpeakingEvaluation(
-        fluencyCoherence:
-            (json['fluencyCoherence'] as num?)?.toDouble() ?? 0,
-        lexicalResource:
-            (json['lexicalResource'] as num?)?.toDouble() ?? 0,
-        grammaticalRange:
-            (json['grammaticalRange'] as num?)?.toDouble() ?? 0,
-        pronunciation:
-            (json['pronunciation'] as num?)?.toDouble() ?? 0,
+        fluencyCoherence: (json['fluencyCoherence'] as num?)?.toDouble() ?? 0,
+        lexicalResource: (json['lexicalResource'] as num?)?.toDouble() ?? 0,
+        grammaticalRange: (json['grammaticalRange'] as num?)?.toDouble() ?? 0,
+        pronunciation: (json['pronunciation'] as num?)?.toDouble() ?? 0,
         overallBand: (json['overallBand'] as num?)?.toDouble() ?? 0,
         transcription: json['transcription'],
         feedback: List<String>.from(json['feedback'] ?? []),
-        pronunciationIssues:
-            List<String>.from(json['pronunciationIssues'] ?? []),
+        pronunciationIssues: List<String>.from(
+          json['pronunciationIssues'] ?? [],
+        ),
         sampleAnswer: json['sampleAnswer'],
       );
 
   Map<String, dynamic> toJson() => {
-        'fluencyCoherence': fluencyCoherence,
-        'lexicalResource': lexicalResource,
-        'grammaticalRange': grammaticalRange,
-        'pronunciation': pronunciation,
-        'overallBand': overallBand,
-        'transcription': transcription,
-        'feedback': feedback,
-        'pronunciationIssues': pronunciationIssues,
-        'sampleAnswer': sampleAnswer,
-      };
+    'fluencyCoherence': fluencyCoherence,
+    'lexicalResource': lexicalResource,
+    'grammaticalRange': grammaticalRange,
+    'pronunciation': pronunciation,
+    'overallBand': overallBand,
+    'transcription': transcription,
+    'feedback': feedback,
+    'pronunciationIssues': pronunciationIssues,
+    'sampleAnswer': sampleAnswer,
+  };
 }
 
 // ─── Skill Result ─────────────────────────────────────────────────
@@ -258,46 +252,49 @@ class SkillResult {
       totalQuestions > 0 ? correctAnswers / totalQuestions : 0;
 
   factory SkillResult.fromJson(Map<String, dynamic> json) => SkillResult(
-        section: IELTSSectionType.values.firstWhere(
-          (e) => e.name == json['section'],
-          orElse: () => IELTSSectionType.listening,
-        ),
-        bandScore: (json['bandScore'] as num?)?.toDouble() ?? 0,
-        correctAnswers: json['correctAnswers'] ?? 0,
-        totalQuestions: json['totalQuestions'] ?? 0,
-        sectionScores: (json['sectionScores'] as List<dynamic>?)
-                ?.map((e) => (e as num).toDouble())
-                .toList() ??
-            [],
-        questionTypeAccuracy:
-            (json['questionTypeAccuracy'] as Map<String, dynamic>?)?.map(
-                  (k, v) => MapEntry(k, (v as num).toDouble()),
-                ) ??
-                {},
-        timeSpentSeconds: json['timeSpentSeconds'] ?? 0,
-        feedback: json['feedback'],
-        writingEvaluation: json['writingEvaluation'] != null
-            ? WritingEvaluation.fromJson(
-                Map<String, dynamic>.from(json['writingEvaluation']))
-            : null,
-        speakingEvaluation: json['speakingEvaluation'] != null
-            ? SpeakingEvaluation.fromJson(
-                Map<String, dynamic>.from(json['speakingEvaluation']))
-            : null,
-      );
+    section: IELTSSectionType.values.firstWhere(
+      (e) => e.name == json['section'],
+      orElse: () => IELTSSectionType.listening,
+    ),
+    bandScore: (json['bandScore'] as num?)?.toDouble() ?? 0,
+    correctAnswers: json['correctAnswers'] ?? 0,
+    totalQuestions: json['totalQuestions'] ?? 0,
+    sectionScores:
+        (json['sectionScores'] as List<dynamic>?)
+            ?.map((e) => (e as num).toDouble())
+            .toList() ??
+        [],
+    questionTypeAccuracy:
+        (json['questionTypeAccuracy'] as Map<String, dynamic>?)?.map(
+          (k, v) => MapEntry(k, (v as num).toDouble()),
+        ) ??
+        {},
+    timeSpentSeconds: json['timeSpentSeconds'] ?? 0,
+    feedback: json['feedback'],
+    writingEvaluation: json['writingEvaluation'] != null
+        ? WritingEvaluation.fromJson(
+            Map<String, dynamic>.from(json['writingEvaluation']),
+          )
+        : null,
+    speakingEvaluation: json['speakingEvaluation'] != null
+        ? SpeakingEvaluation.fromJson(
+            Map<String, dynamic>.from(json['speakingEvaluation']),
+          )
+        : null,
+  );
 
   Map<String, dynamic> toJson() => {
-        'section': section.name,
-        'bandScore': bandScore,
-        'correctAnswers': correctAnswers,
-        'totalQuestions': totalQuestions,
-        'sectionScores': sectionScores,
-        'questionTypeAccuracy': questionTypeAccuracy,
-        'timeSpentSeconds': timeSpentSeconds,
-        'feedback': feedback,
-        'writingEvaluation': writingEvaluation?.toJson(),
-        'speakingEvaluation': speakingEvaluation?.toJson(),
-      };
+    'section': section.name,
+    'bandScore': bandScore,
+    'correctAnswers': correctAnswers,
+    'totalQuestions': totalQuestions,
+    'sectionScores': sectionScores,
+    'questionTypeAccuracy': questionTypeAccuracy,
+    'timeSpentSeconds': timeSpentSeconds,
+    'feedback': feedback,
+    'writingEvaluation': writingEvaluation?.toJson(),
+    'speakingEvaluation': speakingEvaluation?.toJson(),
+  };
 }
 
 // ─── Exam Result ──────────────────────────────────────────────────
@@ -325,8 +322,8 @@ class ExamResult {
     this.strengths = const [],
     this.areasForImprovement = const [],
     this.recommendations = const [],
-  })  : cefrLevel = cefrLevel ?? BandScoreDescriptor.cefrForBand(overallBand),
-        examDate = examDate ?? DateTime.now();
+  }) : cefrLevel = cefrLevel ?? BandScoreDescriptor.cefrForBand(overallBand),
+       examDate = examDate ?? DateTime.now();
 
   Color get scoreColor => BandScoreDescriptor.colorForBand(overallBand);
   String get scoreLabel => BandScoreDescriptor.labelForBand(overallBand);
@@ -348,8 +345,9 @@ class ExamResult {
           (e) => e.name == entry.key.toString(),
           orElse: () => IELTSSectionType.listening,
         );
-        skillMap[section] =
-            SkillResult.fromJson(Map<String, dynamic>.from(entry.value));
+        skillMap[section] = SkillResult.fromJson(
+          Map<String, dynamic>.from(entry.value),
+        );
       }
     }
 
@@ -362,23 +360,21 @@ class ExamResult {
       totalDurationSeconds: json['totalDurationSeconds'] ?? 0,
       aiReport: json['aiReport'],
       strengths: List<String>.from(json['strengths'] ?? []),
-      areasForImprovement:
-          List<String>.from(json['areasForImprovement'] ?? []),
+      areasForImprovement: List<String>.from(json['areasForImprovement'] ?? []),
       recommendations: List<String>.from(json['recommendations'] ?? []),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'overallBand': overallBand,
-        'cefrLevel': cefrLevel,
-        'skillResults': skillResults
-            .map((k, v) => MapEntry(k.name, v.toJson())),
-        'examDate': examDate.toIso8601String(),
-        'totalDurationSeconds': totalDurationSeconds,
-        'aiReport': aiReport,
-        'strengths': strengths,
-        'areasForImprovement': areasForImprovement,
-        'recommendations': recommendations,
-      };
+    'id': id,
+    'overallBand': overallBand,
+    'cefrLevel': cefrLevel,
+    'skillResults': skillResults.map((k, v) => MapEntry(k.name, v.toJson())),
+    'examDate': examDate.toIso8601String(),
+    'totalDurationSeconds': totalDurationSeconds,
+    'aiReport': aiReport,
+    'strengths': strengths,
+    'areasForImprovement': areasForImprovement,
+    'recommendations': recommendations,
+  };
 }

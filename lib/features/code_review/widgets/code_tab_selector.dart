@@ -71,7 +71,9 @@ class CodeTabSelector extends StatelessWidget {
             boxShadow: isActive
                 ? [
                     BoxShadow(
-                      color: CodeReviewTheme.accentIndigo.withValues(alpha: 0.25),
+                      color: CodeReviewTheme.accentIndigo.withValues(
+                        alpha: 0.25,
+                      ),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -84,9 +86,7 @@ class CodeTabSelector extends StatelessWidget {
               Icon(
                 icon,
                 size: 16,
-                color: isActive
-                    ? Colors.white
-                    : CodeReviewTheme.textMuted,
+                color: isActive ? Colors.white : CodeReviewTheme.textMuted,
               ),
               const SizedBox(width: 6),
               Text(
@@ -94,9 +94,7 @@ class CodeTabSelector extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 13,
                   fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-                  color: isActive
-                      ? Colors.white
-                      : CodeReviewTheme.textMuted,
+                  color: isActive ? Colors.white : CodeReviewTheme.textMuted,
                 ),
               ),
               if (badge != null) ...[
@@ -110,7 +108,7 @@ class CodeTabSelector extends StatelessWidget {
                     color: isActive
                         ? Colors.white.withValues(alpha: 0.2)
                         : (badgeColor ?? CodeReviewTheme.accentError)
-                            .withValues(alpha: 0.15),
+                              .withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(

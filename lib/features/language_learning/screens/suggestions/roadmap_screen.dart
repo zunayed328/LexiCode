@@ -20,8 +20,8 @@ class RoadmapScreen extends StatelessWidget {
         child: progressProvider.isGeneratingRoadmap
             ? _buildLoadingState(isDark)
             : progressProvider.roadmap == null
-                ? _buildErrorState(context, isDark)
-                : _buildRoadmapContent(context, isDark, progressProvider.roadmap!),
+            ? _buildErrorState(context, isDark)
+            : _buildRoadmapContent(context, isDark, progressProvider.roadmap!),
       ),
     );
   }
@@ -64,18 +64,25 @@ class RoadmapScreen extends StatelessWidget {
         children: [
           const Icon(Icons.error_outline, color: AppColors.error, size: 64),
           const SizedBox(height: 16),
-          Text('Failed to generate roadmap.', style: GoogleFonts.inter(fontSize: 18)),
+          Text(
+            'Failed to generate roadmap.',
+            style: GoogleFonts.inter(fontSize: 18),
+          ),
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Go Back'),
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildRoadmapContent(BuildContext context, bool isDark, LearningRoadmap roadmap) {
+  Widget _buildRoadmapContent(
+    BuildContext context,
+    bool isDark,
+    LearningRoadmap roadmap,
+  ) {
     // Determine overall progress and timeline
     int totalWeeks = roadmap.phases.fold(0, (sum, p) => sum + p.durationWeeks);
 
@@ -84,9 +91,13 @@ class RoadmapScreen extends StatelessWidget {
       slivers: [
         SliverToBoxAdapter(child: _buildAppBar(context, isDark)),
         SliverToBoxAdapter(child: _buildGoalHeader(isDark, totalWeeks)),
-        SliverToBoxAdapter(child: _buildSectionTitle('Learning Phases', isDark)),
+        SliverToBoxAdapter(
+          child: _buildSectionTitle('Learning Phases', isDark),
+        ),
         SliverToBoxAdapter(child: _buildPhases(isDark, roadmap.phases)),
-        SliverToBoxAdapter(child: _buildSectionTitle('Weekly Schedule Overview', isDark)),
+        SliverToBoxAdapter(
+          child: _buildSectionTitle('Weekly Schedule Overview', isDark),
+        ),
         SliverToBoxAdapter(child: _buildWeeklySchedule(isDark, roadmap.phases)),
         const SliverToBoxAdapter(child: SizedBox(height: 32)),
       ],
@@ -118,12 +129,22 @@ class RoadmapScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Learning Roadmap', style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800)),
-                Text('Personalized AI plan',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
-                    )),
+                Text(
+                  'Learning Roadmap',
+                  style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  'Personalized AI plan',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
               ],
             ),
           ),
@@ -154,13 +175,27 @@ class RoadmapScreen extends StatelessWidget {
           children: [
             const Icon(Icons.flag_rounded, color: Colors.white, size: 36),
             const SizedBox(height: 10),
-            Text('Action Plan Ready', style: GoogleFonts.inter(fontSize: 14, color: Colors.white70)),
-            Text('$totalWeeks-Week Strategy',
-                style: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w800, color: Colors.white)),
+            Text(
+              'Action Plan Ready',
+              style: GoogleFonts.inter(fontSize: 14, color: Colors.white70),
+            ),
+            Text(
+              '$totalWeeks-Week Strategy',
+              style: GoogleFonts.inter(
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text('Customized to eliminate your specific weaknesses',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.inter(fontSize: 13, color: Colors.white.withValues(alpha: 0.9))),
+            Text(
+              'Customized to eliminate your specific weaknesses',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                color: Colors.white.withValues(alpha: 0.9),
+              ),
+            ),
           ],
         ),
       ),
@@ -170,7 +205,10 @@ class RoadmapScreen extends StatelessWidget {
   Widget _buildSectionTitle(String title, bool isDark) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
-      child: Text(title, style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+      child: Text(
+        title,
+        style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+      ),
     );
   }
 
@@ -203,11 +241,21 @@ class RoadmapScreen extends StatelessWidget {
                         width: 16,
                         height: 16,
                         decoration: BoxDecoration(
-                          color: phase.isCompleted ? color : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                          color: phase.isCompleted
+                              ? color
+                              : (isDark
+                                    ? AppColors.darkBorder
+                                    : AppColors.lightBorder),
                           shape: BoxShape.circle,
                           border: Border.all(color: color, width: 2),
                         ),
-                        child: phase.progress >= 1 ? const Icon(Icons.check, size: 10, color: Colors.white) : null,
+                        child: phase.progress >= 1
+                            ? const Icon(
+                                Icons.check,
+                                size: 10,
+                                color: Colors.white,
+                              )
+                            : null,
                       ),
                       if (!isLast)
                         Expanded(
@@ -215,7 +263,9 @@ class RoadmapScreen extends StatelessWidget {
                             width: 2,
                             color: phase.isCompleted
                                 ? color.withValues(alpha: 0.4)
-                                : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                                : (isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.lightBorder),
                           ),
                         ),
                     ],
@@ -233,18 +283,30 @@ class RoadmapScreen extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: Text('Phase ${index + 1}: ${phase.name}',
-                                    style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700)),
+                                child: Text(
+                                  'Phase ${index + 1}: ${phase.name}',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
                               ),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 3,
+                                ),
                                 decoration: BoxDecoration(
                                   color: color.withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
                                   '${phase.durationWeeks} Weeks',
-                                  style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w600, color: color),
+                                  style: GoogleFonts.inter(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                    color: color,
+                                  ),
                                 ),
                               ),
                             ],
@@ -252,26 +314,39 @@ class RoadmapScreen extends StatelessWidget {
                           const SizedBox(height: 8),
                           if (phase.expectedImprovement.isNotEmpty)
                             Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: Text('🎯 ${phase.expectedImprovement}',
-                                    style: GoogleFonts.inter(fontSize: 13, color: color, fontWeight: FontWeight.w500))),
-                          ...phase.objectives.map((item) => Padding(
-                                padding: const EdgeInsets.only(bottom: 6),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('• ', style: TextStyle(color: color)),
-                                    Expanded(
-                                      child: Text(item,
-                                          style: GoogleFonts.inter(
-                                            fontSize: 13,
-                                            height: 1.3,
-                                            color: isDark ? Colors.white70 : Colors.black87,
-                                          )),
-                                    ),
-                                  ],
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Text(
+                                '🎯 ${phase.expectedImprovement}',
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  color: color,
+                                  fontWeight: FontWeight.w500,
                                 ),
-                              )),
+                              ),
+                            ),
+                          ...phase.objectives.map(
+                            (item) => Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('• ', style: TextStyle(color: color)),
+                                  Expanded(
+                                    child: Text(
+                                      item,
+                                      style: GoogleFonts.inter(
+                                        fontSize: 13,
+                                        height: 1.3,
+                                        color: isDark
+                                            ? Colors.white70
+                                            : Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                           if (phase.focusSkills.isNotEmpty) ...[
                             const SizedBox(height: 12),
                             Wrap(
@@ -279,18 +354,29 @@ class RoadmapScreen extends StatelessWidget {
                               runSpacing: 4,
                               children: phase.focusSkills.map((skill) {
                                 return Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: isDark ? AppColors.darkCard : Colors.grey.withValues(alpha: 0.1),
+                                    color: isDark
+                                        ? AppColors.darkCard
+                                        : Colors.grey.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
-                                  child: Text(skill,
-                                      style: GoogleFonts.inter(
-                                          fontSize: 11, color: isDark ? Colors.white70 : Colors.black54)),
+                                  child: Text(
+                                    skill,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 11,
+                                      color: isDark
+                                          ? Colors.white70
+                                          : Colors.black54,
+                                    ),
+                                  ),
                                 );
                               }).toList(),
-                            )
-                          ]
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -306,7 +392,8 @@ class RoadmapScreen extends StatelessWidget {
 
   Widget _buildWeeklySchedule(bool isDark, List<RoadmapPhase> phases) {
     // Show schedule of the first phase just as an overview
-    if (phases.isEmpty || phases.first.dailyActivities.isEmpty) return const SizedBox();
+    if (phases.isEmpty || phases.first.dailyActivities.isEmpty)
+      return const SizedBox();
 
     final schedule = phases.first.dailyActivities;
 
@@ -322,12 +409,14 @@ class RoadmapScreen extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: 50,
-                    child: Text(entry.key,
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
-                        )),
+                    child: Text(
+                      entry.key,
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                      ),
+                    ),
                   ),
                   Expanded(
                     child: Text(

@@ -103,7 +103,9 @@ class LessonCard extends StatelessWidget {
                             const SizedBox(width: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 2),
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.white.withValues(alpha: 0.25),
                                 borderRadius: BorderRadius.circular(8),
@@ -166,10 +168,12 @@ class LessonCard extends StatelessWidget {
                             child: LinearProgressIndicator(
                               value: progress,
                               minHeight: 6,
-                              backgroundColor:
-                                  Colors.white.withValues(alpha: 0.2),
+                              backgroundColor: Colors.white.withValues(
+                                alpha: 0.2,
+                              ),
                               valueColor: const AlwaysStoppedAnimation(
-                                  Colors.white),
+                                Colors.white,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -186,8 +190,7 @@ class LessonCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 16),
                   ],
-                  if (xpReward != null)
-                    _buildInfoChip('⭐ $xpReward XP'),
+                  if (xpReward != null) _buildInfoChip('⭐ $xpReward XP'),
                   if (timeEstimate != null) ...[
                     const SizedBox(width: 8),
                     _buildInfoChip('⏱ $timeEstimate'),

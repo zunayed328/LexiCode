@@ -76,8 +76,9 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
                       width: 72,
                       height: 72,
                       decoration: BoxDecoration(
-                        color:
-                            CodeReviewTheme.accentError.withValues(alpha: 0.1),
+                        color: CodeReviewTheme.accentError.withValues(
+                          alpha: 0.1,
+                        ),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -124,8 +125,9 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget>
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: CodeReviewTheme.accentIndigo
-                            .withValues(alpha: 0.3),
+                        color: CodeReviewTheme.accentIndigo.withValues(
+                          alpha: 0.3,
+                        ),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),

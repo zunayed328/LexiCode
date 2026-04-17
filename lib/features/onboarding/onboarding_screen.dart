@@ -66,9 +66,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.splashGradient,
-        ),
+        decoration: const BoxDecoration(gradient: AppColors.splashGradient),
         child: SafeArea(
           child: Column(
             children: [
@@ -176,18 +174,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   borderRadius: BorderRadius.circular(35),
                   boxShadow: [
                     BoxShadow(
-                      color:
-                          page.gradient.colors.first.withValues(alpha: 0.4),
+                      color: page.gradient.colors.first.withValues(alpha: 0.4),
                       blurRadius: 30,
                       offset: const Offset(0, 10),
                     ),
                   ],
                 ),
-                child: Icon(
-                  page.icon,
-                  size: 64,
-                  color: Colors.white,
-                ),
+                child: Icon(page.icon, size: 64, color: Colors.white),
               ),
               // Floating secondary icon
               Positioned(
@@ -197,13 +190,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color:
-                        page.gradient.colors.last.withValues(alpha: 0.8),
+                    color: page.gradient.colors.last.withValues(alpha: 0.8),
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: page.gradient.colors.first
-                            .withValues(alpha: 0.3),
+                        color: page.gradient.colors.first.withValues(
+                          alpha: 0.3,
+                        ),
                         blurRadius: 12,
                       ),
                     ],
@@ -220,8 +213,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           const SizedBox(height: 48),
           // Title
           ShaderMask(
-            shaderCallback: (bounds) =>
-                page.gradient.createShader(bounds),
+            shaderCallback: (bounds) => page.gradient.createShader(bounds),
             child: Text(
               page.title,
               style: GoogleFonts.inter(
@@ -253,15 +245,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             alignment: WrapAlignment.center,
             children: page.features.map((feature) {
               return Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
-                  color:
-                      page.gradient.colors.first.withValues(alpha: 0.15),
+                  color: page.gradient.colors.first.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color:
-                        page.gradient.colors.first.withValues(alpha: 0.3),
+                    color: page.gradient.colors.first.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Text(

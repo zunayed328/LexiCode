@@ -66,10 +66,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   /// Login with email and password.
-  Future<bool> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<bool> login({required String email, required String password}) async {
     _setLoading(true);
     _clearError();
     try {
@@ -239,4 +236,3 @@ class AuthProvider extends ChangeNotifier {
     _errorMessage = null;
   }
 }
-

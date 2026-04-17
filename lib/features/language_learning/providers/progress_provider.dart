@@ -14,8 +14,7 @@ class ProgressProvider extends ChangeNotifier {
 
   UserProgress? _userProgress;
   UserProgress get userProgress =>
-      _userProgress ??
-      _progressService.createDefaultProgress('default_user');
+      _userProgress ?? _progressService.createDefaultProgress('default_user');
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -47,8 +46,7 @@ class ProgressProvider extends ChangeNotifier {
 
     try {
       final saved = await _progressService.loadProgress(userId);
-      _userProgress =
-          saved ?? _progressService.createDefaultProgress(userId);
+      _userProgress = saved ?? _progressService.createDefaultProgress(userId);
 
       // Check & reset daily goals if new day
       _userProgress = _progressService.checkDailyGoals(userProgress);
@@ -83,13 +81,15 @@ class ProgressProvider extends ChangeNotifier {
   }) async {
     _userProgress = _progressService.addXp(userProgress, xpEarned);
     _userProgress = _progressService.updateSkillScore(
-        userProgress, skill, score);
+      userProgress,
+      skill,
+      score,
+    );
     _userProgress = _progressService.updateStreak(userProgress);
     _userProgress = userProgress.copyWith(
       totalExercisesCompleted:
           userProgress.totalExercisesCompleted + exercisesCompleted,
-      vocabularyMastered:
-          userProgress.vocabularyMastered + vocabularyLearned,
+      vocabularyMastered: userProgress.vocabularyMastered + vocabularyLearned,
     );
 
     await _progressService.saveProgress(userProgress);
@@ -110,8 +110,7 @@ class ProgressProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _weaknessAnalysis =
-          await _geminiService.analyzePerformance(userProgress);
+      _weaknessAnalysis = await _geminiService.analyzePerformance(userProgress);
     } catch (e) {
       _error = 'Analysis failed: $e';
     }

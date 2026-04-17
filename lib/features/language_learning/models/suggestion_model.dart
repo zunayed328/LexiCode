@@ -33,25 +33,25 @@ class Weakness {
   }
 
   factory Weakness.fromJson(Map<String, dynamic> json) => Weakness(
-        skill: json['skill'] ?? '',
-        area: json['area'] ?? '',
-        description: json['description'] ?? '',
-        evidence: json['evidence'] ?? '',
-        impactOnScore: (json['impactOnScore'] as num?)?.toDouble() ?? 0,
-        urgency: WeaknessUrgency.values.firstWhere(
-          (e) => e.name == json['urgency'],
-          orElse: () => WeaknessUrgency.medium,
-        ),
-      );
+    skill: json['skill'] ?? '',
+    area: json['area'] ?? '',
+    description: json['description'] ?? '',
+    evidence: json['evidence'] ?? '',
+    impactOnScore: (json['impactOnScore'] as num?)?.toDouble() ?? 0,
+    urgency: WeaknessUrgency.values.firstWhere(
+      (e) => e.name == json['urgency'],
+      orElse: () => WeaknessUrgency.medium,
+    ),
+  );
 
   Map<String, dynamic> toJson() => {
-        'skill': skill,
-        'area': area,
-        'description': description,
-        'evidence': evidence,
-        'impactOnScore': impactOnScore,
-        'urgency': urgency.name,
-      };
+    'skill': skill,
+    'area': area,
+    'description': description,
+    'evidence': evidence,
+    'impactOnScore': impactOnScore,
+    'urgency': urgency.name,
+  };
 }
 
 // ─── Weakness Analysis ────────────────────────────────────────────
@@ -75,36 +75,36 @@ class WeaknessAnalysis {
 
   factory WeaknessAnalysis.fromJson(Map<String, dynamic> json) =>
       WeaknessAnalysis(
-        criticalWeaknesses: (json['criticalWeaknesses'] as List<dynamic>?)
+        criticalWeaknesses:
+            (json['criticalWeaknesses'] as List<dynamic>?)
                 ?.map((e) => Weakness.fromJson(Map<String, dynamic>.from(e)))
                 .toList() ??
             [],
-        moderateWeaknesses: (json['moderateWeaknesses'] as List<dynamic>?)
+        moderateWeaknesses:
+            (json['moderateWeaknesses'] as List<dynamic>?)
                 ?.map((e) => Weakness.fromJson(Map<String, dynamic>.from(e)))
                 .toList() ??
             [],
-        hiddenPatterns:
-            List<String>.from(json['hiddenPatterns'] ?? []),
-        strengthsToLeverage:
-            List<String>.from(json['strengthsToLeverage'] ?? []),
+        hiddenPatterns: List<String>.from(json['hiddenPatterns'] ?? []),
+        strengthsToLeverage: List<String>.from(
+          json['strengthsToLeverage'] ?? [],
+        ),
         skillBalance:
             (json['skillBalance'] as Map<String, dynamic>?)?.map(
-                  (k, v) => MapEntry(k, (v as num).toDouble()),
-                ) ??
-                {},
+              (k, v) => MapEntry(k, (v as num).toDouble()),
+            ) ??
+            {},
         analyzedAt: DateTime.tryParse(json['analyzedAt'] ?? ''),
       );
 
   Map<String, dynamic> toJson() => {
-        'criticalWeaknesses':
-            criticalWeaknesses.map((e) => e.toJson()).toList(),
-        'moderateWeaknesses':
-            moderateWeaknesses.map((e) => e.toJson()).toList(),
-        'hiddenPatterns': hiddenPatterns,
-        'strengthsToLeverage': strengthsToLeverage,
-        'skillBalance': skillBalance,
-        'analyzedAt': analyzedAt.toIso8601String(),
-      };
+    'criticalWeaknesses': criticalWeaknesses.map((e) => e.toJson()).toList(),
+    'moderateWeaknesses': moderateWeaknesses.map((e) => e.toJson()).toList(),
+    'hiddenPatterns': hiddenPatterns,
+    'strengthsToLeverage': strengthsToLeverage,
+    'skillBalance': skillBalance,
+    'analyzedAt': analyzedAt.toIso8601String(),
+  };
 }
 
 // ─── Roadmap Phase ────────────────────────────────────────────────
@@ -130,29 +130,27 @@ class RoadmapPhase {
     this.progress = 0,
   });
 
-  factory RoadmapPhase.fromJson(Map<String, dynamic> json) =>
-      RoadmapPhase(
-        name: json['name'] ?? '',
-        durationWeeks: json['durationWeeks'] ?? 4,
-        objectives: List<String>.from(json['objectives'] ?? []),
-        focusSkills: List<String>.from(json['focusSkills'] ?? []),
-        dailyActivities:
-            Map<String, String>.from(json['dailyActivities'] ?? {}),
-        expectedImprovement: json['expectedImprovement'] ?? '',
-        isCompleted: json['isCompleted'] ?? false,
-        progress: (json['progress'] as num?)?.toDouble() ?? 0,
-      );
+  factory RoadmapPhase.fromJson(Map<String, dynamic> json) => RoadmapPhase(
+    name: json['name'] ?? '',
+    durationWeeks: json['durationWeeks'] ?? 4,
+    objectives: List<String>.from(json['objectives'] ?? []),
+    focusSkills: List<String>.from(json['focusSkills'] ?? []),
+    dailyActivities: Map<String, String>.from(json['dailyActivities'] ?? {}),
+    expectedImprovement: json['expectedImprovement'] ?? '',
+    isCompleted: json['isCompleted'] ?? false,
+    progress: (json['progress'] as num?)?.toDouble() ?? 0,
+  );
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'durationWeeks': durationWeeks,
-        'objectives': objectives,
-        'focusSkills': focusSkills,
-        'dailyActivities': dailyActivities,
-        'expectedImprovement': expectedImprovement,
-        'isCompleted': isCompleted,
-        'progress': progress,
-      };
+    'name': name,
+    'durationWeeks': durationWeeks,
+    'objectives': objectives,
+    'focusSkills': focusSkills,
+    'dailyActivities': dailyActivities,
+    'expectedImprovement': expectedImprovement,
+    'isCompleted': isCompleted,
+    'progress': progress,
+  };
 }
 
 // ─── Learning Roadmap ─────────────────────────────────────────────
@@ -190,13 +188,14 @@ class LearningRoadmap {
         id: json['id'] ?? '',
         goal: json['goal'] ?? '',
         overallStrategy: json['overallStrategy'] ?? '',
-        phases: (json['phases'] as List<dynamic>?)
-                ?.map((e) =>
-                    RoadmapPhase.fromJson(Map<String, dynamic>.from(e)))
+        phases:
+            (json['phases'] as List<dynamic>?)
+                ?.map(
+                  (e) => RoadmapPhase.fromJson(Map<String, dynamic>.from(e)),
+                )
                 .toList() ??
             [],
-        weeklySchedule:
-            Map<String, String>.from(json['weeklySchedule'] ?? {}),
+        weeklySchedule: Map<String, String>.from(json['weeklySchedule'] ?? {}),
         milestones: List<String>.from(json['milestones'] ?? []),
         successMetrics: List<String>.from(json['successMetrics'] ?? []),
         createdAt: DateTime.tryParse(json['createdAt'] ?? ''),
@@ -206,16 +205,16 @@ class LearningRoadmap {
       );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'goal': goal,
-        'overallStrategy': overallStrategy,
-        'phases': phases.map((e) => e.toJson()).toList(),
-        'weeklySchedule': weeklySchedule,
-        'milestones': milestones,
-        'successMetrics': successMetrics,
-        'createdAt': createdAt.toIso8601String(),
-        'targetDate': targetDate?.toIso8601String(),
-      };
+    'id': id,
+    'goal': goal,
+    'overallStrategy': overallStrategy,
+    'phases': phases.map((e) => e.toJson()).toList(),
+    'weeklySchedule': weeklySchedule,
+    'milestones': milestones,
+    'successMetrics': successMetrics,
+    'createdAt': createdAt.toIso8601String(),
+    'targetDate': targetDate?.toIso8601String(),
+  };
 }
 
 // ─── Daily Suggestion ─────────────────────────────────────────────
@@ -245,12 +244,12 @@ class SuggestedActivity {
       );
 
   Map<String, dynamic> toJson() => {
-        'type': type,
-        'topic': topic,
-        'durationMinutes': durationMinutes,
-        'reason': reason,
-        'difficulty': difficulty,
-      };
+    'type': type,
+    'topic': topic,
+    'durationMinutes': durationMinutes,
+    'reason': reason,
+    'difficulty': difficulty,
+  };
 }
 
 class DailySuggestion {
@@ -280,14 +279,17 @@ class DailySuggestion {
   factory DailySuggestion.fromJson(Map<String, dynamic> json) =>
       DailySuggestion(
         mainActivity: SuggestedActivity.fromJson(
-            Map<String, dynamic>.from(json['mainActivity'] ?? {})),
+          Map<String, dynamic>.from(json['mainActivity'] ?? {}),
+        ),
         secondaryActivity: json['secondaryActivity'] != null
             ? SuggestedActivity.fromJson(
-                Map<String, dynamic>.from(json['secondaryActivity']))
+                Map<String, dynamic>.from(json['secondaryActivity']),
+              )
             : null,
         bonusActivity: json['bonusActivity'] != null
             ? SuggestedActivity.fromJson(
-                Map<String, dynamic>.from(json['bonusActivity']))
+                Map<String, dynamic>.from(json['bonusActivity']),
+              )
             : null,
         motivationalMessage: json['motivationalMessage'] ?? '',
         expectedOutcome: json['expectedOutcome'] ?? '',
@@ -295,13 +297,13 @@ class DailySuggestion {
       );
 
   Map<String, dynamic> toJson() => {
-        'mainActivity': mainActivity.toJson(),
-        'secondaryActivity': secondaryActivity?.toJson(),
-        'bonusActivity': bonusActivity?.toJson(),
-        'motivationalMessage': motivationalMessage,
-        'expectedOutcome': expectedOutcome,
-        'date': date.toIso8601String(),
-      };
+    'mainActivity': mainActivity.toJson(),
+    'secondaryActivity': secondaryActivity?.toJson(),
+    'bonusActivity': bonusActivity?.toJson(),
+    'motivationalMessage': motivationalMessage,
+    'expectedOutcome': expectedOutcome,
+    'date': date.toIso8601String(),
+  };
 }
 
 // ─── Weekly Challenge Result ──────────────────────────────────────
@@ -337,9 +339,9 @@ class WeeklyChallengeResult {
         weekNumber: json['weekNumber'] ?? 0,
         sectionScores:
             (json['sectionScores'] as Map<String, dynamic>?)?.map(
-                  (k, v) => MapEntry(k, (v as num).toDouble()),
-                ) ??
-                {},
+              (k, v) => MapEntry(k, (v as num).toDouble()),
+            ) ??
+            {},
         totalScore: json['totalScore'] ?? 0,
         maxScore: json['maxScore'] ?? 100,
         rank: json['rank'],
@@ -350,14 +352,14 @@ class WeeklyChallengeResult {
       );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'weekNumber': weekNumber,
-        'sectionScores': sectionScores,
-        'totalScore': totalScore,
-        'maxScore': maxScore,
-        'rank': rank,
-        'xpEarned': xpEarned,
-        'improvementVsLastWeek': improvementVsLastWeek,
-        'completedAt': completedAt.toIso8601String(),
-      };
+    'id': id,
+    'weekNumber': weekNumber,
+    'sectionScores': sectionScores,
+    'totalScore': totalScore,
+    'maxScore': maxScore,
+    'rank': rank,
+    'xpEarned': xpEarned,
+    'improvementVsLastWeek': improvementVsLastWeek,
+    'completedAt': completedAt.toIso8601String(),
+  };
 }

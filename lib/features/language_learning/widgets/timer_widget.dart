@@ -91,7 +91,9 @@ class TimerWidgetState extends State<TimerWidget>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isWarning = _remaining <= widget.warningThresholdSeconds;
-    final color = isWarning ? AppColors.error : (widget.color ?? AppColors.info);
+    final color = isWarning
+        ? AppColors.error
+        : (widget.color ?? AppColors.info);
     final progress = _remaining / widget.totalSeconds;
     final minutes = _remaining ~/ 60;
     final seconds = _remaining % 60;

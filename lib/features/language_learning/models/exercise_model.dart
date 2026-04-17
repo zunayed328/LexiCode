@@ -169,50 +169,50 @@ class Exercise {
   });
 
   factory Exercise.fromJson(Map<String, dynamic> json) => Exercise(
-        id: json['id'] ?? '',
-        type: ExerciseType.values.firstWhere(
-          (e) => e.name == json['type'],
-          orElse: () => ExerciseType.mcq,
-        ),
-        question: json['question'] ?? '',
-        options: List<String>.from(json['options'] ?? []),
-        correctAnswer: json['correctAnswer'] ?? '',
-        alternateCorrectAnswers: json['alternateCorrectAnswers'] != null
-            ? List<String>.from(json['alternateCorrectAnswers'])
-            : null,
-        explanation: json['explanation'] ?? '',
-        difficulty: ExerciseDifficulty.values.firstWhere(
-          (e) => e.name == json['difficulty'],
-          orElse: () => ExerciseDifficulty.medium,
-        ),
-        points: json['points'] ?? 10,
-        hint: json['hint'],
-        timeLimitSeconds: json['timeLimitSeconds'],
-        codeSnippet: json['codeSnippet'],
-        audioText: json['audioText'],
-        imageDescription: json['imageDescription'],
-        imageUrl: json['imageUrl'],
-        context: json['context'],
-      );
+    id: json['id'] ?? '',
+    type: ExerciseType.values.firstWhere(
+      (e) => e.name == json['type'],
+      orElse: () => ExerciseType.mcq,
+    ),
+    question: json['question'] ?? '',
+    options: List<String>.from(json['options'] ?? []),
+    correctAnswer: json['correctAnswer'] ?? '',
+    alternateCorrectAnswers: json['alternateCorrectAnswers'] != null
+        ? List<String>.from(json['alternateCorrectAnswers'])
+        : null,
+    explanation: json['explanation'] ?? '',
+    difficulty: ExerciseDifficulty.values.firstWhere(
+      (e) => e.name == json['difficulty'],
+      orElse: () => ExerciseDifficulty.medium,
+    ),
+    points: json['points'] ?? 10,
+    hint: json['hint'],
+    timeLimitSeconds: json['timeLimitSeconds'],
+    codeSnippet: json['codeSnippet'],
+    audioText: json['audioText'],
+    imageDescription: json['imageDescription'],
+    imageUrl: json['imageUrl'],
+    context: json['context'],
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'type': type.name,
-        'question': question,
-        'options': options,
-        'correctAnswer': correctAnswer,
-        'alternateCorrectAnswers': alternateCorrectAnswers,
-        'explanation': explanation,
-        'difficulty': difficulty.name,
-        'points': points,
-        'hint': hint,
-        'timeLimitSeconds': timeLimitSeconds,
-        'codeSnippet': codeSnippet,
-        'audioText': audioText,
-        'imageDescription': imageDescription,
-        'imageUrl': imageUrl,
-        'context': context,
-      };
+    'id': id,
+    'type': type.name,
+    'question': question,
+    'options': options,
+    'correctAnswer': correctAnswer,
+    'alternateCorrectAnswers': alternateCorrectAnswers,
+    'explanation': explanation,
+    'difficulty': difficulty.name,
+    'points': points,
+    'hint': hint,
+    'timeLimitSeconds': timeLimitSeconds,
+    'codeSnippet': codeSnippet,
+    'audioText': audioText,
+    'imageDescription': imageDescription,
+    'imageUrl': imageUrl,
+    'context': context,
+  };
 }
 
 // ─── Exercise Result ──────────────────────────────────────────────
@@ -234,24 +234,23 @@ class ExerciseResult {
     this.feedback,
   });
 
-  factory ExerciseResult.fromJson(Map<String, dynamic> json) =>
-      ExerciseResult(
-        exerciseId: json['exerciseId'] ?? '',
-        userAnswer: json['userAnswer'] ?? '',
-        isCorrect: json['isCorrect'] ?? false,
-        timeSpentSeconds: json['timeSpentSeconds'] ?? 0,
-        scoreEarned: json['scoreEarned'] ?? 0,
-        feedback: json['feedback'],
-      );
+  factory ExerciseResult.fromJson(Map<String, dynamic> json) => ExerciseResult(
+    exerciseId: json['exerciseId'] ?? '',
+    userAnswer: json['userAnswer'] ?? '',
+    isCorrect: json['isCorrect'] ?? false,
+    timeSpentSeconds: json['timeSpentSeconds'] ?? 0,
+    scoreEarned: json['scoreEarned'] ?? 0,
+    feedback: json['feedback'],
+  );
 
   Map<String, dynamic> toJson() => {
-        'exerciseId': exerciseId,
-        'userAnswer': userAnswer,
-        'isCorrect': isCorrect,
-        'timeSpentSeconds': timeSpentSeconds,
-        'scoreEarned': scoreEarned,
-        'feedback': feedback,
-      };
+    'exerciseId': exerciseId,
+    'userAnswer': userAnswer,
+    'isCorrect': isCorrect,
+    'timeSpentSeconds': timeSpentSeconds,
+    'scoreEarned': scoreEarned,
+    'feedback': feedback,
+  };
 }
 
 // ─── Session Type ─────────────────────────────────────────────────
@@ -384,8 +383,8 @@ class ExerciseSession {
     this.topic,
     this.warmupText,
     this.cooldownReflection,
-  })  : maxScore = maxScore ?? exercises.fold<int>(0, (s, e) => s + e.points),
-        startedAt = startedAt ?? DateTime.now();
+  }) : maxScore = maxScore ?? exercises.fold<int>(0, (s, e) => s + e.points),
+       startedAt = startedAt ?? DateTime.now();
 
   bool get isComplete =>
       completedAt != null || results.length >= exercises.length;
@@ -412,13 +411,16 @@ class ExerciseSession {
           (e) => e.name == json['level'],
           orElse: () => LearningLevel.beginner,
         ),
-        exercises: (json['exercises'] as List<dynamic>?)
+        exercises:
+            (json['exercises'] as List<dynamic>?)
                 ?.map((e) => Exercise.fromJson(Map<String, dynamic>.from(e)))
                 .toList() ??
             [],
-        results: (json['results'] as List<dynamic>?)
-                ?.map((e) =>
-                    ExerciseResult.fromJson(Map<String, dynamic>.from(e)))
+        results:
+            (json['results'] as List<dynamic>?)
+                ?.map(
+                  (e) => ExerciseResult.fromJson(Map<String, dynamic>.from(e)),
+                )
                 .toList() ??
             [],
         totalScore: json['totalScore'] ?? 0,
@@ -434,18 +436,18 @@ class ExerciseSession {
       );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'sessionType': sessionType.name,
-        'level': level.name,
-        'exercises': exercises.map((e) => e.toJson()).toList(),
-        'results': results.map((e) => e.toJson()).toList(),
-        'totalScore': totalScore,
-        'maxScore': maxScore,
-        'durationSeconds': durationSeconds,
-        'startedAt': startedAt.toIso8601String(),
-        'completedAt': completedAt?.toIso8601String(),
-        'topic': topic,
-        'warmupText': warmupText,
-        'cooldownReflection': cooldownReflection,
-      };
+    'id': id,
+    'sessionType': sessionType.name,
+    'level': level.name,
+    'exercises': exercises.map((e) => e.toJson()).toList(),
+    'results': results.map((e) => e.toJson()).toList(),
+    'totalScore': totalScore,
+    'maxScore': maxScore,
+    'durationSeconds': durationSeconds,
+    'startedAt': startedAt.toIso8601String(),
+    'completedAt': completedAt?.toIso8601String(),
+    'topic': topic,
+    'warmupText': warmupText,
+    'cooldownReflection': cooldownReflection,
+  };
 }

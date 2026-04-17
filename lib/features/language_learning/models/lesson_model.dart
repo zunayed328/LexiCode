@@ -141,20 +141,19 @@ class LessonExample {
     this.translationHint,
   });
 
-  factory LessonExample.fromJson(Map<String, dynamic> json) =>
-      LessonExample(
-        sentence: json['sentence'] ?? '',
-        highlightedPart: json['highlightedPart'],
-        pronunciationGuide: json['pronunciationGuide'],
-        translationHint: json['translationHint'],
-      );
+  factory LessonExample.fromJson(Map<String, dynamic> json) => LessonExample(
+    sentence: json['sentence'] ?? '',
+    highlightedPart: json['highlightedPart'],
+    pronunciationGuide: json['pronunciationGuide'],
+    translationHint: json['translationHint'],
+  );
 
   Map<String, dynamic> toJson() => {
-        'sentence': sentence,
-        'highlightedPart': highlightedPart,
-        'pronunciationGuide': pronunciationGuide,
-        'translationHint': translationHint,
-      };
+    'sentence': sentence,
+    'highlightedPart': highlightedPart,
+    'pronunciationGuide': pronunciationGuide,
+    'translationHint': translationHint,
+  };
 }
 
 // ─── Grammar Point ────────────────────────────────────────────────
@@ -174,22 +173,21 @@ class GrammarPoint {
     this.mnemonicTip,
   });
 
-  factory GrammarPoint.fromJson(Map<String, dynamic> json) =>
-      GrammarPoint(
-        rule: json['rule'] ?? '',
-        ruleExplanation: json['ruleExplanation'] ?? '',
-        examples: List<String>.from(json['examples'] ?? []),
-        exceptions: List<String>.from(json['exceptions'] ?? []),
-        mnemonicTip: json['mnemonicTip'],
-      );
+  factory GrammarPoint.fromJson(Map<String, dynamic> json) => GrammarPoint(
+    rule: json['rule'] ?? '',
+    ruleExplanation: json['ruleExplanation'] ?? '',
+    examples: List<String>.from(json['examples'] ?? []),
+    exceptions: List<String>.from(json['exceptions'] ?? []),
+    mnemonicTip: json['mnemonicTip'],
+  );
 
   Map<String, dynamic> toJson() => {
-        'rule': rule,
-        'ruleExplanation': ruleExplanation,
-        'examples': examples,
-        'exceptions': exceptions,
-        'mnemonicTip': mnemonicTip,
-      };
+    'rule': rule,
+    'ruleExplanation': ruleExplanation,
+    'examples': examples,
+    'exceptions': exceptions,
+    'mnemonicTip': mnemonicTip,
+  };
 }
 
 // ─── Learning Lesson ──────────────────────────────────────────────
@@ -227,53 +225,52 @@ class LearningLesson {
     DateTime? generatedAt,
   }) : generatedAt = generatedAt ?? DateTime.now();
 
-  factory LearningLesson.fromJson(Map<String, dynamic> json) =>
-      LearningLesson(
-        id: json['id'] ?? '',
-        topic: json['topic'] ?? '',
-        level: LearningLevel.values.firstWhere(
-          (e) => e.name == json['level'],
-          orElse: () => LearningLevel.beginner,
-        ),
-        title: json['title'] ?? '',
-        explanation: json['explanation'] ?? '',
-        examples: (json['examples'] as List<dynamic>?)
-                ?.map((e) =>
-                    LessonExample.fromJson(Map<String, dynamic>.from(e)))
-                .toList() ??
-            [],
-        grammarPoints: (json['grammarPoints'] as List<dynamic>?)
-                ?.map((e) =>
-                    GrammarPoint.fromJson(Map<String, dynamic>.from(e)))
-                .toList() ??
-            [],
-        exercises: (json['exercises'] as List<dynamic>?)
-                ?.map((e) => Exercise.fromJson(Map<String, dynamic>.from(e)))
-                .toList() ??
-            [],
-        commonMistakes: List<String>.from(json['commonMistakes'] ?? []),
-        tips: List<String>.from(json['tips'] ?? []),
-        voiceExampleTexts:
-            List<String>.from(json['voiceExampleTexts'] ?? []),
-        estimatedMinutes: json['estimatedMinutes'] ?? 15,
-        xpReward: json['xpReward'] ?? 20,
-        generatedAt: DateTime.tryParse(json['generatedAt'] ?? ''),
-      );
+  factory LearningLesson.fromJson(Map<String, dynamic> json) => LearningLesson(
+    id: json['id'] ?? '',
+    topic: json['topic'] ?? '',
+    level: LearningLevel.values.firstWhere(
+      (e) => e.name == json['level'],
+      orElse: () => LearningLevel.beginner,
+    ),
+    title: json['title'] ?? '',
+    explanation: json['explanation'] ?? '',
+    examples:
+        (json['examples'] as List<dynamic>?)
+            ?.map((e) => LessonExample.fromJson(Map<String, dynamic>.from(e)))
+            .toList() ??
+        [],
+    grammarPoints:
+        (json['grammarPoints'] as List<dynamic>?)
+            ?.map((e) => GrammarPoint.fromJson(Map<String, dynamic>.from(e)))
+            .toList() ??
+        [],
+    exercises:
+        (json['exercises'] as List<dynamic>?)
+            ?.map((e) => Exercise.fromJson(Map<String, dynamic>.from(e)))
+            .toList() ??
+        [],
+    commonMistakes: List<String>.from(json['commonMistakes'] ?? []),
+    tips: List<String>.from(json['tips'] ?? []),
+    voiceExampleTexts: List<String>.from(json['voiceExampleTexts'] ?? []),
+    estimatedMinutes: json['estimatedMinutes'] ?? 15,
+    xpReward: json['xpReward'] ?? 20,
+    generatedAt: DateTime.tryParse(json['generatedAt'] ?? ''),
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'topic': topic,
-        'level': level.name,
-        'title': title,
-        'explanation': explanation,
-        'examples': examples.map((e) => e.toJson()).toList(),
-        'grammarPoints': grammarPoints.map((e) => e.toJson()).toList(),
-        'exercises': exercises.map((e) => e.toJson()).toList(),
-        'commonMistakes': commonMistakes,
-        'tips': tips,
-        'voiceExampleTexts': voiceExampleTexts,
-        'estimatedMinutes': estimatedMinutes,
-        'xpReward': xpReward,
-        'generatedAt': generatedAt.toIso8601String(),
-      };
+    'id': id,
+    'topic': topic,
+    'level': level.name,
+    'title': title,
+    'explanation': explanation,
+    'examples': examples.map((e) => e.toJson()).toList(),
+    'grammarPoints': grammarPoints.map((e) => e.toJson()).toList(),
+    'exercises': exercises.map((e) => e.toJson()).toList(),
+    'commonMistakes': commonMistakes,
+    'tips': tips,
+    'voiceExampleTexts': voiceExampleTexts,
+    'estimatedMinutes': estimatedMinutes,
+    'xpReward': xpReward,
+    'generatedAt': generatedAt.toIso8601String(),
+  };
 }

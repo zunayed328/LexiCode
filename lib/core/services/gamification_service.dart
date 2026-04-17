@@ -115,10 +115,7 @@ class GamificationService {
     final difference = now.difference(lastActive).inDays;
 
     if (difference == 1) {
-      return user.copyWith(
-        streak: user.streak + 1,
-        lastActiveDate: now,
-      );
+      return user.copyWith(streak: user.streak + 1, lastActiveDate: now);
     } else if (difference > 1) {
       return user.copyWith(streak: 1, lastActiveDate: now);
     }

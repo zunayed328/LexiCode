@@ -31,41 +31,95 @@ class ExamResultScreen extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           slivers: [
             SliverToBoxAdapter(child: _buildAppBar(context)),
-            
+
             // Overall Score for Full Exam
             if (fullExamResult != null)
-              SliverToBoxAdapter(child: _buildOverallScore(isDark, fullExamResult!)),
+              SliverToBoxAdapter(
+                child: _buildOverallScore(isDark, fullExamResult!),
+              ),
 
             // Section Scores for Full Exam
             if (fullExamResult != null) ...[
-              SliverToBoxAdapter(child: _buildSectionTitle('Section Results', isDark)),
-              SliverToBoxAdapter(child: _buildSectionScores(isDark, fullExamResult!)),
-              if (fullExamResult!.skillResults[IELTSSectionType.writing]?.writingEvaluation != null) ...[
-                SliverToBoxAdapter(child: _buildSectionTitle('Writing Evaluation', isDark)),
-                SliverToBoxAdapter(child: _buildWritingDetails(isDark, fullExamResult!.skillResults[IELTSSectionType.writing]!.writingEvaluation!)),
+              SliverToBoxAdapter(
+                child: _buildSectionTitle('Section Results', isDark),
+              ),
+              SliverToBoxAdapter(
+                child: _buildSectionScores(isDark, fullExamResult!),
+              ),
+              if (fullExamResult!
+                      .skillResults[IELTSSectionType.writing]
+                      ?.writingEvaluation !=
+                  null) ...[
+                SliverToBoxAdapter(
+                  child: _buildSectionTitle('Writing Evaluation', isDark),
+                ),
+                SliverToBoxAdapter(
+                  child: _buildWritingDetails(
+                    isDark,
+                    fullExamResult!
+                        .skillResults[IELTSSectionType.writing]!
+                        .writingEvaluation!,
+                  ),
+                ),
               ],
-              if (fullExamResult!.skillResults[IELTSSectionType.speaking]?.speakingEvaluation != null) ...[
-                SliverToBoxAdapter(child: _buildSectionTitle('Speaking Evaluation', isDark)),
-                SliverToBoxAdapter(child: _buildSpeakingDetails(isDark, fullExamResult!.skillResults[IELTSSectionType.speaking]!.speakingEvaluation!)),
+              if (fullExamResult!
+                      .skillResults[IELTSSectionType.speaking]
+                      ?.speakingEvaluation !=
+                  null) ...[
+                SliverToBoxAdapter(
+                  child: _buildSectionTitle('Speaking Evaluation', isDark),
+                ),
+                SliverToBoxAdapter(
+                  child: _buildSpeakingDetails(
+                    isDark,
+                    fullExamResult!
+                        .skillResults[IELTSSectionType.speaking]!
+                        .speakingEvaluation!,
+                  ),
+                ),
               ],
               if (fullExamResult!.aiReport != null) ...[
-                SliverToBoxAdapter(child: _buildSectionTitle('AI Personalized Report', isDark)),
-                SliverToBoxAdapter(child: _buildAIReport(isDark, fullExamResult!.aiReport!)),
+                SliverToBoxAdapter(
+                  child: _buildSectionTitle('AI Personalized Report', isDark),
+                ),
+                SliverToBoxAdapter(
+                  child: _buildAIReport(isDark, fullExamResult!.aiReport!),
+                ),
               ],
             ],
 
             // Individual Results View
             if (writingResult != null) ...[
-              SliverToBoxAdapter(child: _buildIsolatedWritingResult(isDark, writingResult!)),
+              SliverToBoxAdapter(
+                child: _buildIsolatedWritingResult(isDark, writingResult!),
+              ),
             ],
             if (speakingResult != null) ...[
-              SliverToBoxAdapter(child: _buildIsolatedSpeakingResult(isDark, speakingResult!)),
+              SliverToBoxAdapter(
+                child: _buildIsolatedSpeakingResult(isDark, speakingResult!),
+              ),
             ],
             if (listeningResult != null) ...[
-              SliverToBoxAdapter(child: _buildIsolatedSkillResult('Listening', Icons.headphones, const Color(0xFF3B82F6), isDark, listeningResult!)),
+              SliverToBoxAdapter(
+                child: _buildIsolatedSkillResult(
+                  'Listening',
+                  Icons.headphones,
+                  const Color(0xFF3B82F6),
+                  isDark,
+                  listeningResult!,
+                ),
+              ),
             ],
             if (readingResult != null) ...[
-              SliverToBoxAdapter(child: _buildIsolatedSkillResult('Reading', Icons.menu_book, const Color(0xFF10B981), isDark, readingResult!)),
+              SliverToBoxAdapter(
+                child: _buildIsolatedSkillResult(
+                  'Reading',
+                  Icons.menu_book,
+                  const Color(0xFF10B981),
+                  isDark,
+                  readingResult!,
+                ),
+              ),
             ],
 
             SliverToBoxAdapter(child: _buildActions(context, isDark)),
@@ -85,7 +139,10 @@ class ExamResultScreen extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close_rounded),
           ),
-          Text('Results', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+          Text(
+            'Results',
+            style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+          ),
         ],
       ),
     );
@@ -113,10 +170,13 @@ class ExamResultScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text('Overall Band Score', style: GoogleFonts.inter(fontSize: 14, color: Colors.white70)),
+            Text(
+              'Overall Band Score',
+              style: GoogleFonts.inter(fontSize: 14, color: Colors.white70),
+            ),
             const SizedBox(height: 8),
             ScoreReveal(
-              score: result.overallBand, 
+              score: result.overallBand,
               maxScore: 9,
               isBandScore: true,
               size: 120,
@@ -128,7 +188,14 @@ class ExamResultScreen extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text('CEFR Level: ${result.cefrLevel}', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white)),
+              child: Text(
+                'CEFR Level: ${result.cefrLevel}',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
             ),
           ],
         ),
@@ -139,7 +206,10 @@ class ExamResultScreen extends StatelessWidget {
   Widget _buildSectionTitle(String title, bool isDark) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
-      child: Text(title, style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+      child: Text(
+        title,
+        style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+      ),
     );
   }
 
@@ -153,16 +223,58 @@ class ExamResultScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          if (listening != null) Expanded(child: _buildMiniSectionCard('Listening', Icons.headphones_rounded, const Color(0xFF3B82F6), listening, isDark)),
-          if (reading != null) Expanded(child: _buildMiniSectionCard('Reading', Icons.menu_book_rounded, const Color(0xFF10B981), reading, isDark)),
-          if (writing != null) Expanded(child: _buildMiniSectionCard('Writing', Icons.edit_rounded, const Color(0xFFF59E0B), writing, isDark)),
-          if (speaking != null) Expanded(child: _buildMiniSectionCard('Speaking', Icons.mic_rounded, const Color(0xFFEC4899), speaking, isDark)),
+          if (listening != null)
+            Expanded(
+              child: _buildMiniSectionCard(
+                'Listening',
+                Icons.headphones_rounded,
+                const Color(0xFF3B82F6),
+                listening,
+                isDark,
+              ),
+            ),
+          if (reading != null)
+            Expanded(
+              child: _buildMiniSectionCard(
+                'Reading',
+                Icons.menu_book_rounded,
+                const Color(0xFF10B981),
+                reading,
+                isDark,
+              ),
+            ),
+          if (writing != null)
+            Expanded(
+              child: _buildMiniSectionCard(
+                'Writing',
+                Icons.edit_rounded,
+                const Color(0xFFF59E0B),
+                writing,
+                isDark,
+              ),
+            ),
+          if (speaking != null)
+            Expanded(
+              child: _buildMiniSectionCard(
+                'Speaking',
+                Icons.mic_rounded,
+                const Color(0xFFEC4899),
+                speaking,
+                isDark,
+              ),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildMiniSectionCard(String title, IconData icon, Color color, SkillResult result, bool isDark) {
+  Widget _buildMiniSectionCard(
+    String title,
+    IconData icon,
+    Color color,
+    SkillResult result,
+    bool isDark,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -175,11 +287,33 @@ class ExamResultScreen extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 22),
           const SizedBox(height: 8),
-          Text(result.bandScore.toString(), style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w800, color: color)),
-          Text(title, style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w600, color: color)),
+          Text(
+            result.bandScore.toString(),
+            style: GoogleFonts.inter(
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              color: color,
+            ),
+          ),
+          Text(
+            title,
+            style: GoogleFonts.inter(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
           if (result.totalQuestions > 0) ...[
             const SizedBox(height: 4),
-            Text('${result.correctAnswers}/${result.totalQuestions}', style: GoogleFonts.inter(fontSize: 10, color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+            Text(
+              '${result.correctAnswers}/${result.totalQuestions}',
+              style: GoogleFonts.inter(
+                fontSize: 10,
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
+              ),
+            ),
           ],
         ],
       ),
@@ -194,16 +328,44 @@ class ExamResultScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildCriteriaRow('Task Achievement', writing.taskAchievement, isDark, const Color(0xFFF59E0B)),
+            _buildCriteriaRow(
+              'Task Achievement',
+              writing.taskAchievement,
+              isDark,
+              const Color(0xFFF59E0B),
+            ),
             const SizedBox(height: 8),
-            _buildCriteriaRow('Coherence & Cohesion', writing.coherenceCohesion, isDark, const Color(0xFFF59E0B)),
+            _buildCriteriaRow(
+              'Coherence & Cohesion',
+              writing.coherenceCohesion,
+              isDark,
+              const Color(0xFFF59E0B),
+            ),
             const SizedBox(height: 8),
-            _buildCriteriaRow('Lexical Resource', writing.lexicalResource, isDark, const Color(0xFFF59E0B)),
+            _buildCriteriaRow(
+              'Lexical Resource',
+              writing.lexicalResource,
+              isDark,
+              const Color(0xFFF59E0B),
+            ),
             const SizedBox(height: 8),
-            _buildCriteriaRow('Grammatical Range', writing.grammaticalRange, isDark, const Color(0xFFF59E0B)),
+            _buildCriteriaRow(
+              'Grammatical Range',
+              writing.grammaticalRange,
+              isDark,
+              const Color(0xFFF59E0B),
+            ),
             if (writing.detailedFeedback != null) ...[
               const SizedBox(height: 14),
-              Text(writing.detailedFeedback!, style: GoogleFonts.inter(fontSize: 13, height: 1.5, fontStyle: FontStyle.italic, color: isDark ? Colors.white60 : Colors.black54)),
+              Text(
+                writing.detailedFeedback!,
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  height: 1.5,
+                  fontStyle: FontStyle.italic,
+                  color: isDark ? Colors.white60 : Colors.black54,
+                ),
+              ),
             ],
           ],
         ),
@@ -219,16 +381,44 @@ class ExamResultScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildCriteriaRow('Fluency & Coherence', speaking.fluencyCoherence, isDark, const Color(0xFFEC4899)),
+            _buildCriteriaRow(
+              'Fluency & Coherence',
+              speaking.fluencyCoherence,
+              isDark,
+              const Color(0xFFEC4899),
+            ),
             const SizedBox(height: 8),
-            _buildCriteriaRow('Pronunciation', speaking.pronunciation, isDark, const Color(0xFFEC4899)),
+            _buildCriteriaRow(
+              'Pronunciation',
+              speaking.pronunciation,
+              isDark,
+              const Color(0xFFEC4899),
+            ),
             const SizedBox(height: 8),
-            _buildCriteriaRow('Lexical Resource', speaking.lexicalResource, isDark, const Color(0xFFEC4899)),
+            _buildCriteriaRow(
+              'Lexical Resource',
+              speaking.lexicalResource,
+              isDark,
+              const Color(0xFFEC4899),
+            ),
             const SizedBox(height: 8),
-            _buildCriteriaRow('Grammatical Range', speaking.grammaticalRange, isDark, const Color(0xFFEC4899)),
+            _buildCriteriaRow(
+              'Grammatical Range',
+              speaking.grammaticalRange,
+              isDark,
+              const Color(0xFFEC4899),
+            ),
             if (speaking.feedback.isNotEmpty) ...[
               const SizedBox(height: 14),
-              Text(speaking.feedback.join('\n'), style: GoogleFonts.inter(fontSize: 13, height: 1.5, fontStyle: FontStyle.italic, color: isDark ? Colors.white60 : Colors.black54)),
+              Text(
+                speaking.feedback.join('\n'),
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  height: 1.5,
+                  fontStyle: FontStyle.italic,
+                  color: isDark ? Colors.white60 : Colors.black54,
+                ),
+              ),
             ],
           ],
         ),
@@ -242,7 +432,12 @@ class ExamResultScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildScoreHeader(result.overallBand, 'Writing Band Score', isDark, const Color(0xFFF59E0B)),
+          _buildScoreHeader(
+            result.overallBand,
+            'Writing Band Score',
+            isDark,
+            const Color(0xFFF59E0B),
+          ),
           _buildSectionTitle('Detailed Criteria', isDark),
           _buildWritingDetails(isDark, result),
         ],
@@ -256,7 +451,12 @@ class ExamResultScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildScoreHeader(result.overallBand, 'Speaking Band Score', isDark, const Color(0xFFEC4899)),
+          _buildScoreHeader(
+            result.overallBand,
+            'Speaking Band Score',
+            isDark,
+            const Color(0xFFEC4899),
+          ),
           _buildSectionTitle('Detailed Criteria', isDark),
           _buildSpeakingDetails(isDark, result),
         ],
@@ -264,13 +464,24 @@ class ExamResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildIsolatedSkillResult(String title, IconData icon, Color color, bool isDark, SkillResult result) {
+  Widget _buildIsolatedSkillResult(
+    String title,
+    IconData icon,
+    Color color,
+    bool isDark,
+    SkillResult result,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildScoreHeader(result.bandScore, '$title Band Score', isDark, color),
+          _buildScoreHeader(
+            result.bandScore,
+            '$title Band Score',
+            isDark,
+            color,
+          ),
           const SizedBox(height: 16),
           GlassCard(
             borderColor: color.withValues(alpha: 0.2),
@@ -279,25 +490,54 @@ class ExamResultScreen extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    Text('Correct', style: GoogleFonts.inter(fontSize: 14, color: AppColors.success)),
-                    Text(result.correctAnswers.toString(), style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text(
+                      'Correct',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: AppColors.success,
+                      ),
+                    ),
+                    Text(
+                      result.correctAnswers.toString(),
+                      style: GoogleFonts.inter(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
                 Column(
                   children: [
-                    Text('Total', style: GoogleFonts.inter(fontSize: 14, color: Colors.grey)),
-                    Text(result.totalQuestions.toString(), style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text(
+                      'Total',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Text(
+                      result.totalQuestions.toString(),
+                      style: GoogleFonts.inter(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildScoreHeader(double score, String title, bool isDark, Color color) {
+  Widget _buildScoreHeader(
+    double score,
+    String title,
+    bool isDark,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -307,7 +547,14 @@ class ExamResultScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(title, style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, color: color)),
+          Text(
+            title,
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
           const SizedBox(height: 12),
           ScoreReveal(score: score, maxScore: 9, isBandScore: true, size: 100),
         ],
@@ -315,11 +562,19 @@ class ExamResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCriteriaRow(String label, double score, bool isDark, Color color) {
+  Widget _buildCriteriaRow(
+    String label,
+    double score,
+    bool isDark,
+    Color color,
+  ) {
     return Row(
       children: [
         Expanded(
-          child: Text(label, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500)),
+          child: Text(
+            label,
+            style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
         ),
         Container(
           width: 44,
@@ -329,7 +584,14 @@ class ExamResultScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Center(
-            child: Text(score.toStringAsFixed(1), style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700, color: color)),
+            child: Text(
+              score.toStringAsFixed(1),
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
           ),
         ),
       ],
@@ -353,14 +615,31 @@ class ExamResultScreen extends StatelessWidget {
                     gradient: AppColors.primaryGradient,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 18),
+                  child: const Icon(
+                    Icons.auto_awesome_rounded,
+                    color: Colors.white,
+                    size: 18,
+                  ),
                 ),
                 const SizedBox(width: 10),
-                Text('AI Analysis', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700)),
+                Text(
+                  'AI Analysis',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 14),
-            Text(report, style: GoogleFonts.inter(fontSize: 14, height: 1.6, color: isDark ? Colors.white70 : Colors.black87)),
+            Text(
+              report,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                height: 1.6,
+                color: isDark ? Colors.white70 : Colors.black87,
+              ),
+            ),
           ],
         ),
       ),
@@ -378,10 +657,18 @@ class ExamResultScreen extends StatelessWidget {
             child: ElevatedButton.icon(
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.check_circle_rounded),
-              label: Text('Done', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700)),
+              label: Text(
+                'Done',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF8B5CF6),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
             ),
           ),

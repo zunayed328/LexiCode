@@ -29,30 +29,132 @@ class AIService {
 
   /// Strong keyword indicators per language. A match requires 2+ hits.
   static const Map<String, List<String>> _languageSignatures = {
-    'Dart': ['import \'package:', 'Widget ', 'StatelessWidget', 'StatefulWidget',
-             '@override', 'BuildContext', 'setState(', 'final ', 'late '],
-    'Python': ['def ', 'elif ', 'import ', 'self.', '__init__', 'print(',
-               'class :', 'from ', 'except ', 'True', 'False', 'None'],
-    'JavaScript': ['console.log', 'function ', 'const ', 'let ', 'var ',
-                   '=>', 'document.', 'require(', 'module.exports'],
-    'TypeScript': ['interface ', ': string', ': number', ': boolean',
-                   'import {', 'export ', 'type ', 'as const'],
-    'Java': ['public class', 'System.out', 'import java.', 'void main(String',
-             'private ', 'protected ', '@Override', 'throws '],
-    'Kotlin': ['fun ', 'val ', 'println(', 'package ', 'suspend ',
-               'override fun', 'companion object', 'data class'],
-    'Swift': ['func ', 'import UIKit', 'import Foundation', 'guard ',
-              'let ', 'struct ', '@IBOutlet', 'override func'],
-    'Go': ['package main', 'func main()', 'fmt.', 'import (',
-           ':= ', 'func (', 'go func', 'chan '],
-    'Rust': ['fn main()', 'let mut', 'println!', 'use std::',
-             'impl ', '-> ', 'pub fn', '&self'],
-    'C++': ['#include', 'cout', 'std::', 'int main(',
-            'using namespace', 'cin', 'endl', '::'],
-    'C#': ['using System', 'namespace ', 'Console.Write', 'static void Main',
-           'public class', 'private ', 'get;', 'set;'],
-    'PHP': ['<?php', '\$this->', 'echo ', 'function ',
-            'namespace ', 'use ', '->',  '::class'],
+    'Dart': [
+      'import \'package:',
+      'Widget ',
+      'StatelessWidget',
+      'StatefulWidget',
+      '@override',
+      'BuildContext',
+      'setState(',
+      'final ',
+      'late ',
+    ],
+    'Python': [
+      'def ',
+      'elif ',
+      'import ',
+      'self.',
+      '__init__',
+      'print(',
+      'class :',
+      'from ',
+      'except ',
+      'True',
+      'False',
+      'None',
+    ],
+    'JavaScript': [
+      'console.log',
+      'function ',
+      'const ',
+      'let ',
+      'var ',
+      '=>',
+      'document.',
+      'require(',
+      'module.exports',
+    ],
+    'TypeScript': [
+      'interface ',
+      ': string',
+      ': number',
+      ': boolean',
+      'import {',
+      'export ',
+      'type ',
+      'as const',
+    ],
+    'Java': [
+      'public class',
+      'System.out',
+      'import java.',
+      'void main(String',
+      'private ',
+      'protected ',
+      '@Override',
+      'throws ',
+    ],
+    'Kotlin': [
+      'fun ',
+      'val ',
+      'println(',
+      'package ',
+      'suspend ',
+      'override fun',
+      'companion object',
+      'data class',
+    ],
+    'Swift': [
+      'func ',
+      'import UIKit',
+      'import Foundation',
+      'guard ',
+      'let ',
+      'struct ',
+      '@IBOutlet',
+      'override func',
+    ],
+    'Go': [
+      'package main',
+      'func main()',
+      'fmt.',
+      'import (',
+      ':= ',
+      'func (',
+      'go func',
+      'chan ',
+    ],
+    'Rust': [
+      'fn main()',
+      'let mut',
+      'println!',
+      'use std::',
+      'impl ',
+      '-> ',
+      'pub fn',
+      '&self',
+    ],
+    'C++': [
+      '#include',
+      'cout',
+      'std::',
+      'int main(',
+      'using namespace',
+      'cin',
+      'endl',
+      '::',
+    ],
+    'C#': [
+      'using System',
+      'namespace ',
+      'Console.Write',
+      'static void Main',
+      'public class',
+      'private ',
+      'get;',
+      'set;',
+    ],
+    'PHP': [
+      '<?php',
+      '\$this->',
+      'echo ',
+      'function ',
+      'namespace ',
+      'use ',
+      '->',
+      '::class',
+    ],
   };
 
   /// Returns the detected language name if there is a mismatch,
@@ -116,14 +218,13 @@ class AIService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
-        final content =
-            data['choices'][0]['message']['content'] as String;
+        final content = data['choices'][0]['message']['content'] as String;
         return jsonDecode(content) as Map<String, dynamic>;
       } else {
-        print('Groq API error ${response.statusCode}: ${response.body}');
+        debugPrint('Groq API error ${response.statusCode}: ${response.body}');
       }
     } catch (e) {
-      print('Error calling Groq API: $e');
+      debugPrint('Error calling Groq API: $e');
     }
     return null;
   }
@@ -325,10 +426,7 @@ $code''',
             'You are a friendly coding mentor helping a developer learn English '
             'and programming. Context: $context.',
       },
-      {
-        'role': 'user',
-        'content': message,
-      },
+      {'role': 'user', 'content': message},
     ];
 
     try {
@@ -354,10 +452,10 @@ $code''',
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         return data['choices'][0]['message']['content'] as String;
       } else {
-        print('Groq API error ${response.statusCode}: ${response.body}');
+        debugPrint('Groq API error ${response.statusCode}: ${response.body}');
       }
     } catch (e) {
-      print('Error in chatWithMentor: $e');
+      debugPrint('Error in chatWithMentor: $e');
     }
     return 'Sorry, something went wrong. Please try again.';
   }

@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/foundation.dart';
 import '../../shared/models/user_model.dart';
 
-/// Service for Firestore database operations.
+/// Service for Firestore database operations and serverless scaling.
 ///
-/// Handles user document creation, retrieval, and field updates.
-/// All methods are safe to call — they catch and log errors rather
-/// than crashing the app if Firestore is temporarily unreachable.
+/// Handles user document creation, retrieval, and field updates natively.
+/// Migrated to utilize Cloud Functions (`FirebaseFunctions.instance`) for secure 
+/// gamification metric manipulation (xp, level, streak), avoiding client-side state spoofing.
+/// All methods are robust and gracefully fall back upon failure.
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
@@ -61,7 +63,7 @@ class FirestoreService {
       await docRef.set(defaultData);
       return defaultData;
     } catch (e) {
-      print('FirestoreService.ensureUserDocument error: $e');
+      debugPrint('FirestoreService.ensureUserDocument error: $e');
       return null;
     }
   }
@@ -73,7 +75,7 @@ class FirestoreService {
       final snapshot = await _usersCollection.doc(uid).get();
       return snapshot.data();
     } catch (e) {
-      print('FirestoreService.getUserData error: $e');
+      debugPrint('FirestoreService.getUserData error: $e');
       return null;
     }
   }
@@ -86,16 +88,14 @@ class FirestoreService {
     try {
       final callable = FirebaseFunctions.instance.httpsCallable('saveProgress');
       final result = await callable.call({
-        'result': {
-          'xpEarned': xpToAdd,
-        }
+        'result': {'xpEarned': xpToAdd},
       });
       // The backend returns success info, but for our provider to react instantly
       // we just pull the freshest document.
       final newDoc = await _usersCollection.doc(uid).get();
       return newDoc.data();
     } catch (e) {
-      print('FirestoreService.updateXp error: $e');
+      debugPrint('FirestoreService.updateXp error: $e');
       return null;
     }
   }
@@ -104,11 +104,9 @@ class FirestoreService {
   Future<void> updateStreak(String uid) async {
     try {
       final callable = FirebaseFunctions.instance.httpsCallable('saveProgress');
-      await callable.call({
-        'updateStreak': true,
-      });
+      await callable.call({'updateStreak': true});
     } catch (e) {
-      print('FirestoreService.updateStreak error: $e');
+      debugPrint('FirestoreService.updateStreak error: $e');
     }
   }
 
@@ -121,26 +119,25 @@ class FirestoreService {
       } else if (field == 'lessonsCompleted') {
         await callable.call({
           'lessonId': 'manual_increment',
-          'result': {'xpEarned': 0} // just flag completion without extra XP
+          'result': {'xpEarned': 0}, // just flag completion without extra XP
         });
       } else {
-         // Attempt direct update for non-protected fields if necessary
-         await _usersCollection.doc(uid).update({
-           field: FieldValue.increment(amount),
-         });
+        // Attempt direct update for non-protected fields if necessary
+        await _usersCollection.doc(uid).update({
+          field: FieldValue.increment(amount),
+        });
       }
     } catch (e) {
-      print('FirestoreService.incrementField error: $e');
+      debugPrint('FirestoreService.incrementField error: $e');
     }
   }
 
   /// Generic update for any fields on the user document.
-  Future<void> updateUserFields(
-      String uid, Map<String, dynamic> fields) async {
+  Future<void> updateUserFields(String uid, Map<String, dynamic> fields) async {
     try {
       await _usersCollection.doc(uid).update(fields);
     } catch (e) {
-      print('FirestoreService.updateUserFields error: $e');
+      debugPrint('FirestoreService.updateUserFields error: $e');
     }
   }
 }

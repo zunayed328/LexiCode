@@ -22,11 +22,7 @@ class AppProvider extends ChangeNotifier {
   ThemeMode get themeMode => _themeMode;
 
   // User — starts with empty defaults, populated by loadUserFromAuth()
-  UserModel _user = UserModel(
-    id: '',
-    name: 'Developer',
-    email: '',
-  );
+  UserModel _user = UserModel(id: '', name: 'Developer', email: '');
   UserModel get user => _user;
   bool _userLoadedFromFirestore = false;
 
@@ -74,14 +70,14 @@ class AppProvider extends ChangeNotifier {
   List<LessonUnitModel> get lessonUnits => _buildLessonUnits();
 
   // Achievements
-  List<Achievement> get achievements =>
-      GamificationService.allAchievements;
+  List<Achievement> get achievements => GamificationService.allAchievements;
   List<Achievement> get unlockedAchievements =>
       _gamificationService.getUnlockedAchievements(_user);
 
   void toggleTheme() {
-    _themeMode =
-        _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    _themeMode = _themeMode == ThemeMode.dark
+        ? ThemeMode.light
+        : ThemeMode.dark;
     notifyListeners();
   }
 
@@ -117,7 +113,8 @@ class AppProvider extends ChangeNotifier {
   /// overwriting locally-earned XP with stale Firestore data.
   void loadUserFromAuth(Map<String, dynamic>? authUserData) {
     if (authUserData == null) return;
-    if (_userLoadedFromFirestore) return; // Already loaded — local model is source of truth
+    if (_userLoadedFromFirestore)
+      return; // Already loaded — local model is source of truth
 
     final uid = authUserData['uid'] as String? ?? '';
     final name = authUserData['name'] as String? ?? 'Developer';
@@ -135,8 +132,7 @@ class AppProvider extends ChangeNotifier {
           (authUserData['lessonsCompleted'] as num?)?.toInt() ?? 0,
       codeReviewsCompleted:
           (authUserData['codeReviewsCompleted'] as num?)?.toInt() ?? 0,
-      proficiencyLevel:
-          authUserData['proficiencyLevel'] as String? ?? 'A1',
+      proficiencyLevel: authUserData['proficiencyLevel'] as String? ?? 'A1',
       badges: List<String>.from(authUserData['badges'] ?? []),
     );
 
@@ -152,8 +148,13 @@ class AppProvider extends ChangeNotifier {
       final result = await _aiService.analyzeCode(code, _selectedLanguage);
       _lastReviewResult = result;
       _reviewHistory.insert(0, result);
-      _user = _gamificationService.addXp(_user, GamificationService.xpPerCodeReview);
-      _user = _user.copyWith(codeReviewsCompleted: _user.codeReviewsCompleted + 1);
+      _user = _gamificationService.addXp(
+        _user,
+        GamificationService.xpPerCodeReview,
+      );
+      _user = _user.copyWith(
+        codeReviewsCompleted: _user.codeReviewsCompleted + 1,
+      );
       _todayXp += GamificationService.xpPerCodeReview;
 
       // Log activity
@@ -169,10 +170,7 @@ class AppProvider extends ChangeNotifier {
 
       // Sync progress to backend (non-blocking, safe if Firebase not configured)
       try {
-        ApiService.saveProgress(
-          codeReviewCompleted: true,
-          updateStreak: true,
-        );
+        ApiService.saveProgress(codeReviewCompleted: true, updateStreak: true);
       } catch (_) {}
 
       return result;
@@ -202,17 +200,17 @@ class AppProvider extends ChangeNotifier {
     try {
       ApiService.saveProgress(
         lessonId: lessonId,
-        result: {
-          'xpEarned': GamificationService.xpPerLesson,
-          'score': 100,
-        },
+        result: {'xpEarned': GamificationService.xpPerLesson, 'score': 100},
         updateStreak: true,
       );
     } catch (_) {}
   }
 
   void addXpForPractice() {
-    _user = _gamificationService.addXp(_user, GamificationService.xpPerPractice);
+    _user = _gamificationService.addXp(
+      _user,
+      GamificationService.xpPerPractice,
+    );
     _todayXp += GamificationService.xpPerPractice;
 
     // Log activity
@@ -250,7 +248,8 @@ class AppProvider extends ChangeNotifier {
     _firestoreService.updateXp(_user.id, xpPerMentorChat).then((result) {
       if (result != null) {
         final confirmedXp = (result['xp'] as num?)?.toInt() ?? _user.xp;
-        final confirmedLevel = (result['level'] as num?)?.toInt() ?? _user.level;
+        final confirmedLevel =
+            (result['level'] as num?)?.toInt() ?? _user.level;
         if (confirmedXp != _user.xp || confirmedLevel != _user.level) {
           _user = _user.copyWith(xp: confirmedXp, level: confirmedLevel);
           notifyListeners();
@@ -292,11 +291,14 @@ class AppProvider extends ChangeNotifier {
     final now = DateTime.now();
     return List.generate(7, (i) {
       final day = now.subtract(Duration(days: 6 - i));
-      return _user.activityLog.where((a) {
-        return a.timestamp.year == day.year &&
-            a.timestamp.month == day.month &&
-            a.timestamp.day == day.day;
-      }).length.toDouble();
+      return _user.activityLog
+          .where((a) {
+            return a.timestamp.year == day.year &&
+                a.timestamp.month == day.month &&
+                a.timestamp.day == day.day;
+          })
+          .length
+          .toDouble();
     });
   }
 
@@ -313,8 +315,7 @@ class AppProvider extends ChangeNotifier {
     final sessionMinutes = _usageTimer.elapsed.inMinutes;
     if (sessionMinutes > 0) {
       _user = _user.copyWith(
-        totalTimeSpentMinutes:
-            _user.totalTimeSpentMinutes + sessionMinutes,
+        totalTimeSpentMinutes: _user.totalTimeSpentMinutes + sessionMinutes,
       );
       _usageTimer.reset();
       _usageTimer.start();
@@ -507,23 +508,28 @@ class AppProvider extends ChangeNotifier {
           'Runs very fast',
         ],
         correctAnswer: 'No longer recommended for use',
-        explanation: '"Deprecated" means a feature is outdated and developers are discouraged from using it. It may be removed in future versions.',
+        explanation:
+            '"Deprecated" means a feature is outdated and developers are discouraged from using it. It may be removed in future versions.',
       ),
       QuestionModel(
         id: 'q2',
-        question: 'Fill in the blank: We need to _____ this function to improve performance.',
+        question:
+            'Fill in the blank: We need to _____ this function to improve performance.',
         type: QuestionType.fillBlank,
         options: ['optimize', 'delete', 'ignore', 'copy'],
         correctAnswer: 'optimize',
-        explanation: '"Optimize" means to make something work as efficiently as possible.',
+        explanation:
+            '"Optimize" means to make something work as efficiently as possible.',
       ),
       QuestionModel(
         id: 'q3',
-        question: 'Which word means "to restructure code without changing its behavior"?',
+        question:
+            'Which word means "to restructure code without changing its behavior"?',
         type: QuestionType.multipleChoice,
         options: ['Refactor', 'Debug', 'Deploy', 'Compile'],
         correctAnswer: 'Refactor',
-        explanation: '"Refactor" means reorganizing code to improve its internal structure while keeping the same external behavior.',
+        explanation:
+            '"Refactor" means reorganizing code to improve its internal structure while keeping the same external behavior.',
       ),
       QuestionModel(
         id: 'q4',
@@ -536,15 +542,18 @@ class AppProvider extends ChangeNotifier {
           'A testing framework',
         ],
         correctAnswer: 'An error or flaw in the code',
-        explanation: 'A "bug" is an error, flaw, or fault in a computer program that causes it to produce incorrect or unexpected results.',
+        explanation:
+            'A "bug" is an error, flaw, or fault in a computer program that causes it to produce incorrect or unexpected results.',
       ),
       QuestionModel(
         id: 'q5',
-        question: 'Fill in: The API returns a _____ when the request is successful.',
+        question:
+            'Fill in: The API returns a _____ when the request is successful.',
         type: QuestionType.fillBlank,
         options: ['response', 'error', 'crash', 'warning'],
         correctAnswer: 'response',
-        explanation: 'An API "response" is the data sent back by the server after processing a request.',
+        explanation:
+            'An API "response" is the data sent back by the server after processing a request.',
       ),
     ];
   }
@@ -553,7 +562,8 @@ class AppProvider extends ChangeNotifier {
     return [
       QuestionModel(
         id: 'cq1',
-        question: 'Which is the best inline comment for this code?\n\nif (retryCount > 3) { return; }',
+        question:
+            'Which is the best inline comment for this code?\n\nif (retryCount > 3) { return; }',
         type: QuestionType.multipleChoice,
         options: [
           '// Exit early if max retries exceeded',
@@ -562,16 +572,19 @@ class AppProvider extends ChangeNotifier {
           '// Return here',
         ],
         correctAnswer: '// Exit early if max retries exceeded',
-        explanation: 'Good comments explain WHY, not just WHAT. "Exit early if max retries exceeded" explains the purpose.',
+        explanation:
+            'Good comments explain WHY, not just WHAT. "Exit early if max retries exceeded" explains the purpose.',
         codeSnippet: 'if (retryCount > 3) {\n  return;\n}',
       ),
       QuestionModel(
         id: 'cq2',
-        question: 'Complete the doc comment: /// _____ the user\'s shopping cart total.',
+        question:
+            'Complete the doc comment: /// _____ the user\'s shopping cart total.',
         type: QuestionType.fillBlank,
         options: ['Calculates', 'Does', 'Makes', 'Runs'],
         correctAnswer: 'Calculates',
-        explanation: 'Doc comments should start with a verb in third person: "Calculates", "Returns", "Validates", etc.',
+        explanation:
+            'Doc comments should start with a verb in third person: "Calculates", "Returns", "Validates", etc.',
       ),
       QuestionModel(
         id: 'cq3',
@@ -584,11 +597,13 @@ class AppProvider extends ChangeNotifier {
           '# Hash comments',
         ],
         correctAnswer: '/// Triple slash comments',
-        explanation: 'In Dart, /// (triple slash) is used for documentation comments that can be processed by dartdoc.',
+        explanation:
+            'In Dart, /// (triple slash) is used for documentation comments that can be processed by dartdoc.',
       ),
       QuestionModel(
         id: 'cq4',
-        question: 'What is wrong with this comment?\n\n// Increment i by 1\ni++;',
+        question:
+            'What is wrong with this comment?\n\n// Increment i by 1\ni++;',
         type: QuestionType.multipleChoice,
         options: [
           'It states the obvious — explains WHAT not WHY',
@@ -597,7 +612,8 @@ class AppProvider extends ChangeNotifier {
           'Nothing is wrong',
         ],
         correctAnswer: 'It states the obvious — explains WHAT not WHY',
-        explanation: 'Comments should explain WHY something is done, not repeat WHAT the code obviously does.',
+        explanation:
+            'Comments should explain WHY something is done, not repeat WHAT the code obviously does.',
         codeSnippet: '// Increment i by 1\ni++;',
       ),
       QuestionModel(
@@ -606,7 +622,8 @@ class AppProvider extends ChangeNotifier {
         type: QuestionType.fillBlank,
         options: ['ArgumentError', 'Null', 'TypeError', 'FormatException'],
         correctAnswer: 'ArgumentError',
-        explanation: 'ArgumentError is typically thrown when a function receives an invalid argument, like null when non-null is expected.',
+        explanation:
+            'ArgumentError is typically thrown when a function receives an invalid argument, like null when non-null is expected.',
       ),
     ];
   }
@@ -624,15 +641,18 @@ class AppProvider extends ChangeNotifier {
           'Changes',
         ],
         correctAnswer: 'feat: add user authentication with OAuth2',
-        explanation: 'Using conventional commit prefixes (feat:, fix:, docs:) makes PR titles clear and searchable.',
+        explanation:
+            'Using conventional commit prefixes (feat:, fix:, docs:) makes PR titles clear and searchable.',
       ),
       QuestionModel(
         id: 'pq2',
-        question: 'Fill in the PR description: This PR _____ the login endpoint to support OAuth2.',
+        question:
+            'Fill in the PR description: This PR _____ the login endpoint to support OAuth2.',
         type: QuestionType.fillBlank,
         options: ['refactors', 'destroys', 'removes', 'ignores'],
         correctAnswer: 'refactors',
-        explanation: '"Refactors" means restructuring existing code. PR descriptions should use precise technical verbs.',
+        explanation:
+            '"Refactors" means restructuring existing code. PR descriptions should use precise technical verbs.',
       ),
       QuestionModel(
         id: 'pq3',
@@ -645,7 +665,8 @@ class AppProvider extends ChangeNotifier {
           'Personal opinions about the code',
         ],
         correctAnswer: 'What changed, why, and how to test',
-        explanation: 'Good PRs explain what was changed, the motivation, and verification steps.',
+        explanation:
+            'Good PRs explain what was changed, the motivation, and verification steps.',
       ),
       QuestionModel(
         id: 'pq4',
@@ -657,16 +678,20 @@ class AppProvider extends ChangeNotifier {
           'Made it faster',
           'IDK but it works now',
         ],
-        correctAnswer: 'This addresses the performance regression in the API layer',
-        explanation: 'Professional PRs use specific, technical language and explain the scope of changes.',
+        correctAnswer:
+            'This addresses the performance regression in the API layer',
+        explanation:
+            'Professional PRs use specific, technical language and explain the scope of changes.',
       ),
       QuestionModel(
         id: 'pq5',
-        question: 'Fill in: Breaking change: _____ the deprecated v1 endpoints.',
+        question:
+            'Fill in: Breaking change: _____ the deprecated v1 endpoints.',
         type: QuestionType.fillBlank,
         options: ['Removes', 'Adds', 'Copies', 'Moves'],
         correctAnswer: 'Removes',
-        explanation: 'When documenting breaking changes, clearly state what was removed or changed.',
+        explanation:
+            'When documenting breaking changes, clearly state what was removed or changed.',
       ),
     ];
   }
@@ -684,19 +709,23 @@ class AppProvider extends ChangeNotifier {
           'Please fix this ASAP!!!',
         ],
         correctAnswer: '[Bug] Login fails with 500 error on mobile (v2.3.1)',
-        explanation: 'Good bug report subjects include: category tag, specific description, and version number.',
+        explanation:
+            'Good bug report subjects include: category tag, specific description, and version number.',
       ),
       QuestionModel(
         id: 'eq2',
-        question: 'Fill in: I was able to _____ the issue on both Android and iOS devices.',
+        question:
+            'Fill in: I was able to _____ the issue on both Android and iOS devices.',
         type: QuestionType.fillBlank,
         options: ['reproduce', 'create', 'make', 'build'],
         correctAnswer: 'reproduce',
-        explanation: '"Reproduce" means to recreate the conditions that cause the bug to appear.',
+        explanation:
+            '"Reproduce" means to recreate the conditions that cause the bug to appear.',
       ),
       QuestionModel(
         id: 'eq3',
-        question: 'What should you include in the "Steps to Reproduce" section?',
+        question:
+            'What should you include in the "Steps to Reproduce" section?',
         type: QuestionType.multipleChoice,
         options: [
           'Numbered, specific steps to trigger the bug',
@@ -705,11 +734,13 @@ class AppProvider extends ChangeNotifier {
           'Code snippets from the entire codebase',
         ],
         correctAnswer: 'Numbered, specific steps to trigger the bug',
-        explanation: 'Clear, numbered steps help developers quickly understand and reproduce the issue.',
+        explanation:
+            'Clear, numbered steps help developers quickly understand and reproduce the issue.',
       ),
       QuestionModel(
         id: 'eq4',
-        question: 'Which phrase is most appropriate in a professional bug report?',
+        question:
+            'Which phrase is most appropriate in a professional bug report?',
         type: QuestionType.multipleChoice,
         options: [
           'Expected behavior vs Actual behavior',
@@ -718,7 +749,8 @@ class AppProvider extends ChangeNotifier {
           'Not my fault but...',
         ],
         correctAnswer: 'Expected behavior vs Actual behavior',
-        explanation: 'Using "Expected vs Actual" format clearly communicates the discrepancy.',
+        explanation:
+            'Using "Expected vs Actual" format clearly communicates the discrepancy.',
       ),
       QuestionModel(
         id: 'eq5',
@@ -726,7 +758,8 @@ class AppProvider extends ChangeNotifier {
         type: QuestionType.fillBlank,
         options: ['logs', 'pictures', 'feelings', 'opinions'],
         correctAnswer: 'logs',
-        explanation: '"Logs" are recorded system events that help diagnose technical issues.',
+        explanation:
+            '"Logs" are recorded system events that help diagnose technical issues.',
       ),
     ];
   }
@@ -743,16 +776,20 @@ class AppProvider extends ChangeNotifier {
           'Nothing to report.',
           'I was busy all day.',
         ],
-        correctAnswer: 'Yesterday I completed the API integration. Today I\'ll work on unit tests. No blockers.',
-        explanation: 'Standups follow the format: What I did, What I\'ll do, Any blockers.',
+        correctAnswer:
+            'Yesterday I completed the API integration. Today I\'ll work on unit tests. No blockers.',
+        explanation:
+            'Standups follow the format: What I did, What I\'ll do, Any blockers.',
       ),
       QuestionModel(
         id: 'mq2',
-        question: 'Fill in: I\'m currently _____ by a dependency conflict in the build pipeline.',
+        question:
+            'Fill in: I\'m currently _____ by a dependency conflict in the build pipeline.',
         type: QuestionType.fillBlank,
         options: ['blocked', 'stopped', 'hurt', 'broken'],
         correctAnswer: 'blocked',
-        explanation: '"Blocked" is the standard term for being unable to progress due to an external issue.',
+        explanation:
+            '"Blocked" is the standard term for being unable to progress due to an external issue.',
       ),
       QuestionModel(
         id: 'mq3',
@@ -764,8 +801,10 @@ class AppProvider extends ChangeNotifier {
           'This code is impossible',
           'I need help but I\'ll figure it out maybe',
         ],
-        correctAnswer: 'I could use some help reviewing the authentication module. Could someone pair with me after standup?',
-        explanation: 'Be specific about what you need help with and suggest a follow-up time.',
+        correctAnswer:
+            'I could use some help reviewing the authentication module. Could someone pair with me after standup?',
+        explanation:
+            'Be specific about what you need help with and suggest a follow-up time.',
       ),
       QuestionModel(
         id: 'mq4',
@@ -778,15 +817,18 @@ class AppProvider extends ChangeNotifier {
           'Coding in two programming languages',
         ],
         correctAnswer: 'Two developers working together on the same code',
-        explanation: '"Pair programming" is a practice where two developers collaborate: one writes code (driver) and one reviews in real-time (navigator).',
+        explanation:
+            '"Pair programming" is a practice where two developers collaborate: one writes code (driver) and one reviews in real-time (navigator).',
       ),
       QuestionModel(
         id: 'mq5',
-        question: 'Fill in: I need to _____ with the backend team about the API contract.',
+        question:
+            'Fill in: I need to _____ with the backend team about the API contract.',
         type: QuestionType.fillBlank,
         options: ['sync up', 'fight', 'argue', 'compete'],
         correctAnswer: 'sync up',
-        explanation: '"Sync up" means to meet and align on shared work or information.',
+        explanation:
+            '"Sync up" means to meet and align on shared work or information.',
       ),
     ];
   }

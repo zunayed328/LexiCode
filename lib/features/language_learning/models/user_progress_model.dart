@@ -78,7 +78,8 @@ extension CEFRLevelX on CEFRLevel {
 // ─── Skill Score ──────────────────────────────────────────────────
 
 class SkillScore {
-  final String skill; // grammar, pronunciation, spelling, reading, writing, listening, speaking
+  final String
+  skill; // grammar, pronunciation, spelling, reading, writing, listening, speaking
   final double currentScore; // 0–100
   final List<ScoreEntry> history;
 
@@ -102,27 +103,27 @@ class SkillScore {
     String? skill,
     double? currentScore,
     List<ScoreEntry>? history,
-  }) =>
-      SkillScore(
-        skill: skill ?? this.skill,
-        currentScore: currentScore ?? this.currentScore,
-        history: history ?? this.history,
-      );
+  }) => SkillScore(
+    skill: skill ?? this.skill,
+    currentScore: currentScore ?? this.currentScore,
+    history: history ?? this.history,
+  );
 
   factory SkillScore.fromJson(Map<String, dynamic> json) => SkillScore(
-        skill: json['skill'] ?? '',
-        currentScore: (json['currentScore'] as num?)?.toDouble() ?? 0,
-        history: (json['history'] as List<dynamic>?)
-                ?.map((e) => ScoreEntry.fromJson(Map<String, dynamic>.from(e)))
-                .toList() ??
-            [],
-      );
+    skill: json['skill'] ?? '',
+    currentScore: (json['currentScore'] as num?)?.toDouble() ?? 0,
+    history:
+        (json['history'] as List<dynamic>?)
+            ?.map((e) => ScoreEntry.fromJson(Map<String, dynamic>.from(e)))
+            .toList() ??
+        [],
+  );
 
   Map<String, dynamic> toJson() => {
-        'skill': skill,
-        'currentScore': currentScore,
-        'history': history.map((e) => e.toJson()).toList(),
-      };
+    'skill': skill,
+    'currentScore': currentScore,
+    'history': history.map((e) => e.toJson()).toList(),
+  };
 }
 
 class ScoreEntry {
@@ -132,14 +133,14 @@ class ScoreEntry {
   const ScoreEntry({required this.score, required this.date});
 
   factory ScoreEntry.fromJson(Map<String, dynamic> json) => ScoreEntry(
-        score: (json['score'] as num?)?.toDouble() ?? 0,
-        date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
-      );
+    score: (json['score'] as num?)?.toDouble() ?? 0,
+    date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
+  );
 
   Map<String, dynamic> toJson() => {
-        'score': score,
-        'date': date.toIso8601String(),
-      };
+    'score': score,
+    'date': date.toIso8601String(),
+  };
 }
 
 // ─── Content History (Anti-Repetition) ────────────────────────────
@@ -162,23 +163,22 @@ class ContentHistory {
   });
 
   factory ContentHistory.fromJson(Map<String, dynamic> json) => ContentHistory(
-        userId: json['userId'] ?? '',
-        contentType: json['contentType'] ?? '',
-        topic: json['topic'] ?? '',
-        exerciseIds: List<String>.from(json['exerciseIds'] ?? []),
-        lastSeen:
-            DateTime.tryParse(json['lastSeen'] ?? '') ?? DateTime.now(),
-        timesCompleted: json['timesCompleted'] ?? 1,
-      );
+    userId: json['userId'] ?? '',
+    contentType: json['contentType'] ?? '',
+    topic: json['topic'] ?? '',
+    exerciseIds: List<String>.from(json['exerciseIds'] ?? []),
+    lastSeen: DateTime.tryParse(json['lastSeen'] ?? '') ?? DateTime.now(),
+    timesCompleted: json['timesCompleted'] ?? 1,
+  );
 
   Map<String, dynamic> toJson() => {
-        'userId': userId,
-        'contentType': contentType,
-        'topic': topic,
-        'exerciseIds': exerciseIds,
-        'lastSeen': lastSeen.toIso8601String(),
-        'timesCompleted': timesCompleted,
-      };
+    'userId': userId,
+    'contentType': contentType,
+    'topic': topic,
+    'exerciseIds': exerciseIds,
+    'lastSeen': lastSeen.toIso8601String(),
+    'timesCompleted': timesCompleted,
+  };
 }
 
 // ─── Daily Goal ───────────────────────────────────────────────────
@@ -202,12 +202,10 @@ class DailyGoal {
     required this.date,
   });
 
-  bool get grammarGoalMet =>
-      grammarLessonsCompleted >= grammarLessonsTarget;
+  bool get grammarGoalMet => grammarLessonsCompleted >= grammarLessonsTarget;
   bool get pronunciationGoalMet =>
       pronunciationMinutesCompleted >= pronunciationMinutesTarget;
-  bool get spellingGoalMet =>
-      spellingWordsCompleted >= spellingWordsTarget;
+  bool get spellingGoalMet => spellingWordsCompleted >= spellingWordsTarget;
   bool get allGoalsMet =>
       grammarGoalMet && pronunciationGoalMet && spellingGoalMet;
 
@@ -216,8 +214,10 @@ class DailyGoal {
         ? (grammarLessonsCompleted / grammarLessonsTarget).clamp(0.0, 1.0)
         : 1.0;
     final p = pronunciationMinutesTarget > 0
-        ? (pronunciationMinutesCompleted / pronunciationMinutesTarget)
-            .clamp(0.0, 1.0)
+        ? (pronunciationMinutesCompleted / pronunciationMinutesTarget).clamp(
+            0.0,
+            1.0,
+          )
         : 1.0;
     final s = spellingWordsTarget > 0
         ? (spellingWordsCompleted / spellingWordsTarget).clamp(0.0, 1.0)
@@ -229,39 +229,38 @@ class DailyGoal {
     int? grammarLessonsCompleted,
     int? pronunciationMinutesCompleted,
     int? spellingWordsCompleted,
-  }) =>
-      DailyGoal(
-        grammarLessonsTarget: grammarLessonsTarget,
-        grammarLessonsCompleted:
-            grammarLessonsCompleted ?? this.grammarLessonsCompleted,
-        pronunciationMinutesTarget: pronunciationMinutesTarget,
-        pronunciationMinutesCompleted:
-            pronunciationMinutesCompleted ?? this.pronunciationMinutesCompleted,
-        spellingWordsTarget: spellingWordsTarget,
-        spellingWordsCompleted:
-            spellingWordsCompleted ?? this.spellingWordsCompleted,
-        date: date,
-      );
+  }) => DailyGoal(
+    grammarLessonsTarget: grammarLessonsTarget,
+    grammarLessonsCompleted:
+        grammarLessonsCompleted ?? this.grammarLessonsCompleted,
+    pronunciationMinutesTarget: pronunciationMinutesTarget,
+    pronunciationMinutesCompleted:
+        pronunciationMinutesCompleted ?? this.pronunciationMinutesCompleted,
+    spellingWordsTarget: spellingWordsTarget,
+    spellingWordsCompleted:
+        spellingWordsCompleted ?? this.spellingWordsCompleted,
+    date: date,
+  );
 
   factory DailyGoal.fromJson(Map<String, dynamic> json) => DailyGoal(
-        grammarLessonsTarget: json['grammarLessonsTarget'] ?? 1,
-        grammarLessonsCompleted: json['grammarLessonsCompleted'] ?? 0,
-        pronunciationMinutesTarget: json['pronunciationMinutesTarget'] ?? 10,
-        pronunciationMinutesCompleted: json['pronunciationMinutesCompleted'] ?? 0,
-        spellingWordsTarget: json['spellingWordsTarget'] ?? 15,
-        spellingWordsCompleted: json['spellingWordsCompleted'] ?? 0,
-        date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
-      );
+    grammarLessonsTarget: json['grammarLessonsTarget'] ?? 1,
+    grammarLessonsCompleted: json['grammarLessonsCompleted'] ?? 0,
+    pronunciationMinutesTarget: json['pronunciationMinutesTarget'] ?? 10,
+    pronunciationMinutesCompleted: json['pronunciationMinutesCompleted'] ?? 0,
+    spellingWordsTarget: json['spellingWordsTarget'] ?? 15,
+    spellingWordsCompleted: json['spellingWordsCompleted'] ?? 0,
+    date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
+  );
 
   Map<String, dynamic> toJson() => {
-        'grammarLessonsTarget': grammarLessonsTarget,
-        'grammarLessonsCompleted': grammarLessonsCompleted,
-        'pronunciationMinutesTarget': pronunciationMinutesTarget,
-        'pronunciationMinutesCompleted': pronunciationMinutesCompleted,
-        'spellingWordsTarget': spellingWordsTarget,
-        'spellingWordsCompleted': spellingWordsCompleted,
-        'date': date.toIso8601String(),
-      };
+    'grammarLessonsTarget': grammarLessonsTarget,
+    'grammarLessonsCompleted': grammarLessonsCompleted,
+    'pronunciationMinutesTarget': pronunciationMinutesTarget,
+    'pronunciationMinutesCompleted': pronunciationMinutesCompleted,
+    'spellingWordsTarget': spellingWordsTarget,
+    'spellingWordsCompleted': spellingWordsCompleted,
+    'date': date.toIso8601String(),
+  };
 }
 
 // ─── Learning Streak ──────────────────────────────────────────────
@@ -292,30 +291,28 @@ class LearningStreak {
     int? longestStreak,
     int? freezeTokens,
     DateTime? lastPracticeDate,
-  }) =>
-      LearningStreak(
-        currentStreak: currentStreak ?? this.currentStreak,
-        longestStreak: longestStreak ?? this.longestStreak,
-        freezeTokens: freezeTokens ?? this.freezeTokens,
-        lastPracticeDate: lastPracticeDate ?? this.lastPracticeDate,
-      );
+  }) => LearningStreak(
+    currentStreak: currentStreak ?? this.currentStreak,
+    longestStreak: longestStreak ?? this.longestStreak,
+    freezeTokens: freezeTokens ?? this.freezeTokens,
+    lastPracticeDate: lastPracticeDate ?? this.lastPracticeDate,
+  );
 
-  factory LearningStreak.fromJson(Map<String, dynamic> json) =>
-      LearningStreak(
-        currentStreak: json['currentStreak'] ?? 0,
-        longestStreak: json['longestStreak'] ?? 0,
-        freezeTokens: json['freezeTokens'] ?? 1,
-        lastPracticeDate: json['lastPracticeDate'] != null
-            ? DateTime.tryParse(json['lastPracticeDate'])
-            : null,
-      );
+  factory LearningStreak.fromJson(Map<String, dynamic> json) => LearningStreak(
+    currentStreak: json['currentStreak'] ?? 0,
+    longestStreak: json['longestStreak'] ?? 0,
+    freezeTokens: json['freezeTokens'] ?? 1,
+    lastPracticeDate: json['lastPracticeDate'] != null
+        ? DateTime.tryParse(json['lastPracticeDate'])
+        : null,
+  );
 
   Map<String, dynamic> toJson() => {
-        'currentStreak': currentStreak,
-        'longestStreak': longestStreak,
-        'freezeTokens': freezeTokens,
-        'lastPracticeDate': lastPracticeDate?.toIso8601String(),
-      };
+    'currentStreak': currentStreak,
+    'longestStreak': longestStreak,
+    'freezeTokens': freezeTokens,
+    'lastPracticeDate': lastPracticeDate?.toIso8601String(),
+  };
 }
 
 // ─── User Progress (Root Model) ───────────────────────────────────
@@ -357,16 +354,18 @@ class UserProgress {
     this.goalDeadline,
     DateTime? createdAt,
     DateTime? updatedAt,
-  })  : dailyGoal = dailyGoal ?? DailyGoal(date: DateTime.now()),
-        createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+  }) : dailyGoal = dailyGoal ?? DailyGoal(date: DateTime.now()),
+       createdAt = createdAt ?? DateTime.now(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   _UserSkills get skills => _UserSkills(skillScores);
 
   double get overallScore {
     if (skillScores.isEmpty) return 0;
-    final sum =
-        skillScores.values.fold<double>(0, (a, b) => a + b.currentScore);
+    final sum = skillScores.values.fold<double>(
+      0,
+      (a, b) => a + b.currentScore,
+    );
     return sum / skillScores.length;
   }
 
@@ -417,35 +416,34 @@ class UserProgress {
     String? learningGoal,
     DateTime? goalDeadline,
     DateTime? updatedAt,
-  }) =>
-      UserProgress(
-        userId: userId,
-        currentLevel: currentLevel ?? this.currentLevel,
-        cefrLevel: cefrLevel ?? this.cefrLevel,
-        totalXp: totalXp ?? this.totalXp,
-        totalLessonsCompleted:
-            totalLessonsCompleted ?? this.totalLessonsCompleted,
-        totalExercisesCompleted:
-            totalExercisesCompleted ?? this.totalExercisesCompleted,
-        vocabularyMastered: vocabularyMastered ?? this.vocabularyMastered,
-        skillScores: skillScores ?? this.skillScores,
-        contentHistory: contentHistory ?? this.contentHistory,
-        dailyGoal: dailyGoal ?? this.dailyGoal,
-        streak: streak ?? this.streak,
-        badges: badges ?? this.badges,
-        nativeLanguage: nativeLanguage ?? this.nativeLanguage,
-        learningGoal: learningGoal ?? this.learningGoal,
-        goalDeadline: goalDeadline ?? this.goalDeadline,
-        createdAt: createdAt,
-        updatedAt: updatedAt ?? DateTime.now(),
-      );
+  }) => UserProgress(
+    userId: userId,
+    currentLevel: currentLevel ?? this.currentLevel,
+    cefrLevel: cefrLevel ?? this.cefrLevel,
+    totalXp: totalXp ?? this.totalXp,
+    totalLessonsCompleted: totalLessonsCompleted ?? this.totalLessonsCompleted,
+    totalExercisesCompleted:
+        totalExercisesCompleted ?? this.totalExercisesCompleted,
+    vocabularyMastered: vocabularyMastered ?? this.vocabularyMastered,
+    skillScores: skillScores ?? this.skillScores,
+    contentHistory: contentHistory ?? this.contentHistory,
+    dailyGoal: dailyGoal ?? this.dailyGoal,
+    streak: streak ?? this.streak,
+    badges: badges ?? this.badges,
+    nativeLanguage: nativeLanguage ?? this.nativeLanguage,
+    learningGoal: learningGoal ?? this.learningGoal,
+    goalDeadline: goalDeadline ?? this.goalDeadline,
+    createdAt: createdAt,
+    updatedAt: updatedAt ?? DateTime.now(),
+  );
 
   factory UserProgress.fromJson(Map<String, dynamic> json) {
     final skillMap = <String, SkillScore>{};
     if (json['skillScores'] is Map) {
       for (final entry in (json['skillScores'] as Map).entries) {
-        skillMap[entry.key.toString()] =
-            SkillScore.fromJson(Map<String, dynamic>.from(entry.value));
+        skillMap[entry.key.toString()] = SkillScore.fromJson(
+          Map<String, dynamic>.from(entry.value),
+        );
       }
     }
 
@@ -464,17 +462,18 @@ class UserProgress {
       totalExercisesCompleted: json['totalExercisesCompleted'] ?? 0,
       vocabularyMastered: json['vocabularyMastered'] ?? 0,
       skillScores: skillMap,
-      contentHistory: (json['contentHistory'] as List<dynamic>?)
+      contentHistory:
+          (json['contentHistory'] as List<dynamic>?)
               ?.map(
-                  (e) => ContentHistory.fromJson(Map<String, dynamic>.from(e)))
+                (e) => ContentHistory.fromJson(Map<String, dynamic>.from(e)),
+              )
               .toList() ??
           [],
       dailyGoal: json['dailyGoal'] != null
           ? DailyGoal.fromJson(Map<String, dynamic>.from(json['dailyGoal']))
           : null,
       streak: json['streak'] != null
-          ? LearningStreak.fromJson(
-              Map<String, dynamic>.from(json['streak']))
+          ? LearningStreak.fromJson(Map<String, dynamic>.from(json['streak']))
           : const LearningStreak(),
       badges: List<String>.from(json['badges'] ?? []),
       nativeLanguage: json['nativeLanguage'],
@@ -488,36 +487,42 @@ class UserProgress {
   }
 
   Map<String, dynamic> toJson() => {
-        'userId': userId,
-        'currentLevel': currentLevel.name,
-        'cefrLevel': cefrLevel.name,
-        'totalXp': totalXp,
-        'totalLessonsCompleted': totalLessonsCompleted,
-        'totalExercisesCompleted': totalExercisesCompleted,
-        'vocabularyMastered': vocabularyMastered,
-        'skillScores':
-            skillScores.map((k, v) => MapEntry(k, v.toJson())),
-        'contentHistory': contentHistory.map((e) => e.toJson()).toList(),
-        'dailyGoal': dailyGoal.toJson(),
-        'streak': streak.toJson(),
-        'badges': badges,
-        'nativeLanguage': nativeLanguage,
-        'learningGoal': learningGoal,
-        'goalDeadline': goalDeadline?.toIso8601String(),
-        'createdAt': createdAt.toIso8601String(),
-        'updatedAt': updatedAt.toIso8601String(),
-      };
+    'userId': userId,
+    'currentLevel': currentLevel.name,
+    'cefrLevel': cefrLevel.name,
+    'totalXp': totalXp,
+    'totalLessonsCompleted': totalLessonsCompleted,
+    'totalExercisesCompleted': totalExercisesCompleted,
+    'vocabularyMastered': vocabularyMastered,
+    'skillScores': skillScores.map((k, v) => MapEntry(k, v.toJson())),
+    'contentHistory': contentHistory.map((e) => e.toJson()).toList(),
+    'dailyGoal': dailyGoal.toJson(),
+    'streak': streak.toJson(),
+    'badges': badges,
+    'nativeLanguage': nativeLanguage,
+    'learningGoal': learningGoal,
+    'goalDeadline': goalDeadline?.toIso8601String(),
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+  };
 }
 
 class _UserSkills {
   final Map<String, SkillScore> _scores;
   _UserSkills(this._scores);
 
-  SkillScore get grammar => _scores['grammar'] ?? const SkillScore(skill: 'grammar');
-  SkillScore get pronunciation => _scores['pronunciation'] ?? const SkillScore(skill: 'pronunciation');
-  SkillScore get spelling => _scores['spelling'] ?? const SkillScore(skill: 'spelling');
-  SkillScore get reading => _scores['reading'] ?? const SkillScore(skill: 'reading');
-  SkillScore get writing => _scores['writing'] ?? const SkillScore(skill: 'writing');
-  SkillScore get listening => _scores['listening'] ?? const SkillScore(skill: 'listening');
-  SkillScore get speaking => _scores['speaking'] ?? const SkillScore(skill: 'speaking');
+  SkillScore get grammar =>
+      _scores['grammar'] ?? const SkillScore(skill: 'grammar');
+  SkillScore get pronunciation =>
+      _scores['pronunciation'] ?? const SkillScore(skill: 'pronunciation');
+  SkillScore get spelling =>
+      _scores['spelling'] ?? const SkillScore(skill: 'spelling');
+  SkillScore get reading =>
+      _scores['reading'] ?? const SkillScore(skill: 'reading');
+  SkillScore get writing =>
+      _scores['writing'] ?? const SkillScore(skill: 'writing');
+  SkillScore get listening =>
+      _scores['listening'] ?? const SkillScore(skill: 'listening');
+  SkillScore get speaking =>
+      _scores['speaking'] ?? const SkillScore(skill: 'speaking');
 }

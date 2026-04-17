@@ -88,9 +88,13 @@ class _WritingLabScreenState extends State<WritingLabScreen> {
             icon: const Icon(Icons.arrow_back_rounded),
           ),
           Expanded(
-            child: Text('Writing Lab',
-                style: GoogleFonts.inter(
-                    fontSize: 18, fontWeight: FontWeight.w700)),
+            child: Text(
+              'Writing Lab',
+              style: GoogleFonts.inter(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
           if (_showFeedback)
             TextButton(
@@ -126,33 +130,37 @@ class _WritingLabScreenState extends State<WritingLabScreen> {
                   }),
                   child: Container(
                     margin: const EdgeInsets.only(right: 8),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: isActive
                           ? AppColors.secondary
                           : (isDark
-                              ? AppColors.darkCard
-                              : AppColors.lightBackground),
+                                ? AppColors.darkCard
+                                : AppColors.lightBackground),
                       borderRadius: BorderRadius.circular(20),
                       border: isActive
                           ? null
                           : Border.all(
                               color: isDark
                                   ? AppColors.darkBorder
-                                  : AppColors.lightBorder),
+                                  : AppColors.lightBorder,
+                            ),
                     ),
                     child: Text(
                       _tasks[index].title,
                       style: GoogleFonts.inter(
                         fontSize: 13,
-                        fontWeight:
-                            isActive ? FontWeight.w600 : FontWeight.w500,
+                        fontWeight: isActive
+                            ? FontWeight.w600
+                            : FontWeight.w500,
                         color: isActive
                             ? Colors.white
                             : (isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary),
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.lightTextSecondary),
                       ),
                     ),
                   ),
@@ -171,57 +179,71 @@ class _WritingLabScreenState extends State<WritingLabScreen> {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.secondary.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(task.type,
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.secondary,
-                          )),
+                      child: Text(
+                        task.type,
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.secondary,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.info.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text('${task.wordTarget} words',
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.info,
-                          )),
+                      child: Text(
+                        '${task.wordTarget} words',
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.info,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.accentGreen.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(task.level,
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.accentGreen,
-                          )),
+                      child: Text(
+                        task.level,
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.accentGreen,
+                        ),
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text(task.prompt,
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      height: 1.5,
-                      color: isDark ? Colors.white70 : Colors.black87,
-                    )),
+                Text(
+                  task.prompt,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    height: 1.5,
+                    color: isDark ? Colors.white70 : Colors.black87,
+                  ),
+                ),
               ],
             ),
           ),
@@ -264,8 +286,8 @@ class _WritingLabScreenState extends State<WritingLabScreen> {
                           color: _wordCount >= task.wordTarget
                               ? AppColors.success
                               : (isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.lightTextSecondary),
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -273,8 +295,10 @@ class _WritingLabScreenState extends State<WritingLabScreen> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(3),
                           child: LinearProgressIndicator(
-                            value: (_wordCount / task.wordTarget)
-                                .clamp(0.0, 1.0),
+                            value: (_wordCount / task.wordTarget).clamp(
+                              0.0,
+                              1.0,
+                            ),
                             minHeight: 4,
                             backgroundColor: isDark
                                 ? AppColors.darkBorder
@@ -325,12 +349,15 @@ class _WritingLabScreenState extends State<WritingLabScreen> {
               label: Text(
                 _isEvaluating ? 'AI Evaluating...' : 'Submit for AI Review',
                 style: GoogleFonts.inter(
-                    fontSize: 16, fontWeight: FontWeight.w700),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.secondary,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
             ),
           ),
@@ -370,8 +397,7 @@ class _WritingLabScreenState extends State<WritingLabScreen> {
             'Replace "big" with "significant" or "substantial"',
             'Use "subsequently" instead of "then" for formal writing',
           ],
-          correctedVersion:
-              _textController.text.replaceAll('went', 'gone'),
+          correctedVersion: _textController.text.replaceAll('went', 'gone'),
           overallFeedback:
               'Good effort! Your writing communicates the key points effectively. Focus on using more varied vocabulary and maintaining consistent tense throughout.',
         );
@@ -389,9 +415,10 @@ class _WritingLabScreenState extends State<WritingLabScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Scores
-          Text('AI Evaluation',
-              style: GoogleFonts.inter(
-                  fontSize: 20, fontWeight: FontWeight.w700)),
+          Text(
+            'AI Evaluation',
+            style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w700),
+          ),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -410,67 +437,89 @@ class _WritingLabScreenState extends State<WritingLabScreen> {
             child: Text(
               fb.overallFeedback,
               style: GoogleFonts.inter(
-                  fontSize: 14, height: 1.6, fontStyle: FontStyle.italic),
+                fontSize: 14,
+                height: 1.6,
+                fontStyle: FontStyle.italic,
+              ),
             ),
           ),
           // Grammar errors
           if (fb.grammarErrors.isNotEmpty) ...[
             const SizedBox(height: 16),
-            Text('❌ Grammar Corrections',
-                style: GoogleFonts.inter(
-                    fontSize: 16, fontWeight: FontWeight.w700)),
+            Text(
+              '❌ Grammar Corrections',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             const SizedBox(height: 10),
-            ...fb.grammarErrors.map((error) => GlassCard(
-                  borderColor: AppColors.error.withValues(alpha: 0.2),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(error.original,
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            decoration: TextDecoration.lineThrough,
-                            color: AppColors.error,
-                          )),
-                      const SizedBox(height: 4),
-                      Text(error.corrected,
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.success,
-                          )),
-                      const SizedBox(height: 6),
-                      Text(error.explanation,
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            color: isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary,
-                          )),
-                    ],
-                  ),
-                )),
+            ...fb.grammarErrors.map(
+              (error) => GlassCard(
+                borderColor: AppColors.error.withValues(alpha: 0.2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      error.original,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        decoration: TextDecoration.lineThrough,
+                        color: AppColors.error,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      error.corrected,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.success,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      error.explanation,
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
           // Vocabulary suggestions
           if (fb.vocabularySuggestions.isNotEmpty) ...[
             const SizedBox(height: 16),
-            Text('💡 Vocabulary Tips',
-                style: GoogleFonts.inter(
-                    fontSize: 16, fontWeight: FontWeight.w700)),
+            Text(
+              '💡 Vocabulary Tips',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             const SizedBox(height: 10),
-            ...fb.vocabularySuggestions.map((s) => Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('→ ', style: TextStyle(color: AppColors.info)),
-                      Expanded(
-                        child: Text(s,
-                            style: GoogleFonts.inter(
-                                fontSize: 14, height: 1.4)),
+            ...fb.vocabularySuggestions.map(
+              (s) => Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('→ ', style: TextStyle(color: AppColors.info)),
+                    Expanded(
+                      child: Text(
+                        s,
+                        style: GoogleFonts.inter(fontSize: 14, height: 1.4),
                       ),
-                    ],
-                  ),
-                )),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
           const SizedBox(height: 24),
           // Actions
@@ -485,7 +534,8 @@ class _WritingLabScreenState extends State<WritingLabScreen> {
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14)),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
                   child: const Text('Revise'),
                 ),
@@ -498,11 +548,16 @@ class _WritingLabScreenState extends State<WritingLabScreen> {
                     backgroundColor: AppColors.secondary,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14)),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
-                  child: Text('Done',
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w700, color: Colors.white)),
+                  child: Text(
+                    'Done',
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -538,21 +593,25 @@ class _ScoreCircle extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation(color),
                 ),
               ),
-              Text('$score',
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: color,
-                  )),
+              Text(
+                '$score',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: color,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 6),
-          Text(label,
-              style: GoogleFonts.inter(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: color,
-              )),
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
         ],
       ),
     );
@@ -563,8 +622,11 @@ class _WritingTask {
   final String title, prompt, type, level;
   final int wordTarget;
   const _WritingTask({
-    required this.title, required this.prompt, required this.type,
-    required this.wordTarget, required this.level,
+    required this.title,
+    required this.prompt,
+    required this.type,
+    required this.wordTarget,
+    required this.level,
   });
 }
 
@@ -574,16 +636,22 @@ class _WritingFeedback {
   final List<String> vocabularySuggestions;
   final String correctedVersion, overallFeedback;
   const _WritingFeedback({
-    required this.overallScore, required this.grammarScore,
-    required this.vocabularyScore, required this.structureScore,
-    required this.grammarErrors, required this.vocabularySuggestions,
-    required this.correctedVersion, required this.overallFeedback,
+    required this.overallScore,
+    required this.grammarScore,
+    required this.vocabularyScore,
+    required this.structureScore,
+    required this.grammarErrors,
+    required this.vocabularySuggestions,
+    required this.correctedVersion,
+    required this.overallFeedback,
   });
 }
 
 class _WritingError {
   final String original, corrected, explanation;
   const _WritingError({
-    required this.original, required this.corrected, required this.explanation,
+    required this.original,
+    required this.corrected,
+    required this.explanation,
   });
 }

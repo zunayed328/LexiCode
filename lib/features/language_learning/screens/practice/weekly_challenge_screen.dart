@@ -23,7 +23,7 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
   String? _error;
   ExerciseSession? _session;
   List<_ChallengeSectionData> _sections = [];
-  
+
   bool _challengeStarted = false;
   bool _showResults = false;
   int _completedSections = 0;
@@ -39,7 +39,7 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
     try {
       final progress = context.read<ProgressProvider>().userProgress;
       final session = await _contentService.getWeeklyChallenge(1, progress);
-      
+
       if (!mounted) return;
 
       final exercises = session.exercises;
@@ -53,8 +53,10 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
         for (int i = 0; i < 4; i++) {
           int start = i * chunkSize;
           if (start >= exercises.length) break;
-          int end = (start + chunkSize < exercises.length) ? start + chunkSize : exercises.length;
-          
+          int end = (start + chunkSize < exercises.length)
+              ? start + chunkSize
+              : exercises.length;
+
           List<Exercise> chunk = exercises.sublist(start, end);
           if (chunk.isEmpty) continue;
 
@@ -85,14 +87,16 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
             type = SessionType.writingPractice;
           }
 
-          sections.add(_ChallengeSectionData(
-            title: title,
-            icon: icon,
-            color: color,
-            description: '${chunk.length} questions',
-            exercises: chunk,
-            type: type,
-          ));
+          sections.add(
+            _ChallengeSectionData(
+              title: title,
+              icon: icon,
+              color: color,
+              description: '${chunk.length} questions',
+              exercises: chunk,
+              type: type,
+            ),
+          );
         }
       }
 
@@ -146,8 +150,13 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
           children: [
             const CircularProgressIndicator(color: Color(0xFFEF4444)),
             const SizedBox(height: 24),
-            Text('Generating Weekly Challenge...',
-                style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600)),
+            Text(
+              'Generating Weekly Challenge...',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
       ),
@@ -162,9 +171,17 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline_rounded, color: AppColors.error, size: 48),
+              const Icon(
+                Icons.error_outline_rounded,
+                color: AppColors.error,
+                size: 48,
+              ),
               const SizedBox(height: 16),
-              Text(_error ?? 'Unknown error', textAlign: TextAlign.center, style: GoogleFonts.inter(color: AppColors.error)),
+              Text(
+                _error ?? 'Unknown error',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(color: AppColors.error),
+              ),
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
@@ -201,24 +218,33 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.emoji_events_rounded,
-                color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.emoji_events_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Weekly Challenge',
-                    style: GoogleFonts.inter(
-                        fontSize: 20, fontWeight: FontWeight.w800)),
-                Text(_session?.topic ?? 'Test your progress',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
-                    )),
+                Text(
+                  'Weekly Challenge',
+                  style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  _session?.topic ?? 'Test your progress',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
               ],
             ),
           ),
@@ -249,15 +275,20 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
         ),
         child: Column(
           children: [
-            const Icon(Icons.emoji_events_rounded,
-                color: Colors.white, size: 52),
+            const Icon(
+              Icons.emoji_events_rounded,
+              color: Colors.white,
+              size: 52,
+            ),
             const SizedBox(height: 14),
-            Text('Week Challenge',
-                style: GoogleFonts.inter(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                )),
+            Text(
+              'Week Challenge',
+              style: GoogleFonts.inter(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ),
+            ),
             const SizedBox(height: 8),
             Text(
               'Complete ${_sections.length} sections to earn bonus XP and unlock a special badge!',
@@ -275,12 +306,14 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
                 color: Colors.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text('⏳ Ends in 3 days',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  )),
+              child: Text(
+                '⏳ Ends in 3 days',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             SizedBox(
@@ -292,11 +325,16 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
                   backgroundColor: Colors.white,
                   foregroundColor: const Color(0xFFDC2626),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
-                child: Text('Start Challenge',
-                    style: GoogleFonts.inter(
-                        fontSize: 16, fontWeight: FontWeight.w700)),
+                child: Text(
+                  'Start Challenge',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ),
           ],
@@ -318,23 +356,32 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
                 color: AppColors.success.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.history_rounded,
-                  color: AppColors.success, size: 22),
+              child: const Icon(
+                Icons.history_rounded,
+                color: AppColors.success,
+                size: 22,
+              ),
             ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Last Week: 85/100',
-                      style: GoogleFonts.inter(
-                          fontSize: 15, fontWeight: FontWeight.w700)),
-                  Text('Ranked Top 10%',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: AppColors.success,
-                        fontWeight: FontWeight.w600,
-                      )),
+                  Text(
+                    'Last Week: 85/100',
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    'Ranked Top 10%',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: AppColors.success,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -351,51 +398,59 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Challenge Sections',
-              style: GoogleFonts.inter(
-                  fontSize: 18, fontWeight: FontWeight.w700)),
+          Text(
+            'Challenge Sections',
+            style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+          ),
           const SizedBox(height: 12),
-          ..._sections.map((s) => Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: s.color.withOpacity(0.06),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: s.color.withOpacity(0.15)),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: s.color.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(s.icon, color: s.color, size: 20),
+          ..._sections.map(
+            (s) => Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: s.color.withOpacity(0.06),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: s.color.withOpacity(0.15)),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: s.color.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(s.title,
-                              style: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700)),
-                          Text(s.description,
-                              style: GoogleFonts.inter(
-                                fontSize: 12,
-                                color: isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.lightTextSecondary,
-                              )),
-                        ],
-                      ),
+                    child: Icon(s.icon, color: s.color, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          s.title,
+                          style: GoogleFonts.inter(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          s.description,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -407,9 +462,10 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Potential Rewards',
-              style: GoogleFonts.inter(
-                  fontSize: 18, fontWeight: FontWeight.w700)),
+          Text(
+            'Potential Rewards',
+            style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+          ),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -419,12 +475,14 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
                     children: [
                       Text('🌟', style: TextStyle(fontSize: 28)),
                       const SizedBox(height: 8),
-                      Text('+250 XP',
-                          style: GoogleFonts.inter(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.xpColor,
-                          )),
+                      Text(
+                        '+250 XP',
+                        style: GoogleFonts.inter(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.xpColor,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -436,12 +494,14 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
                     children: [
                       Text('🥇', style: TextStyle(fontSize: 28)),
                       const SizedBox(height: 8),
-                      Text('Badge',
-                          style: GoogleFonts.inter(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFFF59E0B),
-                          )),
+                      Text(
+                        'Badge',
+                        style: GoogleFonts.inter(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFFF59E0B),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -485,21 +545,25 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
                     color: isCompleted
                         ? AppColors.success.withOpacity(0.15)
                         : isCurrent
-                            ? const Color(0xFFEF4444).withOpacity(0.15)
-                            : Colors.transparent,
+                        ? const Color(0xFFEF4444).withOpacity(0.15)
+                        : Colors.transparent,
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: isCompleted
                           ? AppColors.success
                           : isCurrent
-                              ? const Color(0xFFEF4444)
-                              : Colors.grey.withOpacity(0.3),
+                          ? const Color(0xFFEF4444)
+                          : Colors.grey.withOpacity(0.3),
                       width: 2,
                     ),
                   ),
                   child: Center(
                     child: isCompleted
-                        ? const Icon(Icons.check_rounded, color: AppColors.success, size: 24)
+                        ? const Icon(
+                            Icons.check_rounded,
+                            color: AppColors.success,
+                            size: 24,
+                          )
                         : Text(
                             '${index + 1}',
                             style: GoogleFonts.inter(
@@ -517,11 +581,15 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
           ),
           const SizedBox(height: 24),
           if (_completedSections < _sections.length) ...[
-            Text('Current Section',
-                style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+            Text(
+              'Current Section',
+              style: GoogleFonts.inter(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             const SizedBox(height: 12),
-            _buildCurrentSectionCard(
-                _sections[_completedSections], isDark),
+            _buildCurrentSectionCard(_sections[_completedSections], isDark),
           ] else ...[
             SizedBox(
               width: double.infinity,
@@ -529,18 +597,24 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   setState(() => _showResults = true);
-                  context.read<ProgressProvider>().addXp(_totalScoreEarned + 100);
+                  context.read<ProgressProvider>().addXp(
+                    _totalScoreEarned + 100,
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.success,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
-                child: Text('View Results',
-                    style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white)),
+                child: Text(
+                  'View Results',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ],
@@ -568,17 +642,18 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
             child: Icon(s.icon, color: s.color, size: 40),
           ),
           const SizedBox(height: 16),
-          Text(s.title,
-              style: GoogleFonts.inter(
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-              )),
+          Text(
+            s.title,
+            style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w800),
+          ),
           const SizedBox(height: 6),
-          Text(s.description,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                color: isDark ? Colors.white70 : Colors.black54,
-              )),
+          Text(
+            s.description,
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: isDark ? Colors.white70 : Colors.black54,
+            ),
+          ),
           const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
@@ -589,11 +664,16 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
                 backgroundColor: s.color,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
+                  borderRadius: BorderRadius.circular(14),
+                ),
               ),
-              child: Text('Start Section',
-                  style: GoogleFonts.inter(
-                      fontSize: 16, fontWeight: FontWeight.w700)),
+              child: Text(
+                'Start Section',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
           ),
         ],
@@ -646,17 +726,21 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('New Badge Unlocked!',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: const Color(0xFFF59E0B),
-                              )),
-                          Text('Weekly Warrior - Level 3',
-                              style: GoogleFonts.inter(
-                                fontSize: 13,
-                                color: isDark ? Colors.white70 : Colors.black87,
-                              )),
+                          Text(
+                            'New Badge Unlocked!',
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFFF59E0B),
+                            ),
+                          ),
+                          Text(
+                            'Weekly Warrior - Level 3',
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              color: isDark ? Colors.white70 : Colors.black87,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -675,12 +759,14 @@ class _WeeklyChallengeScreenState extends State<WeeklyChallengeScreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: Text('Back to Dashboard',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      )),
+                  child: Text(
+                    'Back to Dashboard',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ],

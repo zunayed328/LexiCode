@@ -34,8 +34,7 @@ class LearningProvider with ChangeNotifier {
 
   UserProgress? _userProgress;
   UserProgress get userProgress =>
-      _userProgress ??
-      _progressService.createDefaultProgress('default_user');
+      _userProgress ?? _progressService.createDefaultProgress('default_user');
 
   bool _initialized = false;
   bool get initialized => _initialized;
@@ -132,8 +131,7 @@ class LearningProvider with ChangeNotifier {
     _isLoadingMotivation = true;
 
     try {
-      _dailyMotivation =
-          await _contentService.getMotivation(userProgress);
+      _dailyMotivation = await _contentService.getMotivation(userProgress);
     } catch (_) {
       // Keep default message on failure
     }
@@ -146,9 +144,7 @@ class LearningProvider with ChangeNotifier {
 
   /// Returns the list of grammar topics available for the current level.
   List<LessonTopic> get availableTopics {
-    return LessonTopic.values
-        .where((t) => t.level == _currentLevel)
-        .toList();
+    return LessonTopic.values.where((t) => t.level == _currentLevel).toList();
   }
 
   /// Clean up current lesson state.

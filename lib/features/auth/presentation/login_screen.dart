@@ -91,10 +91,17 @@ class _LoginScreenState extends State<LoginScreen> {
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.darkCard : Colors.white,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? AppColors.darkCard
+            : Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text('Verify Your Email', style: GoogleFonts.inter(fontWeight: FontWeight.w700)),
-        content: const Text('Please verify your email address to access your account. Check your inbox for the verification link.'),
+        title: Text(
+          'Verify Your Email',
+          style: GoogleFonts.inter(fontWeight: FontWeight.w700),
+        ),
+        content: const Text(
+          'Please verify your email address to access your account. Check your inbox for the verification link.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -127,10 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-          style: GoogleFonts.inter(color: Colors.white),
-        ),
+        content: Text(message, style: GoogleFonts.inter(color: Colors.white)),
         backgroundColor: isError ? AppColors.error : AppColors.accentGreenAuth,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -149,8 +153,10 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded,
-                color: AppColors.textPrimary),
+            icon: const Icon(
+              Icons.arrow_back_rounded,
+              color: AppColors.textPrimary,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -211,8 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     isPasswordVisible: _isPasswordVisible,
                     textInputAction: TextInputAction.done,
                     onTogglePassword: () {
-                      setState(
-                          () => _isPasswordVisible = !_isPasswordVisible);
+                      setState(() => _isPasswordVisible = !_isPasswordVisible);
                     },
                     onFieldSubmitted: (_) => _handleLogin(),
                     validator: (value) {
@@ -243,8 +248,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: Checkbox(
                                 value: _rememberMe,
                                 onChanged: (value) {
-                                  setState(
-                                      () => _rememberMe = value ?? false);
+                                  setState(() => _rememberMe = value ?? false);
                                 },
                                 activeColor: AppColors.primary,
                                 shape: RoundedRectangleBorder(
@@ -269,16 +273,24 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             PageRouteBuilder(
-                              pageBuilder: (context, animation,
-                                      secondaryAnimation) =>
-                                  const ForgotPasswordScreen(),
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return FadeTransition(
-                                    opacity: animation, child: child);
-                              },
-                              transitionDuration:
-                                  const Duration(milliseconds: 300),
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      const ForgotPasswordScreen(),
+                              transitionsBuilder:
+                                  (
+                                    context,
+                                    animation,
+                                    secondaryAnimation,
+                                    child,
+                                  ) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                              transitionDuration: const Duration(
+                                milliseconds: 300,
+                              ),
                             ),
                           );
                         },
@@ -357,13 +369,21 @@ class _LoginScreenState extends State<LoginScreen> {
                             pageBuilder:
                                 (context, animation, secondaryAnimation) =>
                                     const SignupScreen(),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              return FadeTransition(
-                                  opacity: animation, child: child);
-                            },
-                            transitionDuration:
-                                const Duration(milliseconds: 300),
+                            transitionsBuilder:
+                                (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                            transitionDuration: const Duration(
+                              milliseconds: 300,
+                            ),
                           ),
                         );
                       },
@@ -374,7 +394,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             TextSpan(
                               text: AppStrings.dontHaveAccount,
                               style: const TextStyle(
-                                  color: AppColors.textSecondary),
+                                color: AppColors.textSecondary,
+                              ),
                             ),
                             TextSpan(
                               text: AppStrings.signUp,

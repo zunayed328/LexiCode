@@ -5,11 +5,7 @@ class StreakWidget extends StatelessWidget {
   final int streak;
   final bool isCompact;
 
-  const StreakWidget({
-    super.key,
-    required this.streak,
-    this.isCompact = false,
-  });
+  const StreakWidget({super.key, required this.streak, this.isCompact = false});
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +21,7 @@ class StreakWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.streakColor.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.streakColor.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: AppColors.streakColor.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -66,9 +60,7 @@ class StreakWidget extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.streakColor.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: AppColors.streakColor.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -109,9 +101,7 @@ class StreakWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  streak > 7
-                      ? 'Amazing consistency! 🔥'
-                      : 'Keep it going! 💪',
+                  streak > 7 ? 'Amazing consistency! 🔥' : 'Keep it going! 💪',
                   style: TextStyle(
                     fontSize: 13,
                     color: isDark
@@ -134,7 +124,9 @@ class StreakWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isActive
                         ? AppColors.streakColor
-                        : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                        : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
                     borderRadius: BorderRadius.circular(3),
                   ),
                 ),

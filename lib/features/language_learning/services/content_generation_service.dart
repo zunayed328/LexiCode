@@ -82,11 +82,7 @@ class ContentGenerationService {
     UserProgress progress, {
     int count = 3,
   }) async {
-    return await _gemini.generateSpeakingPrompts(
-      level,
-      progress,
-      count: count,
-    );
+    return await _gemini.generateSpeakingPrompts(level, progress, count: count);
   }
 
   // ─── Daily Practice ───────────────────────────────────────────
@@ -159,9 +155,7 @@ class ContentGenerationService {
   // ─── Suggestions ──────────────────────────────────────────────
 
   /// Gets AI-powered daily suggestions.
-  Future<DailySuggestion> getDailySuggestion(
-    UserProgress progress,
-  ) async {
+  Future<DailySuggestion> getDailySuggestion(UserProgress progress) async {
     return await _gemini.generateDailySuggestion(progress);
   }
 

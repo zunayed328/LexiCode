@@ -10,8 +10,8 @@ class SyntaxError {
   final int line;
   final int? column;
   final String message;
-  final String code;       // problematic code line
-  final String fix;        // corrected code line
+  final String code; // problematic code line
+  final String fix; // corrected code line
   final String? description; // simple English explanation
 
   const SyntaxError({
@@ -92,8 +92,12 @@ class CodeReviewResult {
 
   List<CodeIssue> get syntaxIssues =>
       issues.where((i) => i.type == IssueType.syntax).toList();
-  List<CodeIssue> get criticalIssues =>
-      issues.where((i) => i.severity == IssueSeverity.critical && i.type != IssueType.syntax).toList();
+  List<CodeIssue> get criticalIssues => issues
+      .where(
+        (i) =>
+            i.severity == IssueSeverity.critical && i.type != IssueType.syntax,
+      )
+      .toList();
   List<CodeIssue> get highIssues =>
       issues.where((i) => i.severity == IssueSeverity.error).toList();
   List<CodeIssue> get mediumIssues =>

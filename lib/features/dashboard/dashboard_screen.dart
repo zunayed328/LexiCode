@@ -46,9 +46,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           physics: const BouncingScrollPhysics(),
           slivers: [
             // Header
-            SliverToBoxAdapter(
-              child: _buildHeader(user, isDark, provider),
-            ),
+            SliverToBoxAdapter(child: _buildHeader(user, isDark, provider)),
             // Streak
             SliverToBoxAdapter(
               child: Padding(
@@ -114,7 +112,9 @@ class _DashboardScreenState extends State<DashboardScreen>
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              gradient: user.avatarUrl.isEmpty ? AppColors.primaryGradient : null,
+              gradient: user.avatarUrl.isEmpty
+                  ? AppColors.primaryGradient
+                  : null,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -133,7 +133,9 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: user.avatarUrl.isEmpty
                 ? Center(
                     child: Text(
-                      user.name.isNotEmpty ? user.name.substring(0, 1).toUpperCase() : 'U',
+                      user.name.isNotEmpty
+                          ? user.name.substring(0, 1).toUpperCase()
+                          : 'U',
                       style: GoogleFonts.inter(
                         fontSize: 22,
                         fontWeight: FontWeight.w700,
@@ -208,8 +210,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.xpColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
@@ -229,7 +233,9 @@ class _DashboardScreenState extends State<DashboardScreen>
           LinearPercentIndicator(
             lineHeight: 10,
             percent: provider.dailyProgress,
-            backgroundColor: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+            backgroundColor: isDark
+                ? AppColors.darkBorder
+                : AppColors.lightBorder,
             linearGradient: AppColors.goldGradient,
             barRadius: const Radius.circular(5),
             padding: EdgeInsets.zero,
@@ -302,8 +308,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                         borderRadius: BorderRadius.circular(13),
                         boxShadow: [
                           BoxShadow(
-                            color: action.gradient.colors.first
-                                .withValues(alpha: 0.3),
+                            color: action.gradient.colors.first.withValues(
+                              alpha: 0.3,
+                            ),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
@@ -355,8 +362,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ],
             ),
-            child: const Icon(Icons.error_outline_rounded,
-                color: Colors.white, size: 28),
+            child: const Icon(
+              Icons.error_outline_rounded,
+              color: Colors.white,
+              size: 28,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -367,7 +377,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.accentGreen.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
@@ -383,11 +395,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                       ),
                     ),
                     const SizedBox(width: 8),
-                    const Text('+15 XP',
-                        style: TextStyle(
-                            color: AppColors.xpColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600)),
+                    const Text(
+                      '+15 XP',
+                      style: TextStyle(
+                        color: AppColors.xpColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 6),
@@ -420,18 +435,18 @@ class _DashboardScreenState extends State<DashboardScreen>
                 height: 44,
                 child: CircularProgressIndicator(
                   value: 0.6,
-                  backgroundColor:
-                      isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                  valueColor: const AlwaysStoppedAnimation(AppColors.accentGreen),
+                  backgroundColor: isDark
+                      ? AppColors.darkBorder
+                      : AppColors.lightBorder,
+                  valueColor: const AlwaysStoppedAnimation(
+                    AppColors.accentGreen,
+                  ),
                   strokeWidth: 4,
                 ),
               ),
               const Text(
                 '3/5',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -477,7 +492,12 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildStatCard(
-      IconData icon, String value, String label, Color color, bool isDark) {
+    IconData icon,
+    String value,
+    String label,
+    Color color,
+    bool isDark,
+  ) {
     return GlassCard(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       child: Column(
@@ -509,12 +529,30 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   Widget _buildRecentActivity(bool isDark) {
     final activities = [
-      _Activity('Completed "Variables & Types"', 'Lesson', '+15 XP',
-          Icons.school_rounded, AppColors.accentGreen, '2h ago'),
-      _Activity('Reviewed Dart code', 'Code Review', '+25 XP',
-          Icons.code_rounded, AppColors.primary, '5h ago'),
-      _Activity('Completed "Functions"', 'Lesson', '+15 XP',
-          Icons.school_rounded, AppColors.accentGreen, 'Yesterday'),
+      _Activity(
+        'Completed "Variables & Types"',
+        'Lesson',
+        '+15 XP',
+        Icons.school_rounded,
+        AppColors.accentGreen,
+        '2h ago',
+      ),
+      _Activity(
+        'Reviewed Dart code',
+        'Code Review',
+        '+25 XP',
+        Icons.code_rounded,
+        AppColors.primary,
+        '5h ago',
+      ),
+      _Activity(
+        'Completed "Functions"',
+        'Lesson',
+        '+15 XP',
+        Icons.school_rounded,
+        AppColors.accentGreen,
+        'Yesterday',
+      ),
     ];
 
     return Column(
@@ -524,75 +562,89 @@ class _DashboardScreenState extends State<DashboardScreen>
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Text(
             'Recent Activity',
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
+            style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+          ),
+        ),
+        ...activities.map(
+          (activity) => GlassCard(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: activity.color.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(activity.icon, color: activity.color, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        activity.title,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        '${activity.type} • ${activity.time}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  activity.xp,
+                  style: const TextStyle(
+                    color: AppColors.xpColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-        ...activities.map((activity) => GlassCard(
-              padding: const EdgeInsets.all(14),
-              child: Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: activity.color.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child:
-                        Icon(activity.icon, color: activity.color, size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          activity.title,
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          '${activity.type} • ${activity.time}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    activity.xp,
-                    style: const TextStyle(
-                      color: AppColors.xpColor,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-            )),
       ],
     );
   }
 
   Widget _buildPracticeModes(AppProvider provider, bool isDark) {
     final modes = [
-      _PracticeMode('Code Comment Challenge', Icons.comment_rounded,
-          AppColors.primary, 'Write clear code comments'),
-      _PracticeMode('PR Description Builder', Icons.merge_type_rounded,
-          AppColors.accentGreen, 'Craft professional PRs'),
-      _PracticeMode('Standup Speech Practice', Icons.record_voice_over_rounded,
-          AppColors.secondary, 'Practice daily standup'),
-      _PracticeMode('Tech Interview Sim', Icons.work_rounded,
-          AppColors.accent, 'Simulate tech interviews'),
+      _PracticeMode(
+        'Code Comment Challenge',
+        Icons.comment_rounded,
+        AppColors.primary,
+        'Write clear code comments',
+      ),
+      _PracticeMode(
+        'PR Description Builder',
+        Icons.merge_type_rounded,
+        AppColors.accentGreen,
+        'Craft professional PRs',
+      ),
+      _PracticeMode(
+        'Standup Speech Practice',
+        Icons.record_voice_over_rounded,
+        AppColors.secondary,
+        'Practice daily standup',
+      ),
+      _PracticeMode(
+        'Tech Interview Sim',
+        Icons.work_rounded,
+        AppColors.accent,
+        'Simulate tech interviews',
+      ),
     ];
 
     return Column(
@@ -602,10 +654,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Text(
             'Practice Modes',
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-            ),
+            style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
           ),
         ),
         SizedBox(
@@ -645,8 +694,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           color: mode.color.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child:
-                            Icon(mode.icon, color: mode.color, size: 18),
+                        child: Icon(mode.icon, color: mode.color, size: 18),
                       ),
                       const Spacer(),
                       Text(
@@ -688,8 +736,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     final messages = <Map<String, String>>[
       {
         'role': 'mentor',
-        'text': 'Hi! 👋 I\'m your AI coding mentor. Ask me anything about coding best practices, technical English, or career advice!',
-      }
+        'text':
+            'Hi! 👋 I\'m your AI coding mentor. Ask me anything about coding best practices, technical English, or career advice!',
+      },
     ];
 
     showModalBottomSheet(
@@ -703,8 +752,9 @@ class _DashboardScreenState extends State<DashboardScreen>
               height: MediaQuery.of(context).size.height * 0.75,
               decoration: BoxDecoration(
                 color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24),
+                ),
               ),
               child: Column(
                 children: [
@@ -714,7 +764,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -730,21 +782,30 @@ class _DashboardScreenState extends State<DashboardScreen>
                             gradient: AppColors.accentGradient,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(Icons.smart_toy_rounded,
-                              color: Colors.white, size: 22),
+                          child: const Icon(
+                            Icons.smart_toy_rounded,
+                            color: Colors.white,
+                            size: 22,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('AI Mentor',
-                                style: GoogleFonts.inter(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700)),
-                            Text('Online',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: AppColors.accentGreen)),
+                            Text(
+                              'AI Mentor',
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              'Online',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.accentGreen,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -773,15 +834,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                             decoration: BoxDecoration(
                               color: isMentor
                                   ? (isDark
-                                      ? AppColors.darkCard
-                                      : AppColors.lightDivider)
+                                        ? AppColors.darkCard
+                                        : AppColors.lightDivider)
                                   : AppColors.primary,
                               borderRadius: BorderRadius.only(
                                 topLeft: const Radius.circular(16),
                                 topRight: const Radius.circular(16),
                                 bottomLeft: Radius.circular(isMentor ? 4 : 16),
-                                bottomRight:
-                                    Radius.circular(isMentor ? 16 : 4),
+                                bottomRight: Radius.circular(isMentor ? 16 : 4),
                               ),
                             ),
                             child: Text(
@@ -789,8 +849,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                               style: TextStyle(
                                 color: isMentor
                                     ? (isDark
-                                        ? AppColors.darkText
-                                        : AppColors.lightText)
+                                          ? AppColors.darkText
+                                          : AppColors.lightText)
                                     : Colors.white,
                                 fontSize: 14,
                                 height: 1.5,
@@ -805,12 +865,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                   Container(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                     decoration: BoxDecoration(
-                      color:
-                          isDark ? AppColors.darkBackground : AppColors.lightBackground,
+                      color: isDark
+                          ? AppColors.darkBackground
+                          : AppColors.lightBackground,
                       border: Border(
                         top: BorderSide(
-                          color:
-                              isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder,
                         ),
                       ),
                     ),
@@ -830,7 +892,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 borderSide: BorderSide.none,
                               ),
                               contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 12),
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
                             ),
                           ),
                         ),
@@ -843,11 +907,12 @@ class _DashboardScreenState extends State<DashboardScreen>
                             setModalState(() {
                               messages.add({'role': 'user', 'text': msg});
                             });
-                            final response =
-                                await provider.chatWithMentor(msg);
+                            final response = await provider.chatWithMentor(msg);
                             setModalState(() {
-                              messages
-                                  .add({'role': 'mentor', 'text': response});
+                              messages.add({
+                                'role': 'mentor',
+                                'text': response,
+                              });
                             });
                             // Award XP for the mentor chat interaction
                             provider.addMentorChatXp();
@@ -859,8 +924,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                               gradient: AppColors.primaryGradient,
                               borderRadius: BorderRadius.circular(24),
                             ),
-                            child: const Icon(Icons.send_rounded,
-                                color: Colors.white, size: 20),
+                            child: const Icon(
+                              Icons.send_rounded,
+                              color: Colors.white,
+                              size: 20,
+                            ),
                           ),
                         ),
                       ],
@@ -899,7 +967,13 @@ class _Activity {
   final String time;
 
   const _Activity(
-      this.title, this.type, this.xp, this.icon, this.color, this.time);
+    this.title,
+    this.type,
+    this.xp,
+    this.icon,
+    this.color,
+    this.time,
+  );
 }
 
 class _PracticeMode {

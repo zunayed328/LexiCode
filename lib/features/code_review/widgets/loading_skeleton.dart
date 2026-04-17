@@ -86,12 +86,8 @@ class LoadingSkeleton extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: Center(child: _box(110, 14, radius: 4)),
-          ),
-          Expanded(
-            child: Center(child: _box(120, 14, radius: 4)),
-          ),
+          Expanded(child: Center(child: _box(110, 14, radius: 4))),
+          Expanded(child: Center(child: _box(120, 14, radius: 4))),
         ],
       ),
     );
@@ -111,8 +107,9 @@ class LoadingSkeleton extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 14),
             decoration: BoxDecoration(
               color: CodeReviewTheme.codeHeaderBg,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
             ),
             child: Row(
               children: [
@@ -133,8 +130,18 @@ class LoadingSkeleton extends StatelessWidget {
               children: List.generate(12, (i) {
                 // Vary widths for realism
                 final widths = [
-                  180.0, 250.0, 300.0, 150.0, 280.0, 220.0,
-                  160.0, 320.0, 200.0, 240.0, 130.0, 270.0,
+                  180.0,
+                  250.0,
+                  300.0,
+                  150.0,
+                  280.0,
+                  220.0,
+                  160.0,
+                  320.0,
+                  200.0,
+                  240.0,
+                  130.0,
+                  270.0,
                 ];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
@@ -155,8 +162,9 @@ class LoadingSkeleton extends StatelessWidget {
             height: 32,
             decoration: BoxDecoration(
               color: CodeReviewTheme.codeHeaderBg.withValues(alpha: 0.5),
-              borderRadius:
-                  const BorderRadius.vertical(bottom: Radius.circular(12)),
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(12),
+              ),
             ),
           ),
         ],
@@ -169,11 +177,7 @@ class LoadingSkeleton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Section header
-        Row(
-          children: [
-            _box(100, 16, radius: 4),
-          ],
-        ),
+        Row(children: [_box(100, 16, radius: 4)]),
         const SizedBox(height: 10),
 
         // Issue cards

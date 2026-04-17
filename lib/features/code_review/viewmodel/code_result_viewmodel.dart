@@ -69,8 +69,7 @@ class CodeResultViewModel extends ChangeNotifier {
   bool get hasCopied => _hasCopied;
 
   Future<void> copyCode() async {
-    final code =
-        _selectedTab == 0 ? _result?.originalCode : _result?.fixedCode;
+    final code = _selectedTab == 0 ? _result?.originalCode : _result?.fixedCode;
     if (code == null || code.isEmpty) return;
 
     await Clipboard.setData(ClipboardData(text: code));
@@ -85,9 +84,7 @@ class CodeResultViewModel extends ChangeNotifier {
   // ─── Display Code ───────────────────────────────────────────────
   String get displayCode {
     if (_result == null) return '';
-    return _selectedTab == 0
-        ? _result!.originalCode
-        : _result!.fixedCode;
+    return _selectedTab == 0 ? _result!.originalCode : _result!.fixedCode;
   }
 
   List<String> get displayLines => displayCode.split('\n');

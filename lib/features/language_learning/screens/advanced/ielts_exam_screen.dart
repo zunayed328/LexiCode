@@ -63,8 +63,10 @@ class _IeltsExamScreenState extends State<IeltsExamScreen> {
           questions: [
             _IeltsQuestion(
               type: IeltsQuestionType.mcq,
-              text: 'Listen to the conversation and answer: What is the main purpose of the speaker\'s visit?',
-              audioText: 'Good morning. I\'m here to discuss the quarterly budget review. I\'ve prepared some figures that show our spending patterns over the last three months, and I\'d like to suggest some changes to our allocation strategy.',
+              text:
+                  'Listen to the conversation and answer: What is the main purpose of the speaker\'s visit?',
+              audioText:
+                  'Good morning. I\'m here to discuss the quarterly budget review. I\'ve prepared some figures that show our spending patterns over the last three months, and I\'d like to suggest some changes to our allocation strategy.',
               options: [
                 'To request a budget increase',
                 'To discuss quarterly budget review',
@@ -75,14 +77,21 @@ class _IeltsExamScreenState extends State<IeltsExamScreen> {
             ),
             _IeltsQuestion(
               type: IeltsQuestionType.fillBlank,
-              text: 'Complete the note: The speaker prepared _____ showing spending patterns.',
-              audioText: 'Good morning. I\'m here to discuss the quarterly budget review. I\'ve prepared some figures that show our spending patterns over the last three months.',
+              text:
+                  'Complete the note: The speaker prepared _____ showing spending patterns.',
+              audioText:
+                  'Good morning. I\'m here to discuss the quarterly budget review. I\'ve prepared some figures that show our spending patterns over the last three months.',
               correctAnswer: 'figures',
             ),
             _IeltsQuestion(
               type: IeltsQuestionType.mcq,
               text: 'How long does the spending data cover?',
-              options: ['One month', 'Two months', 'Three months', 'Six months'],
+              options: [
+                'One month',
+                'Two months',
+                'Three months',
+                'Six months',
+              ],
               correctAnswer: 'Three months',
             ),
           ],
@@ -105,7 +114,8 @@ Despite these advances, educational researchers emphasize the importance of main
           questions: [
             _IeltsQuestion(
               type: IeltsQuestionType.trueFalse,
-              text: 'AI-enhanced platforms showed a 34% improvement in test scores.',
+              text:
+                  'AI-enhanced platforms showed a 34% improvement in test scores.',
               options: ['True', 'False', 'Not Given'],
               correctAnswer: 'True',
             ),
@@ -128,7 +138,8 @@ Despite these advances, educational researchers emphasize the importance of main
             ),
             _IeltsQuestion(
               type: IeltsQuestionType.fillBlank,
-              text: 'NLP has enabled applications that assess pronunciation _____.',
+              text:
+                  'NLP has enabled applications that assess pronunciation _____.',
               correctAnswer: 'accuracy',
             ),
           ],
@@ -142,13 +153,15 @@ Despite these advances, educational researchers emphasize the importance of main
           questions: [
             _IeltsQuestion(
               type: IeltsQuestionType.writing,
-              text: 'Task 1 (150+ words): The chart below shows the percentage of students using different learning tools from 2020 to 2025.\n\nOnline Platforms: 35% → 72%\nTextbooks: 60% → 28%\nAI Tutors: 5% → 45%\nVideo Courses: 25% → 55%\n\nSummarize the information by selecting and reporting the main features, and make comparisons where relevant.',
+              text:
+                  'Task 1 (150+ words): The chart below shows the percentage of students using different learning tools from 2020 to 2025.\n\nOnline Platforms: 35% → 72%\nTextbooks: 60% → 28%\nAI Tutors: 5% → 45%\nVideo Courses: 25% → 55%\n\nSummarize the information by selecting and reporting the main features, and make comparisons where relevant.',
               correctAnswer: '',
               wordTarget: 150,
             ),
             _IeltsQuestion(
               type: IeltsQuestionType.writing,
-              text: 'Task 2 (250+ words): Some people believe that artificial intelligence will eventually replace human teachers. To what extent do you agree or disagree? Give reasons for your answer and include any relevant examples from your knowledge or experience.',
+              text:
+                  'Task 2 (250+ words): Some people believe that artificial intelligence will eventually replace human teachers. To what extent do you agree or disagree? Give reasons for your answer and include any relevant examples from your knowledge or experience.',
               correctAnswer: '',
               wordTarget: 250,
             ),
@@ -164,19 +177,22 @@ Despite these advances, educational researchers emphasize the importance of main
           questions: [
             _IeltsQuestion(
               type: IeltsQuestionType.speaking,
-              text: 'Part 1 - Introduction:\nTell me about your experience with learning English. How long have you been studying, and what methods do you find most effective?',
+              text:
+                  'Part 1 - Introduction:\nTell me about your experience with learning English. How long have you been studying, and what methods do you find most effective?',
               correctAnswer: '',
               speakingTimeSeconds: 60,
             ),
             _IeltsQuestion(
               type: IeltsQuestionType.speaking,
-              text: 'Part 2 - Cue Card:\nDescribe a time when technology helped you learn something new.\nYou should say:\n• What you learned\n• What technology you used\n• How it helped you\n• Explain how you felt about the experience',
+              text:
+                  'Part 2 - Cue Card:\nDescribe a time when technology helped you learn something new.\nYou should say:\n• What you learned\n• What technology you used\n• How it helped you\n• Explain how you felt about the experience',
               correctAnswer: '',
               speakingTimeSeconds: 120,
             ),
             _IeltsQuestion(
               type: IeltsQuestionType.speaking,
-              text: 'Part 3 - Discussion:\nDo you think AI will change the way people learn languages in the future? What are the advantages and disadvantages?',
+              text:
+                  'Part 3 - Discussion:\nDo you think AI will change the way people learn languages in the future? What are the advantages and disadvantages?',
               correctAnswer: '',
               speakingTimeSeconds: 120,
             ),
@@ -221,8 +237,7 @@ Despite these advances, educational researchers emphasize the importance of main
                         ),
                         child: Text(
                           section.passage!,
-                          style: GoogleFonts.inter(
-                              fontSize: 14, height: 1.8),
+                          style: GoogleFonts.inter(fontSize: 14, height: 1.8),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -260,9 +275,13 @@ Despite these advances, educational researchers emphasize the importance of main
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(section.title,
-                style: GoogleFonts.inter(
-                    fontSize: 16, fontWeight: FontWeight.w700)),
+            child: Text(
+              section.title,
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
           // Question counter
           Text(
@@ -308,26 +327,28 @@ Despite these advances, educational researchers emphasize the importance of main
                       : null,
                   borderRadius: BorderRadius.circular(10),
                   border: isActive
-                      ? Border.all(
-                          color: section.color.withValues(alpha: 0.3))
+                      ? Border.all(color: section.color.withValues(alpha: 0.3))
                       : null,
                 ),
                 child: Column(
                   children: [
-                    Icon(section.icon,
-                        size: 18,
-                        color: isActive
-                            ? section.color
-                            : (isDark
+                    Icon(
+                      section.icon,
+                      size: 18,
+                      color: isActive
+                          ? section.color
+                          : (isDark
                                 ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary)),
+                                : AppColors.lightTextSecondary),
+                    ),
                     const SizedBox(height: 2),
                     Text(
                       section.title,
                       style: GoogleFonts.inter(
                         fontSize: 10,
-                        fontWeight:
-                            isActive ? FontWeight.w700 : FontWeight.w500,
+                        fontWeight: isActive
+                            ? FontWeight.w700
+                            : FontWeight.w500,
                         color: isActive ? section.color : null,
                       ),
                     ),
@@ -342,7 +363,10 @@ Despite these advances, educational researchers emphasize the importance of main
   }
 
   Widget _buildQuestion(
-      bool isDark, _IeltsQuestion question, _IeltsSection section) {
+    bool isDark,
+    _IeltsQuestion question,
+    _IeltsSection section,
+  ) {
     switch (question.type) {
       case IeltsQuestionType.mcq:
       case IeltsQuestionType.trueFalse:
@@ -357,7 +381,10 @@ Despite these advances, educational researchers emphasize the importance of main
   }
 
   Widget _buildMCQ(
-      bool isDark, _IeltsQuestion question, _IeltsSection section) {
+    bool isDark,
+    _IeltsQuestion question,
+    _IeltsSection section,
+  ) {
     // TTS for listening
     final hasAudio = question.audioText != null;
     final key = '${_currentSection}_$_currentQuestion';
@@ -367,15 +394,17 @@ Despite these advances, educational researchers emphasize the importance of main
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (hasAudio) ...[
-          TtsControls(
-            text: question.audioText!,
-            accentColor: section.color,
-          ),
+          TtsControls(text: question.audioText!, accentColor: section.color),
           const SizedBox(height: 20),
         ],
-        Text(question.text,
-            style: GoogleFonts.inter(
-                fontSize: 16, fontWeight: FontWeight.w600, height: 1.5)),
+        Text(
+          question.text,
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            height: 1.5,
+          ),
+        ),
         const SizedBox(height: 16),
         ...question.options!.map((option) {
           final isSelected = selected == option;
@@ -389,24 +418,23 @@ Despite these advances, educational researchers emphasize the importance of main
                 color: isSelected
                     ? section.color.withValues(alpha: 0.1)
                     : (isDark
-                        ? AppColors.darkCard.withValues(alpha: 0.5)
-                        : Colors.white),
+                          ? AppColors.darkCard.withValues(alpha: 0.5)
+                          : Colors.white),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                   color: isSelected
                       ? section.color
-                      : (isDark
-                          ? AppColors.darkBorder
-                          : AppColors.lightBorder),
+                      : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
                   width: isSelected ? 2 : 1,
                 ),
               ),
-              child: Text(option,
-                  style: GoogleFonts.inter(
-                    fontSize: 15,
-                    fontWeight:
-                        isSelected ? FontWeight.w600 : FontWeight.w400,
-                  )),
+              child: Text(
+                option,
+                style: GoogleFonts.inter(
+                  fontSize: 15,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                ),
+              ),
             ),
           );
         }),
@@ -415,7 +443,10 @@ Despite these advances, educational researchers emphasize the importance of main
   }
 
   Widget _buildFillBlank(
-      bool isDark, _IeltsQuestion question, _IeltsSection section) {
+    bool isDark,
+    _IeltsQuestion question,
+    _IeltsSection section,
+  ) {
     final key = '${_currentSection}_$_currentQuestion';
     final hasAudio = question.audioText != null;
 
@@ -426,9 +457,14 @@ Despite these advances, educational researchers emphasize the importance of main
           TtsControls(text: question.audioText!, accentColor: section.color),
           const SizedBox(height: 20),
         ],
-        Text(question.text,
-            style: GoogleFonts.inter(
-                fontSize: 16, fontWeight: FontWeight.w600, height: 1.5)),
+        Text(
+          question.text,
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            height: 1.5,
+          ),
+        ),
         const SizedBox(height: 16),
         TextField(
           onChanged: (v) => _answers[key] = v,
@@ -440,9 +476,8 @@ Despite these advances, educational researchers emphasize the importance of main
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(
-                  color: isDark
-                      ? AppColors.darkBorder
-                      : AppColors.lightBorder),
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
@@ -464,8 +499,10 @@ Despite these advances, educational researchers emphasize the importance of main
       children: [
         GlassCard(
           borderColor: const Color(0xFFF59E0B).withValues(alpha: 0.2),
-          child: Text(question.text,
-              style: GoogleFonts.inter(fontSize: 15, height: 1.6)),
+          child: Text(
+            question.text,
+            style: GoogleFonts.inter(fontSize: 15, height: 1.6),
+          ),
         ),
         const SizedBox(height: 16),
         Container(
@@ -473,9 +510,8 @@ Despite these advances, educational researchers emphasize the importance of main
             color: isDark ? AppColors.darkCard : Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-                color: isDark
-                    ? AppColors.darkBorder
-                    : AppColors.lightBorder),
+              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+            ),
           ),
           child: Column(
             children: [
@@ -498,22 +534,26 @@ Despite these advances, educational researchers emphasize the importance of main
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 child: Row(
                   children: [
-                    Text('$wordCount words',
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: wordCount >= (question.wordTarget ?? 150)
-                              ? AppColors.success
-                              : AppColors.warning,
-                        )),
+                    Text(
+                      '$wordCount words',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: wordCount >= (question.wordTarget ?? 150)
+                            ? AppColors.success
+                            : AppColors.warning,
+                      ),
+                    ),
                     const Spacer(),
-                    Text('Target: ${question.wordTarget ?? 150}+ words',
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary,
-                        )),
+                    Text(
+                      'Target: ${question.wordTarget ?? 150}+ words',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -530,8 +570,10 @@ Despite these advances, educational researchers emphasize the importance of main
       children: [
         GlassCard(
           borderColor: const Color(0xFFEC4899).withValues(alpha: 0.2),
-          child: Text(question.text,
-              style: GoogleFonts.inter(fontSize: 15, height: 1.6)),
+          child: Text(
+            question.text,
+            style: GoogleFonts.inter(fontSize: 15, height: 1.6),
+          ),
         ),
         const SizedBox(height: 20),
         SttRecorder(
@@ -558,7 +600,8 @@ Despite these advances, educational researchers emphasize the importance of main
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
                 child: const Text('Previous'),
               ),
@@ -572,14 +615,16 @@ Despite these advances, educational researchers emphasize the importance of main
                 backgroundColor: section.color,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
+                  borderRadius: BorderRadius.circular(14),
+                ),
               ),
               child: Text(
                 _getNextLabel(),
                 style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -625,15 +670,15 @@ Despite these advances, educational researchers emphasize the importance of main
         content: const Text('Your progress will be saved.'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Continue')),
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Continue'),
+          ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
               Navigator.pop(context);
             },
-            child: const Text('Exit',
-                style: TextStyle(color: AppColors.error)),
+            child: const Text('Exit', style: TextStyle(color: AppColors.error)),
           ),
         ],
       ),

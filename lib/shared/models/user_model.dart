@@ -63,11 +63,13 @@ class UserModel {
 
   /// Returns only English learning activities from the log.
   List<ActivityEntry> get englishActivities => activityLog
-      .where((a) =>
-          a.type == ActivityType.lesson ||
-          a.type == ActivityType.ielts ||
-          a.type == ActivityType.mentorChat ||
-          a.type == ActivityType.practice)
+      .where(
+        (a) =>
+            a.type == ActivityType.lesson ||
+            a.type == ActivityType.ielts ||
+            a.type == ActivityType.mentorChat ||
+            a.type == ActivityType.practice,
+      )
       .toList();
 
   /// Returns a map of day labels → activity counts for the last 7 days.
@@ -109,9 +111,9 @@ class UserModel {
       badges: List<String>.from(data['badges'] ?? []),
       totalTimeSpentMinutes:
           (data['totalTimeSpentMinutes'] as num?)?.toInt() ?? 0,
-      activityLog: (data['activityLog'] as List<dynamic>?)
-              ?.map((e) =>
-                  ActivityEntry.fromMap(Map<String, dynamic>.from(e)))
+      activityLog:
+          (data['activityLog'] as List<dynamic>?)
+              ?.map((e) => ActivityEntry.fromMap(Map<String, dynamic>.from(e)))
               .toList() ??
           [],
     );
@@ -160,8 +162,7 @@ class UserModel {
       level: level ?? this.level,
       streak: streak ?? this.streak,
       lessonsCompleted: lessonsCompleted ?? this.lessonsCompleted,
-      codeReviewsCompleted:
-          codeReviewsCompleted ?? this.codeReviewsCompleted,
+      codeReviewsCompleted: codeReviewsCompleted ?? this.codeReviewsCompleted,
       proficiencyLevel: proficiencyLevel ?? this.proficiencyLevel,
       badges: badges ?? this.badges,
       lastActiveDate: lastActiveDate ?? this.lastActiveDate,

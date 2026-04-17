@@ -21,7 +21,6 @@ class _McqPracticeScreenState extends State<McqPracticeScreen> {
   bool _initialized = false;
   bool _showFeedback = false;
 
-
   @override
   void initState() {
     super.initState();
@@ -33,11 +32,11 @@ class _McqPracticeScreenState extends State<McqPracticeScreen> {
   Future<void> _initSession() async {
     final progress = context.read<ProgressProvider>().userProgress;
     await context.read<PracticeProvider>().startSession(
-          SessionType.grammarPractice,
-          progress.currentLevel,
-          progress,
-          questionCount: 10,
-        );
+      SessionType.grammarPractice,
+      progress.currentLevel,
+      progress,
+      questionCount: 10,
+    );
     if (mounted) {
       setState(() => _initialized = true);
     }
@@ -132,7 +131,7 @@ class _McqPracticeScreenState extends State<McqPracticeScreen> {
     final score = provider.totalExercises > 0
         ? (provider.correctCount / provider.totalExercises * 100)
         : 0.0;
-    
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -144,7 +143,8 @@ class _McqPracticeScreenState extends State<McqPracticeScreen> {
                 score: score,
                 maxScore: 100,
                 label: 'Grammar Practice',
-                subtitle: '${provider.correctCount}/${provider.totalExercises} correct',
+                subtitle:
+                    '${provider.correctCount}/${provider.totalExercises} correct',
               ),
               const SizedBox(height: 32),
               SizedBox(
@@ -161,7 +161,14 @@ class _McqPracticeScreenState extends State<McqPracticeScreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: Text('Done', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+                  child: Text(
+                    'Done',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ],

@@ -29,26 +29,28 @@ class BeginnerDashboard extends StatelessWidget {
             // App bar
             SliverToBoxAdapter(child: _buildAppBar(context, isDark)),
             // Daily Goals
-            SliverToBoxAdapter(
-                child: _buildDailyGoals(isDark, progress)),
+            SliverToBoxAdapter(child: _buildDailyGoals(isDark, progress)),
             // Grammar Section
             SliverToBoxAdapter(
-                child: _buildSectionHeader('📖 Grammar Basics', isDark)),
+              child: _buildSectionHeader('📖 Grammar Basics', isDark),
+            ),
             SliverToBoxAdapter(
-                child: _buildGrammarSection(context, isDark, progress)),
+              child: _buildGrammarSection(context, isDark, progress),
+            ),
             // Pronunciation Section
-            SliverToBoxAdapter(child: _buildSectionHeader(
-                '🎤 Pronunciation Practice', isDark)),
             SliverToBoxAdapter(
-                child: _buildPronunciationSection(context, isDark)),
+              child: _buildSectionHeader('🎤 Pronunciation Practice', isDark),
+            ),
+            SliverToBoxAdapter(
+              child: _buildPronunciationSection(context, isDark),
+            ),
             // Spelling Section
             SliverToBoxAdapter(
-                child: _buildSectionHeader('✏️ Spelling Practice', isDark)),
-            SliverToBoxAdapter(
-                child: _buildSpellingSection(context, isDark)),
+              child: _buildSectionHeader('✏️ Spelling Practice', isDark),
+            ),
+            SliverToBoxAdapter(child: _buildSpellingSection(context, isDark)),
             // Badges
-            SliverToBoxAdapter(
-                child: _buildBadgesSection(isDark, progress)),
+            SliverToBoxAdapter(child: _buildBadgesSection(isDark, progress)),
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
         ),
@@ -63,8 +65,10 @@ class BeginnerDashboard extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.arrow_back_rounded,
-                color: isDark ? Colors.white : AppColors.lightText),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: isDark ? Colors.white : AppColors.lightText,
+            ),
           ),
           Container(
             width: 40,
@@ -75,8 +79,11 @@ class BeginnerDashboard extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.school_rounded,
-                color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.school_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -110,17 +117,17 @@ class BeginnerDashboard extends StatelessWidget {
 
   Widget _buildDailyGoals(bool isDark, UserProgress progress) {
     final goal = progress.dailyGoal;
-    final grammarDone = goal.grammarLessonsCompleted >= goal.grammarLessonsTarget;
-    final pronDone = goal.pronunciationMinutesCompleted >= goal.pronunciationMinutesTarget;
+    final grammarDone =
+        goal.grammarLessonsCompleted >= goal.grammarLessonsTarget;
+    final pronDone =
+        goal.pronunciationMinutesCompleted >= goal.pronunciationMinutesTarget;
     final spellDone = goal.spellingWordsCompleted >= goal.spellingWordsTarget;
     final allDone = grammarDone && pronDone && spellDone;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
       child: GlassCard(
-        borderColor: allDone
-            ? AppColors.success.withValues(alpha: 0.3)
-            : null,
+        borderColor: allDone ? AppColors.success.withValues(alpha: 0.3) : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -136,8 +143,11 @@ class BeginnerDashboard extends StatelessWidget {
                 ),
                 const Spacer(),
                 if (allDone)
-                  const Icon(Icons.check_circle_rounded,
-                      color: AppColors.success, size: 20),
+                  const Icon(
+                    Icons.check_circle_rounded,
+                    color: AppColors.success,
+                    size: 20,
+                  ),
               ],
             ),
             const SizedBox(height: 14),
@@ -185,13 +195,32 @@ class BeginnerDashboard extends StatelessWidget {
   }
 
   Widget _buildGrammarSection(
-      BuildContext context, bool isDark, UserProgress progress) {
+    BuildContext context,
+    bool isDark,
+    UserProgress progress,
+  ) {
     final topics = [
-      _TopicInfo('Parts of Speech', 'Nouns, Verbs, Adjectives', Icons.category_rounded),
-      _TopicInfo('Sentence Structure', 'Subject-Verb-Object', Icons.reorder_rounded),
-      _TopicInfo('Present Tense', 'Simple present actions', Icons.today_rounded),
+      _TopicInfo(
+        'Parts of Speech',
+        'Nouns, Verbs, Adjectives',
+        Icons.category_rounded,
+      ),
+      _TopicInfo(
+        'Sentence Structure',
+        'Subject-Verb-Object',
+        Icons.reorder_rounded,
+      ),
+      _TopicInfo(
+        'Present Tense',
+        'Simple present actions',
+        Icons.today_rounded,
+      ),
       _TopicInfo('Past Tense', 'Talking about the past', Icons.history_rounded),
-      _TopicInfo('Future Tense', 'Plans and predictions', Icons.upcoming_rounded),
+      _TopicInfo(
+        'Future Tense',
+        'Plans and predictions',
+        Icons.upcoming_rounded,
+      ),
       _TopicInfo('Articles', 'A, An, The usage', Icons.article_rounded),
       _TopicInfo('Pronouns', 'I, You, He, She...', Icons.person_rounded),
       _TopicInfo('Prepositions', 'In, On, At, etc.', Icons.place_rounded),
@@ -210,7 +239,9 @@ class BeginnerDashboard extends StatelessWidget {
             xpReward: 20,
             timeEstimate: '15 min',
             onTap: () {
-              context.read<LearningProvider>().selectLevel(LearningLevel.beginner);
+              context.read<LearningProvider>().selectLevel(
+                LearningLevel.beginner,
+              );
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -240,8 +271,8 @@ class BeginnerDashboard extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => const PronunciationScreen(
-                    mode: PronunciationMode.words),
+                builder: (_) =>
+                    const PronunciationScreen(mode: PronunciationMode.words),
               ),
             ),
           ),
@@ -257,7 +288,8 @@ class BeginnerDashboard extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (_) => const PronunciationScreen(
-                    mode: PronunciationMode.sentences),
+                  mode: PronunciationMode.sentences,
+                ),
               ),
             ),
           ),
@@ -273,7 +305,8 @@ class BeginnerDashboard extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (_) => const PronunciationScreen(
-                    mode: PronunciationMode.minimalPairs),
+                  mode: PronunciationMode.minimalPairs,
+                ),
               ),
             ),
           ),
@@ -342,16 +375,36 @@ class BeginnerDashboard extends StatelessWidget {
 
   Widget _buildBadgesSection(bool isDark, UserProgress progress) {
     final badges = [
-      _BadgeInfo('First Lesson', Icons.school_rounded, AppColors.accentGreen,
-          progress.totalLessonsCompleted >= 1),
-      _BadgeInfo('7-Day Streak', Icons.local_fire_department_rounded,
-          AppColors.streakColor, progress.streak.currentStreak >= 7),
-      _BadgeInfo('Grammar Pro', Icons.menu_book_rounded, AppColors.primary,
-          progress.skills.grammar.currentScore >= 70),
-      _BadgeInfo('Pronunciation', Icons.mic_rounded, AppColors.info,
-          progress.skills.pronunciation.currentScore >= 70),
-      _BadgeInfo('Spelling Champ', Icons.spellcheck_rounded, AppColors.secondary,
-          progress.skills.spelling.currentScore >= 70),
+      _BadgeInfo(
+        'First Lesson',
+        Icons.school_rounded,
+        AppColors.accentGreen,
+        progress.totalLessonsCompleted >= 1,
+      ),
+      _BadgeInfo(
+        '7-Day Streak',
+        Icons.local_fire_department_rounded,
+        AppColors.streakColor,
+        progress.streak.currentStreak >= 7,
+      ),
+      _BadgeInfo(
+        'Grammar Pro',
+        Icons.menu_book_rounded,
+        AppColors.primary,
+        progress.skills.grammar.currentScore >= 70,
+      ),
+      _BadgeInfo(
+        'Pronunciation',
+        Icons.mic_rounded,
+        AppColors.info,
+        progress.skills.pronunciation.currentScore >= 70,
+      ),
+      _BadgeInfo(
+        'Spelling Champ',
+        Icons.spellcheck_rounded,
+        AppColors.secondary,
+        progress.skills.spelling.currentScore >= 70,
+      ),
     ];
 
     return Padding(
@@ -379,15 +432,15 @@ class BeginnerDashboard extends StatelessWidget {
                   color: badge.unlocked
                       ? badge.color.withValues(alpha: 0.12)
                       : (isDark
-                          ? AppColors.darkCard.withValues(alpha: 0.5)
-                          : AppColors.lightBackground),
+                            ? AppColors.darkCard.withValues(alpha: 0.5)
+                            : AppColors.lightBackground),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: badge.unlocked
                         ? badge.color.withValues(alpha: 0.3)
                         : (isDark
-                            ? AppColors.darkBorder
-                            : AppColors.lightBorder),
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
                   ),
                 ),
                 child: Column(
@@ -397,8 +450,8 @@ class BeginnerDashboard extends StatelessWidget {
                       color: badge.unlocked
                           ? badge.color
                           : (isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary),
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary),
                       size: 28,
                     ),
                     const SizedBox(height: 6),
@@ -411,8 +464,8 @@ class BeginnerDashboard extends StatelessWidget {
                         color: badge.unlocked
                             ? badge.color
                             : (isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary),
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.lightTextSecondary),
                       ),
                     ),
                   ],
@@ -448,9 +501,13 @@ class _GoalRow extends StatelessWidget {
       children: [
         SizedBox(
           width: 130,
-          child: Text(label,
-              style: GoogleFonts.inter(
-                  fontSize: 13, color: isDark ? Colors.white70 : Colors.black54)),
+          child: Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              color: isDark ? Colors.white70 : Colors.black54,
+            ),
+          ),
         ),
         Expanded(
           child: ClipRRect(
@@ -458,18 +515,22 @@ class _GoalRow extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 7,
-              backgroundColor: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              backgroundColor: isDark
+                  ? AppColors.darkBorder
+                  : AppColors.lightBorder,
               valueColor: AlwaysStoppedAnimation(color),
             ),
           ),
         ),
         const SizedBox(width: 8),
-        Text('$current/$target',
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: progress >= 1 ? AppColors.success : color,
-            )),
+        Text(
+          '$current/$target',
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: progress >= 1 ? AppColors.success : color,
+          ),
+        ),
       ],
     );
   }

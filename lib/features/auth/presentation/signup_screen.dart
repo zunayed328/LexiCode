@@ -93,10 +93,7 @@ class _SignupScreenState extends State<SignupScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-          style: GoogleFonts.inter(color: Colors.white),
-        ),
+        content: Text(message, style: GoogleFonts.inter(color: Colors.white)),
         backgroundColor: isError ? AppColors.error : AppColors.accentGreenAuth,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -115,8 +112,10 @@ class _SignupScreenState extends State<SignupScreen> {
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded,
-                color: AppColors.textPrimary),
+            icon: const Icon(
+              Icons.arrow_back_rounded,
+              color: AppColors.textPrimary,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -192,8 +191,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     isPasswordVisible: _isPasswordVisible,
                     textInputAction: TextInputAction.done,
                     onTogglePassword: () {
-                      setState(
-                          () => _isPasswordVisible = !_isPasswordVisible);
+                      setState(() => _isPasswordVisible = !_isPasswordVisible);
                     },
                     onFieldSubmitted: (_) => _handleSignUp(),
                     validator: (value) {
@@ -228,8 +226,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
-                            setState(
-                                () => _agreedToTerms = !_agreedToTerms);
+                            setState(() => _agreedToTerms = !_agreedToTerms);
                           },
                           child: RichText(
                             text: TextSpan(
@@ -259,8 +256,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed:
-                          (_agreedToTerms && !_isSubmitting) ? _handleSignUp : null,
+                      onPressed: (_agreedToTerms && !_isSubmitting)
+                          ? _handleSignUp
+                          : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         disabledBackgroundColor: const Color(0xFFE0E0E0),
@@ -319,13 +317,21 @@ class _SignupScreenState extends State<SignupScreen> {
                             pageBuilder:
                                 (context, animation, secondaryAnimation) =>
                                     const LoginScreen(),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              return FadeTransition(
-                                  opacity: animation, child: child);
-                            },
-                            transitionDuration:
-                                const Duration(milliseconds: 300),
+                            transitionsBuilder:
+                                (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                            transitionDuration: const Duration(
+                              milliseconds: 300,
+                            ),
                           ),
                         );
                       },
@@ -336,7 +342,8 @@ class _SignupScreenState extends State<SignupScreen> {
                             TextSpan(
                               text: AppStrings.alreadyHaveAccount,
                               style: const TextStyle(
-                                  color: AppColors.textSecondary),
+                                color: AppColors.textSecondary,
+                              ),
                             ),
                             TextSpan(
                               text: AppStrings.login,

@@ -125,15 +125,14 @@ class _TtsControlsState extends State<TtsControls>
                 height: 36,
                 decoration: BoxDecoration(
                   color: color.withValues(
-                      alpha: _isSpeaking
-                          ? 0.15 + _pulseController.value * 0.1
-                          : 0.12),
+                    alpha: _isSpeaking
+                        ? 0.15 + _pulseController.value * 0.1
+                        : 0.12,
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
-                  _isSpeaking
-                      ? Icons.stop_rounded
-                      : Icons.volume_up_rounded,
+                  _isSpeaking ? Icons.stop_rounded : Icons.volume_up_rounded,
                   color: color,
                   size: 20,
                 ),
@@ -147,9 +146,7 @@ class _TtsControlsState extends State<TtsControls>
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: isDark
-                  ? AppColors.darkCard
-                  : AppColors.lightBackground,
+              color: isDark ? AppColors.darkCard : AppColors.lightBackground,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
@@ -189,15 +186,14 @@ class _TtsControlsState extends State<TtsControls>
                   height: 48,
                   decoration: BoxDecoration(
                     color: color.withValues(
-                        alpha: _isSpeaking
-                            ? 0.2 + _pulseController.value * 0.1
-                            : 0.15),
+                      alpha: _isSpeaking
+                          ? 0.2 + _pulseController.value * 0.1
+                          : 0.15,
+                    ),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Icon(
-                    _isSpeaking
-                        ? Icons.stop_rounded
-                        : Icons.play_arrow_rounded,
+                    _isSpeaking ? Icons.stop_rounded : Icons.play_arrow_rounded,
                     color: color,
                     size: 28,
                   ),
@@ -243,7 +239,11 @@ class _TtsControlsState extends State<TtsControls>
   }
 
   Widget _buildSpeedButton(
-      double speed, String label, bool isDark, Color color) {
+    double speed,
+    String label,
+    bool isDark,
+    Color color,
+  ) {
     final isActive = _speed == speed;
     return GestureDetector(
       onTap: () {
@@ -269,8 +269,8 @@ class _TtsControlsState extends State<TtsControls>
             color: isActive
                 ? color
                 : (isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary),
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary),
           ),
         ),
       ),

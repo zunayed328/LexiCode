@@ -10,8 +10,9 @@ import 'models/pronunciation_result.dart';
 /// All methods are static for easy access. Each method wraps a
 /// corresponding Cloud Function endpoint and handles errors.
 class ApiService {
-  static final FirebaseFunctions _functions =
-      FirebaseFunctions.instanceFor(region: 'us-central1');
+  static final FirebaseFunctions _functions = FirebaseFunctions.instanceFor(
+    region: 'us-central1',
+  );
 
   // ═══════════════════════════════════════════════════════════════
   //  CODE REVIEW
@@ -54,42 +55,48 @@ class ApiService {
   /// Parses the Cloud Function response into a [CodeReviewResult].
   static CodeReviewResult _parseCodeReviewResult(Map<String, dynamic> data) {
     // Parse issues
-    final issuesList = (data['issues'] as List<dynamic>?)?.map((i) {
-      final issueMap = Map<String, dynamic>.from(i);
-      return CodeIssue(
-        title: issueMap['title'] ?? '',
-        description: issueMap['description'] ?? '',
-        simpleExplanation: issueMap['simpleExplanation'] ?? '',
-        severity: _parseSeverity(issueMap['severity']),
-        type: _parseIssueType(issueMap['type']),
-        lineNumber: issueMap['lineNumber'],
-        column: issueMap['column'],
-        suggestion: issueMap['suggestion'],
-        codeExample: issueMap['codeExample'],
-        explanation: issueMap['explanation'],
-        exampleFix: issueMap['exampleFix'],
-      );
-    }).toList() ?? [];
+    final issuesList =
+        (data['issues'] as List<dynamic>?)?.map((i) {
+          final issueMap = Map<String, dynamic>.from(i);
+          return CodeIssue(
+            title: issueMap['title'] ?? '',
+            description: issueMap['description'] ?? '',
+            simpleExplanation: issueMap['simpleExplanation'] ?? '',
+            severity: _parseSeverity(issueMap['severity']),
+            type: _parseIssueType(issueMap['type']),
+            lineNumber: issueMap['lineNumber'],
+            column: issueMap['column'],
+            suggestion: issueMap['suggestion'],
+            codeExample: issueMap['codeExample'],
+            explanation: issueMap['explanation'],
+            exampleFix: issueMap['exampleFix'],
+          );
+        }).toList() ??
+        [];
 
     // Parse syntax errors
-    final syntaxErrorsList = (data['syntaxErrors'] as List<dynamic>?)?.map((e) {
-      final errorMap = Map<String, dynamic>.from(e);
-      return SyntaxError(
-        line: errorMap['line'] ?? 0,
-        column: errorMap['column'],
-        message: errorMap['message'] ?? '',
-        code: errorMap['code'] ?? '',
-        fix: errorMap['fix'] ?? '',
-        description: errorMap['description'],
-      );
-    }).toList() ?? [];
+    final syntaxErrorsList =
+        (data['syntaxErrors'] as List<dynamic>?)?.map((e) {
+          final errorMap = Map<String, dynamic>.from(e);
+          return SyntaxError(
+            line: errorMap['line'] ?? 0,
+            column: errorMap['column'],
+            message: errorMap['message'] ?? '',
+            code: errorMap['code'] ?? '',
+            fix: errorMap['fix'] ?? '',
+            description: errorMap['description'],
+          );
+        }).toList() ??
+        [];
 
     // Parse ratings
     final ratingsRaw = data['ratings'];
     final ratings = <String, int>{};
     if (ratingsRaw is Map) {
       for (final entry in ratingsRaw.entries) {
-        ratings[entry.key.toString()] = (entry.value is num) ? (entry.value as num).toInt() : 0;
+        ratings[entry.key.toString()] = (entry.value is num)
+            ? (entry.value as num).toInt()
+            : 0;
       }
     }
 
@@ -104,7 +111,10 @@ class ApiService {
       newVocabulary: List<String>.from(data['newVocabulary'] ?? []),
       fixedCode: data['fixedCode'] ?? '',
       changedLines: List<int>.from(
-        (data['changedLines'] as List<dynamic>?)?.map((e) => (e as num).toInt()) ?? [],
+        (data['changedLines'] as List<dynamic>?)?.map(
+              (e) => (e as num).toInt(),
+            ) ??
+            [],
       ),
       summary: data['summary'] ?? '',
       hasSyntaxErrors: data['hasSyntaxErrors'] ?? false,
@@ -114,22 +124,33 @@ class ApiService {
 
   static IssueSeverity _parseSeverity(dynamic value) {
     switch (value?.toString()) {
-      case 'critical': return IssueSeverity.critical;
-      case 'error': return IssueSeverity.error;
-      case 'warning': return IssueSeverity.warning;
-      default: return IssueSeverity.info;
+      case 'critical':
+        return IssueSeverity.critical;
+      case 'error':
+        return IssueSeverity.error;
+      case 'warning':
+        return IssueSeverity.warning;
+      default:
+        return IssueSeverity.info;
     }
   }
 
   static IssueType _parseIssueType(dynamic value) {
     switch (value?.toString()) {
-      case 'syntax': return IssueType.syntax;
-      case 'bug': return IssueType.bug;
-      case 'security': return IssueType.security;
-      case 'performance': return IssueType.performance;
-      case 'style': return IssueType.style;
-      case 'bestPractice': return IssueType.bestPractice;
-      default: return IssueType.bug;
+      case 'syntax':
+        return IssueType.syntax;
+      case 'bug':
+        return IssueType.bug;
+      case 'security':
+        return IssueType.security;
+      case 'performance':
+        return IssueType.performance;
+      case 'style':
+        return IssueType.style;
+      case 'bestPractice':
+        return IssueType.bestPractice;
+      default:
+        return IssueType.bug;
     }
   }
 
@@ -194,10 +215,14 @@ class ApiService {
         'language': language,
       });
 
-      return PronunciationResult.fromJson(Map<String, dynamic>.from(result.data));
+      return PronunciationResult.fromJson(
+        Map<String, dynamic>.from(result.data),
+      );
     } on FirebaseFunctionsException catch (e) {
       if (e.code == 'resource-exhausted') {
-        throw Exception('Daily pronunciation limit reached. Try again tomorrow.');
+        throw Exception(
+          'Daily pronunciation limit reached. Try again tomorrow.',
+        );
       }
       throw Exception('Pronunciation analysis failed: ${e.message}');
     } catch (e) {
