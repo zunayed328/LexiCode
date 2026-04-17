@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-/// Authentication service with Firebase-ready code and demo mode fallback.
-///
-/// When Firebase is not configured, uses SharedPreferences for local demo auth.
-/// Replace with real Firebase calls once `flutterfire configure` is run.
+/// Authentication service with real Firebase integration.
 class AuthService {
   static const String _isLoggedInKey = 'is_logged_in';
   static const String _userNameKey = 'user_name';
@@ -12,35 +11,23 @@ class AuthService {
   static const String _userIdKey = 'user_id';
 
   /// Sign up with email and password.
-  /// Creates user account and stores user profile.
+  /// Creates user account and sends verification email.
   Future<Map<String, dynamic>> signUpWithEmail({
     required String name,
     required String email,
     required String password,
   }) async {
     try {
-      // TODO: Replace with Firebase Auth when configured
-      // final credential = await FirebaseAuth.instance
-      //     .createUserWithEmailAndPassword(email: email, password: password);
-      // await credential.user?.updateDisplayName(name);
-      // await _createFirestoreUser(credential.user!.uid, name, email);
-
-      // Demo mode: simulate signup with delay
-      await Future.delayed(const Duration(milliseconds: 1500));
-
-      // Simulate validation
-      if (email == 'test@test.com') {
-        throw AuthException('Email already in use');
-      }
-
-      final userId = DateTime.now().millisecondsSinceEpoch.toString();
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      
+      await credential.user?.updateDisplayName(name);
+      await credential.user?.sendEmailVerification();
+      
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_isLoggedInKey, true);
-      await prefs.setString(_userNameKey, name);
-      await prefs.setString(_userEmailKey, email);
-      await prefs.setString(_userIdKey, userId);
 
-      return _buildUserMap(userId, name, email);
+      return _buildUserMap(credential.user!.uid, name, email, null);
     } catch (e) {
       if (e is AuthException) rethrow;
       throw AuthException(_mapErrorMessage(e.toString()));
@@ -53,27 +40,24 @@ class AuthService {
     required String password,
   }) async {
     try {
-      // TODO: Replace with Firebase Auth when configured
-      // final credential = await FirebaseAuth.instance
-      //     .signInWithEmailAndPassword(email: email, password: password);
-
-      // Demo mode: simulate login with delay
-      await Future.delayed(const Duration(milliseconds: 1500));
-
-      // Simulate invalid credentials
-      if (password.length < 8) {
-        throw AuthException('Invalid email or password');
+      final credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+          
+      final user = credential.user;
+      if (user != null && !user.emailVerified) {
+        await FirebaseAuth.instance.signOut();
+        throw const AuthException('email-not-verified');
       }
 
       final prefs = await SharedPreferences.getInstance();
-      final savedName = prefs.getString(_userNameKey) ?? 'Developer';
-      final userId = prefs.getString(_userIdKey) ??
-          DateTime.now().millisecondsSinceEpoch.toString();
-
       await prefs.setBool(_isLoggedInKey, true);
-      await prefs.setString(_userEmailKey, email);
 
-      return _buildUserMap(userId, savedName, email);
+      return _buildUserMap(
+        user!.uid, 
+        user.displayName ?? 'Developer', 
+        user.email ?? email, 
+        user.photoURL,
+      );
     } catch (e) {
       if (e is AuthException) rethrow;
       throw AuthException(_mapErrorMessage(e.toString()));
@@ -83,48 +67,40 @@ class AuthService {
   /// Sign in with Google.
   Future<Map<String, dynamic>> signInWithGoogle() async {
     try {
-      // TODO: Replace with real Google Sign-In when configured
-      // final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      // if (googleUser == null) throw AuthException('Google sign-in cancelled');
-      // final GoogleSignInAuthentication googleAuth =
-      //     await googleUser.authentication;
-      // final credential = GoogleAuthProvider.credential(
-      //   accessToken: googleAuth.accessToken,
-      //   idToken: googleAuth.idToken,
-      // );
-      // final userCredential =
-      //     await FirebaseAuth.instance.signInWithCredential(credential);
-
-      // Demo mode
-      await Future.delayed(const Duration(milliseconds: 1000));
-
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) throw const AuthException('Google sign-in cancelled');
+      
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+          
+      final user = userCredential.user;
       final prefs = await SharedPreferences.getInstance();
-      final userId = DateTime.now().millisecondsSinceEpoch.toString();
       await prefs.setBool(_isLoggedInKey, true);
-      await prefs.setString(_userNameKey, 'Google User');
-      await prefs.setString(_userEmailKey, 'user@gmail.com');
-      await prefs.setString(_userIdKey, userId);
 
-      return _buildUserMap(userId, 'Google User', 'user@gmail.com');
+      return _buildUserMap(
+        user!.uid, 
+        user.displayName ?? 'Google User', 
+        user.email ?? '', 
+        user.photoURL,
+      );
     } catch (e) {
       if (e is AuthException) rethrow;
-      throw AuthException('Google sign-in failed. Please try again.');
+      throw const AuthException('Google sign-in failed. Please try again.');
     }
   }
 
   /// Send password reset email.
   Future<void> resetPassword(String email) async {
     try {
-      // TODO: Replace with Firebase Auth when configured
-      // await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-
-      // Demo mode: simulate sending email
-      await Future.delayed(const Duration(milliseconds: 1500));
-
-      if (email.isEmpty) {
-        throw AuthException('Please enter your email');
-      }
-
+      if (email.isEmpty) throw const AuthException('Please enter your email');
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       debugPrint('Password reset email sent to: $email');
     } catch (e) {
       if (e is AuthException) rethrow;
@@ -132,8 +108,24 @@ class AuthService {
     }
   }
 
-  /// Update the user's display name (persists to SharedPreferences).
+  /// Temporarily login, resend verification email, and logout.
+  Future<void> resendVerificationEmail(String email, String password) async {
+    try {
+      final credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      await credential.user?.sendEmailVerification();
+      await FirebaseAuth.instance.signOut();
+    } catch (e) {
+      throw AuthException(_mapErrorMessage(e.toString()));
+    }
+  }
+
+  /// Update the user's display name.
   Future<void> updateDisplayName(String name) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await user.updateDisplayName(name);
+    }
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_userNameKey, name);
   }
@@ -150,51 +142,53 @@ class AuthService {
     return prefs.getString('user_photo_path');
   }
 
-  /// Change the user's password (demo mode: validates current password length).
+  /// Change the user's password.
   Future<void> changePassword({
     required String currentPassword,
     required String newPassword,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 800));
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null || user.email == null) throw const AuthException('User not logged in');
 
-    if (currentPassword.length < 8) {
-      throw AuthException('Current password is incorrect');
-    }
-    if (newPassword.length < 8) {
-      throw AuthException('New password must be at least 8 characters');
-    }
-    if (currentPassword == newPassword) {
-      throw AuthException('New password must be different from current');
-    }
+      // Re-authenticate
+      final cred = EmailAuthProvider.credential(email: user.email!, password: currentPassword);
+      await user.reauthenticateWithCredential(cred);
 
-    // In demo mode, just validate and return success
-    debugPrint('Password changed successfully');
+      await user.updatePassword(newPassword);
+      debugPrint('Password changed successfully');
+    } catch (e) {
+      throw AuthException(_mapErrorMessage(e.toString()));
+    }
   }
 
   /// Sign out the current user.
   Future<void> signOut() async {
-    // TODO: await FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.signOut();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_isLoggedInKey, false);
   }
 
   /// Check if user is currently logged in.
   Future<bool> isLoggedIn() async {
-    // TODO: return FirebaseAuth.instance.currentUser != null;
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_isLoggedInKey) ?? false;
+    final localLogin = prefs.getBool(_isLoggedInKey) ?? false;
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    return localLogin && firebaseUser != null && firebaseUser.emailVerified;
   }
 
   /// Get current user data.
   Future<Map<String, dynamic>?> getCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();
     final isLogged = prefs.getBool(_isLoggedInKey) ?? false;
-    if (!isLogged) return null;
+    final user = FirebaseAuth.instance.currentUser;
+    if (!isLogged || user == null) return null;
 
     return _buildUserMap(
-      prefs.getString(_userIdKey) ?? '',
-      prefs.getString(_userNameKey) ?? 'Developer',
-      prefs.getString(_userEmailKey) ?? '',
+      user.uid,
+      user.displayName ?? 'Developer',
+      user.email ?? '',
+      user.photoURL,
     );
   }
 
@@ -210,12 +204,12 @@ class AuthService {
 
   /// Build the Firestore user document map.
   Map<String, dynamic> _buildUserMap(
-      String uid, String name, String email) {
+      String uid, String name, String email, String? photoURL) {
     return {
       'uid': uid,
       'name': name,
       'email': email,
-      'photoURL': null,
+      'photoURL': photoURL,
       'totalXP': 0,
       'currentLevel': 1,
       'currentStreak': 0,

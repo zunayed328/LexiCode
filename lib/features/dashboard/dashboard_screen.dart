@@ -114,7 +114,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
+              gradient: user.avatarUrl.isEmpty ? AppColors.primaryGradient : null,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -123,17 +123,25 @@ class _DashboardScreenState extends State<DashboardScreen>
                   offset: const Offset(0, 4),
                 ),
               ],
+              image: user.avatarUrl.isNotEmpty
+                  ? DecorationImage(
+                      image: NetworkImage(user.avatarUrl),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
             ),
-            child: Center(
-              child: Text(
-                user.name.substring(0, 1).toUpperCase(),
-                style: GoogleFonts.inter(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            child: user.avatarUrl.isEmpty
+                ? Center(
+                    child: Text(
+                      user.name.isNotEmpty ? user.name.substring(0, 1).toUpperCase() : 'U',
+                      style: GoogleFonts.inter(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                : null,
           ),
           const SizedBox(width: 14),
           Expanded(

@@ -151,6 +151,11 @@ class AuthProvider extends ChangeNotifier {
     clearUserData();
   }
 
+  /// Temporarily login and resend validation email.
+  Future<void> resendVerificationEmail(String email, String password) async {
+    await _authService.resendVerificationEmail(email, password);
+  }
+
   // ─── Profile Editing ───────────────────────────────────────────
 
   /// Update the user's display name.

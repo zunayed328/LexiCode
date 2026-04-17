@@ -52,10 +52,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (success) {
       Navigator.of(context).popUntil((route) => route.isFirst);
     } else {
-      _showSnackBar(
-        authProvider.errorMessage ?? AppStrings.unknownError,
-        isError: true,
-      );
+      if (authProvider.errorMessage == 'email-not-verified') {
+        _showUnverifiedDialog();
+      } else {
+        _showSnackBar(
+          authProvider.errorMessage ?? AppStrings.unknownError,
+          isError: true,
+        );
+      }
     }
 
     setState(() => _isSubmitting = false);
@@ -80,6 +84,43 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     setState(() => _isSubmitting = false);
+  }
+
+  void _showUnverifiedDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.darkCard : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text('Verify Your Email', style: GoogleFonts.inter(fontWeight: FontWeight.w700)),
+        content: const Text('Please verify your email address to access your account. Check your inbox for the verification link.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              setState(() => _isSubmitting = true);
+              try {
+                await context.read<AuthProvider>().resendVerificationEmail(
+                  _emailController.text.trim(),
+                  _passwordController.text,
+                );
+                _showSnackBar('Verification email sent!', isError: false);
+              } catch (e) {
+                _showSnackBar('Failed to resend email.', isError: true);
+              }
+              setState(() => _isSubmitting = false);
+            },
+            style: FilledButton.styleFrom(backgroundColor: AppColors.primary),
+            child: const Text('Resend Email'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showSnackBar(String message, {bool isError = false}) {

@@ -102,16 +102,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                 ),
               ),
             ),
-            // Avatar circle — shows picked photo or initial letter
+            // Avatar circle — shows picked photo or Google photo or initial letter
             Container(
               width: 96,
               height: 96,
               decoration: BoxDecoration(
-                gradient: _localPhotoPath == null ? AppColors.primaryGradient : null,
+                gradient: (_localPhotoPath == null && user.avatarUrl.isEmpty)
+                    ? AppColors.primaryGradient
+                    : null,
                 shape: BoxShape.circle,
-                image: _localPhotoPath != null
+                image: _localPhotoPath != null || user.avatarUrl.isNotEmpty
                     ? DecorationImage(
-                        image: NetworkImage(_localPhotoPath!),
+                        image: NetworkImage(_localPhotoPath ?? user.avatarUrl),
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.high,
                       )
@@ -124,10 +126,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                 ],
               ),
-              child: _localPhotoPath == null
+              child: (_localPhotoPath == null && user.avatarUrl.isEmpty)
                   ? Center(
                       child: Text(
-                        user.name.isNotEmpty ? user.name.substring(0, 1).toUpperCase() : 'D',
+                        user.name.isNotEmpty ? user.name.substring(0, 1).toUpperCase() : 'U',
                         style: GoogleFonts.inter(
                           fontSize: 36,
                           fontWeight: FontWeight.w700,
