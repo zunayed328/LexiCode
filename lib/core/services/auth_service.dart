@@ -35,7 +35,11 @@ class AuthService {
       await prefs.setBool(_isLoggedInKey, true);
 
       return _buildUserMap(credential.user!.uid, name, email, null);
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrint('=========================================');
+      debugPrint('[AUTH] SIGNUP ERROR: $e');
+      debugPrint('[AUTH] STACK TRACE: $stack');
+      debugPrint('=========================================');
       if (e is AuthException) rethrow;
       throw AuthException(_mapErrorMessage(e.toString()));
     }
@@ -71,7 +75,11 @@ class AuthService {
         user.email ?? email,
         user.photoURL,
       );
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrint('=========================================');
+      debugPrint('[AUTH] LOGIN ERROR: $e');
+      debugPrint('[AUTH] STACK TRACE: $stack');
+      debugPrint('=========================================');
       if (e is AuthException) rethrow;
       throw AuthException(_mapErrorMessage(e.toString()));
     }
