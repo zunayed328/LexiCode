@@ -115,7 +115,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   /// Send password reset email.
-  Future<bool> sendPasswordReset(String email) async {
+  Future<bool> resetPassword(String email) async {
     _setLoading(true);
     _clearError();
     try {
