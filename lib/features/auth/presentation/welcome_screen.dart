@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
-import 'signup_screen.dart';
 import 'login_screen.dart';
 
 /// Welcome screen — gateway to Create Account and Login.
@@ -173,24 +172,13 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     opacity: _contentFade,
                     child: Column(
                       children: [
-                        // Create Account button
                         _buildButton(
-                          text: AppStrings.createAccount.replaceAll('\n', ' '),
-                          onPressed: () => Navigator.push(
-                            context,
-                            _buildPageRoute(const SignupScreen()),
-                          ),
-                          isPrimary: true,
-                        ),
-                        const SizedBox(height: 16),
-                        // Login button
-                        _buildButton(
-                          text: AppStrings.login,
+                          text: 'Continue with Email',
                           onPressed: () => Navigator.push(
                             context,
                             _buildPageRoute(const LoginScreen()),
                           ),
-                          isPrimary: false,
+                          isPrimary: true,
                         ),
                       ],
                     ),
