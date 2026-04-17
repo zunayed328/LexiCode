@@ -13,6 +13,7 @@ class AuthService {
   static const String _userNameKey = 'user_name';
   static const String _userEmailKey = 'user_email';
   static const String _userIdKey = 'user_id';
+  static bool _isGoogleInitialized = false;
 
   /// Sign up with email and password.
   /// Creates user account and sends verification email.
@@ -73,14 +74,23 @@ class AuthService {
   /// Sign in with Google.
   Future<Map<String, dynamic>> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (!_isGoogleInitialized) {
+        await GoogleSignIn.instance.initialize();
+        _isGoogleInitialized = true;
+      }
+      
+      final GoogleSignInAccount? googleUser = await GoogleSignIn.instance.authenticate();
       if (googleUser == null)
         throw const AuthException('Google sign-in cancelled');
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
+          
+      // Ensure we request the access token correctly per v7+
+      final auth = await googleUser.authorizationClient?.authorizeScopes([]);
+      
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
+        accessToken: auth?.accessToken,
         idToken: googleAuth.idToken,
       );
 
