@@ -7,9 +7,9 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../shared/widgets/custom_text_field.dart';
-import '../../../shared/widgets/social_login_button.dart';
 import 'signup_screen.dart';
 import 'forgot_password_screen.dart';
+import 'otp_verification_screen.dart';
 
 /// Login screen with email/password form, remember me, forgot password,
 /// social login, and navigation to Signup.
@@ -50,7 +50,16 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (success) {
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              OtpVerificationScreen(email: _emailController.text.trim()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      );
     } else {
       if (authProvider.errorMessage == 'email-not-verified') {
         _showUnverifiedDialog();
@@ -60,27 +69,6 @@ class _LoginScreenState extends State<LoginScreen> {
           isError: true,
         );
       }
-    }
-
-    setState(() => _isSubmitting = false);
-  }
-
-  Future<void> _handleGoogleSignIn() async {
-    if (_isSubmitting) return;
-    setState(() => _isSubmitting = true);
-
-    final authProvider = context.read<AuthProvider>();
-    final success = await authProvider.googleSignIn();
-
-    if (!mounted) return;
-
-    if (success) {
-      Navigator.of(context).popUntil((route) => route.isFirst);
-    } else {
-      _showSnackBar(
-        authProvider.errorMessage ?? AppStrings.unknownError,
-        isError: true,
-      );
     }
 
     setState(() => _isSubmitting = false);
@@ -335,28 +323,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             )
                           : Text(AppStrings.login),
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  // OR divider
-                  _buildDivider(),
-                  const SizedBox(height: 24),
-                  // Google button
-                  SocialLoginButton(
-                    text: AppStrings.continueWithGoogle,
-                    icon: Icons.g_mobiledata_rounded,
-                    iconColor: const Color(0xFFDB4437),
-                    onPressed: _handleGoogleSignIn,
-                  ),
-                  const SizedBox(height: 12),
-                  // Apple button
-                  SocialLoginButton(
-                    text: AppStrings.continueWithApple,
-                    icon: Icons.apple_rounded,
-                    isDark: true,
-                    onPressed: () {
-                      // TODO: Implement Apple Sign-In (iOS only)
-                      _showSnackBar('Apple Sign-In coming soon!');
-                    },
                   ),
                   const SizedBox(height: 32),
                   // Don't have an account

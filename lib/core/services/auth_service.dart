@@ -1,19 +1,21 @@
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
-/// Authentication service with real Firebase integration.
+/// Authentication service with real Firebase integration and Custom Email OTP.
 ///
 /// Manages secure credential provisioning, token lifecycle, and authentication states
-/// across native Email/Password schemas and Google Sign-in OAuth flows.
-/// Features built-in email verification roadblocks and password resetting utilities.
+/// across native Email/Password schemas.
+/// Features built-in email verification roadblocks, OTP verification, and password resetting utilities.
 class AuthService {
   static const String _isLoggedInKey = 'is_logged_in';
   static const String _userNameKey = 'user_name';
   static const String _userEmailKey = 'user_email';
   static const String _userIdKey = 'user_id';
-  static bool _isGoogleInitialized = false;
+  
+  static String? _currentOtp;
+  static Map<String, dynamic>? _pendingUserMap;
 
   /// Sign up with email and password.
   /// Creates user account and sends verification email.
@@ -39,8 +41,8 @@ class AuthService {
     }
   }
 
-  /// Login with email and password.
-  Future<Map<String, dynamic>> loginWithEmail({
+  /// Login with email and password, triggering OTP generation.
+  Future<void> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
@@ -56,10 +58,14 @@ class AuthService {
         throw const AuthException('email-not-verified');
       }
 
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_isLoggedInKey, true);
+      // Generate Mock OTP
+      final random = Random();
+      _currentOtp = (100000 + random.nextInt(900000)).toString();
+      debugPrint('=========================================');
+      debugPrint('[AUTH] MOCK EMAIL OTP REQUESTED: $_currentOtp');
+      debugPrint('=========================================');
 
-      return _buildUserMap(
+      _pendingUserMap = _buildUserMap(
         user!.uid,
         user.displayName ?? 'Developer',
         user.email ?? email,
@@ -71,51 +77,31 @@ class AuthService {
     }
   }
 
-  /// Sign in with Google.
-  Future<Map<String, dynamic>> signInWithGoogle() async {
-    try {
-      if (!_isGoogleInitialized) {
-        await GoogleSignIn.instance.initialize();
-        _isGoogleInitialized = true;
-      }
-      
-      final GoogleSignInAccount? googleUser = await GoogleSignIn.instance.authenticate();
-      if (googleUser == null)
-        throw const AuthException('Google sign-in cancelled');
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-          
-      // Ensure we request the access token correctly per v7+
-      final auth = await googleUser.authorizationClient?.authorizeScopes([]);
-      
-      final credential = GoogleAuthProvider.credential(
-        accessToken: auth?.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(
-        credential,
-      );
-
-      final user = userCredential.user;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_isLoggedInKey, true);
-
-      return _buildUserMap(
-        user!.uid,
-        user.displayName ?? 'Google User',
-        user.email ?? '',
-        user.photoURL,
-      );
-    } catch (e) {
-      if (e is AuthException) rethrow;
-      throw const AuthException('Google sign-in failed. Please try again.');
+  /// Verify the OTP code entered by the user.
+  Future<Map<String, dynamic>> verifyOTP(String inputCode) async {
+    if (_currentOtp == null || _pendingUserMap == null) {
+      throw const AuthException('Invalid session. Please login again.');
     }
+
+    if (inputCode.trim() != _currentOtp) {
+      throw const AuthException('Invalid credentials or verification code. Please try again.');
+    }
+
+    // OTP verified successfully
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_isLoggedInKey, true);
+
+    final userMap = _pendingUserMap!;
+    
+    // Clear pending state
+    _currentOtp = null;
+    _pendingUserMap = null;
+
+    return userMap;
   }
 
   /// Send password reset email.
-  Future<void> resetPassword(String email) async {
+  Future<void> sendPasswordReset(String email) async {
     try {
       if (email.isEmpty) throw const AuthException('Please enter your email');
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
@@ -263,7 +249,7 @@ class AuthService {
     } else if (error.contains('user-not-found') ||
         error.contains('wrong-password') ||
         error.contains('invalid-credential')) {
-      return 'Invalid email or password';
+      return 'Invalid credentials or verification code. Please try again.';
     } else if (error.contains('network')) {
       return 'Network error. Please try again.';
     } else if (error.contains('too-many-requests')) {

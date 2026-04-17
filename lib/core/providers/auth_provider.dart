@@ -65,19 +65,17 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  /// Login with email and password.
+  /// Login with email and password, which triggers OTP generation.
   Future<bool> login({required String email, required String password}) async {
     _setLoading(true);
     _clearError();
     try {
-      _userData = await _authService.loginWithEmail(
+      await _authService.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      _isAuthenticated = true;
-
-      // Ensure Firestore document exists with defaults
-      await _ensureFirestoreUser();
+      // Note: We do NOT set _isAuthenticated = true yet.
+      // We wait for the OTP verification step to complete.
 
       _setLoading(false);
       return true;
@@ -92,12 +90,12 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  /// Sign in with Google.
-  Future<bool> googleSignIn() async {
+  /// Verify the 6-digit OTP to finalize login.
+  Future<bool> verifyOTP(String otp) async {
     _setLoading(true);
     _clearError();
     try {
-      _userData = await _authService.signInWithGoogle();
+      _userData = await _authService.verifyOTP(otp);
       _isAuthenticated = true;
 
       // Ensure Firestore document exists with defaults
@@ -110,18 +108,18 @@ class AuthProvider extends ChangeNotifier {
       _setLoading(false);
       return false;
     } catch (e) {
-      _setError('Google sign-in failed. Please try again.');
+      _setError('Invalid credentials or verification code. Please try again.');
       _setLoading(false);
       return false;
     }
   }
 
   /// Send password reset email.
-  Future<bool> resetPassword(String email) async {
+  Future<bool> sendPasswordReset(String email) async {
     _setLoading(true);
     _clearError();
     try {
-      await _authService.resetPassword(email);
+      await _authService.sendPasswordReset(email);
       _setLoading(false);
       return true;
     } on AuthException catch (e) {
