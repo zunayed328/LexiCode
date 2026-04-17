@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Explicitly deny all writes/reads by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /users/{userId} {
+      // 1. Authentication Checks
+      // Users can only read their own document
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // 2. Data Validation & Structure (Creation)
+      // Enforce the initial structure and prevent arbitrary level/xp assignments during signup
+      allow create: if request.auth != null && request.auth.uid == userId
+                    && request.resource.data.keys().hasAll(['uid', 'name', 'email', 'xp', 'level'])
+                    && request.resource.data.xp == 0
+                    && request.resource.data.level == 1
+                    && request.resource.data.isPremium == false;
+
+      // 3. Prevent Client-Side Metric Inflation (Updates)
+      // Allow users to update their profile (like name/photo), but LOCK DOWN sensitive gamification fields.
+      // XP, levels, streaks, etc., should ONLY be mutated by secure Admin SDK backend Cloud Functions.
+      allow update: if request.auth != null && request.auth.uid == userId
+                    && !request.resource.data.diff(resource.data).affectedKeys()
+                        .hasAny([
+                          'xp', 
+                          'level', 
+                          'streak', 
+                          'longestStreak', 
+                          'lessonsCompleted', 
+                          'codeReviewsCompleted', 
+                          'badges', 
+                          'gems', 
+                          'isPremium'
+                        ]);
+                        
+      // Subcollection for lesson results
+      match /lesson_results/{lessonId} {
+        // Users can read their own lesson histories
+        allow read: if request.auth != null && request.auth.uid == userId;
+        
+        // Deny direct client writes to prevent users from faking test results
+        allow write: if false;
+      }
+    }
+  }
+}

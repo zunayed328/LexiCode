@@ -1,0 +1,94 @@
+Analyzing Lexim_code...                                         
+
+   info - Don't invoke 'print' in production code - lib\core\services\ai_service.dart:28:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\ai_service.dart:72:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\ai_service.dart:206:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\old_ai_service.dart:18:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\old_ai_service.dart:102:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\old_ai_service.dart:129:7 - avoid_print
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\code_review\presentation\code_review_screen.dart:647:22 - use_build_context_synchronously
+   info - Missing type annotation - lib\features\dashboard\dashboard_screen.dart:107:23 - strict_top_level_inference
+   info - Missing type annotation - lib\features\dashboard\dashboard_screen.dart:435:26 - strict_top_level_inference
+   info - Invalid use of a private type in a public API - lib\features\language_learning\models\user_progress_model.dart:364:3 - library_private_types_in_public_api
+  error - The getter 'example' isn't defined for the type 'GrammarPoint' - lib\features\language_learning\screens\beginner\grammar_lesson_screen.dart:298:41 - undefined_getter
+  error - The getter 'example' isn't defined for the type 'GrammarPoint' - lib\features\language_learning\screens\beginner\grammar_lesson_screen.dart:310:49 - undefined_getter
+  error - The getter 'translation' isn't defined for the type 'LessonExample' - lib\features\language_learning\screens\beginner\grammar_lesson_screen.dart:378:42 - undefined_getter
+  error - The getter 'translation' isn't defined for the type 'LessonExample' - lib\features\language_learning\screens\beginner\grammar_lesson_screen.dart:380:42 - undefined_getter
+  error - The getter 'exercises' isn't defined for the type 'LearningLesson' - lib\features\language_learning\screens\beginner\grammar_lesson_screen.dart:483:49 - undefined_getter
+  error - The getter 'exercises' isn't defined for the type 'LearningLesson' - lib\features\language_learning\screens\beginner\grammar_lesson_screen.dart:509:30 - undefined_getter
+warning - Unused import: 'package:provider/provider.dart' - lib\features\language_learning\screens\beginner\pronunciation_screen.dart:3:8 - unused_import
+warning - Unused import: '../../providers/practice_provider.dart' - lib\features\language_learning\screens\beginner\pronunciation_screen.dart:6:8 - unused_import
+warning - Unused import: '../../providers/progress_provider.dart' - lib\features\language_learning\screens\beginner\pronunciation_screen.dart:7:8 - unused_import
+  error - There's no constant named 'multipleChoice' in 'ExerciseType' - lib\features\language_learning\screens\intermediate\practice_session_screen.dart:83:28 - undefined_enum_constant
+  error - There's no constant named 'multipleChoice' in 'ExerciseType' - lib\features\language_learning\screens\intermediate\practice_session_screen.dart:119:28 - undefined_enum_constant
+  error - There's no constant named 'multipleChoice' in 'ExerciseType' - lib\features\language_learning\screens\intermediate\practice_session_screen.dart:149:28 - undefined_enum_constant
+  error - There's no constant named 'multipleChoice' in 'ExerciseType' - lib\features\language_learning\screens\intermediate\practice_session_screen.dart:164:28 - undefined_enum_constant
+  error - There's no constant named 'multipleChoice' in 'ExerciseType' - lib\features\language_learning\screens\intermediate\practice_session_screen.dart:201:38 - undefined_enum_constant
+  error - There's no constant named 'multipleChoice' in 'ExerciseType' - lib\features\language_learning\screens\intermediate\practice_session_screen.dart:215:38 - undefined_enum_constant
+warning - The value of the field '_correctAnswers' isn't used - lib\features\language_learning\screens\intermediate\story_reader_screen.dart:19:7 - unused_field
+warning - The value of the field '_session' isn't used - lib\features\language_learning\screens\practice\daily_practice_screen.dart:24:20 - unused_field
+  error - The argument type 'UserProgress' can't be assigned to the parameter type 'DateTime'.  - lib\features\language_learning\screens\practice\daily_practice_screen.dart:40:9 - argument_type_not_assignable
+  error - 2 positional arguments expected by 'getDailyPractice', but 1 found - lib\features\language_learning\screens\practice\daily_practice_screen.dart:40:17 - not_enough_positional_arguments
+  error - The named parameter 'topic' isn't defined - lib\features\language_learning\screens\practice\daily_practice_screen.dart:41:9 - undefined_named_parameter
+warning - The value of the local variable 'result' isn't used - lib\features\language_learning\screens\practice\daily_practice_screen.dart:126:11 - unused_local_variable
+  error - The method 'addXp' isn't defined for the type 'ProgressProvider' - lib\features\language_learning\screens\practice\daily_practice_screen.dart:145:44 - undefined_method
+  error - The method 'addXp' isn't defined for the type 'ProgressProvider' - lib\features\language_learning\screens\practice\daily_practice_screen.dart:163:50 - undefined_method
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\daily_practice_screen.dart:312:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\daily_practice_screen.dart:360:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\daily_practice_screen.dart:367:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\daily_practice_screen.dart:379:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\daily_practice_screen.dart:395:39 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\daily_practice_screen.dart:402:39 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\daily_practice_screen.dart:445:34 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\daily_practice_screen.dart:459:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\daily_practice_screen.dart:460:38 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\daily_practice_screen.dart:518:39 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\practice_history_screen.dart:142:26 - deprecated_member_use
+   info - Missing type annotation - lib\features\language_learning\screens\practice\practice_history_screen.dart:172:31 - strict_top_level_inference
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\practice_history_screen.dart:220:48 - deprecated_member_use
+  error - The argument type 'UserProgress' can't be assigned to the parameter type 'int'.  - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:41:64 - argument_type_not_assignable
+  error - 2 positional arguments expected by 'getWeeklyChallenge', but 1 found - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:41:72 - not_enough_positional_arguments
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:244:46 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:267:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:275:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:318:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:362:34 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:364:53 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:372:40 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:486:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:488:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:496:45 - deprecated_member_use
+  error - The method 'addXp' isn't defined for the type 'ProgressProvider' - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:532:52 - undefined_method
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:556:24 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:558:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:565:30 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\practice\weekly_challenge_screen.dart:640:54 - deprecated_member_use
+  error - The method 'toLowerCase' isn't defined for the type 'WeaknessUrgency' - lib\features\language_learning\screens\suggestions\ai_suggestions_screen.dart:261:37 - undefined_method
+  error - The method 'toLowerCase' isn't defined for the type 'WeaknessUrgency' - lib\features\language_learning\screens\suggestions\ai_suggestions_screen.dart:261:74 - undefined_method
+  error - The method 'toUpperCase' isn't defined for the type 'WeaknessUrgency' - lib\features\language_learning\screens\suggestions\ai_suggestions_screen.dart:297:43 - undefined_method
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\ai_suggestions_screen.dart:423:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\ai_suggestions_screen.dart:439:76 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\personalized_plan_screen.dart:185:46 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\personalized_plan_screen.dart:206:84 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\personalized_plan_screen.dart:212:39 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\personalized_plan_screen.dart:287:34 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\personalized_plan_screen.dart:294:36 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\weakness_analysis_screen.dart:103:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\weakness_analysis_screen.dart:105:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\weakness_analysis_screen.dart:128:73 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\weakness_analysis_screen.dart:159:28 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\weakness_analysis_screen.dart:168:34 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\weakness_analysis_screen.dart:232:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\language_learning\screens\suggestions\weakness_analysis_screen.dart:248:49 - deprecated_member_use
+   info - 'listenMode' is deprecated and shouldn't be used. Use SpeechListenOptions.listenMode instead - lib\features\language_learning\services\speech_service.dart:118:9 - deprecated_member_use
+  error - There's no constant named 'expert' in 'ExerciseDifficulty' - lib\features\language_learning\widgets\exercise_card.dart:117:57 - undefined_enum_constant
+  error - There's no constant named 'multipleChoice' in 'ExerciseType' - lib\features\language_learning\widgets\exercise_card.dart:207:25 - undefined_enum_constant
+warning - Dead code - lib\features\language_learning\widgets\exercise_card.dart:223:32 - dead_code
+warning - The left operand can't be null, so the right operand is never executed - lib\features\language_learning\widgets\exercise_card.dart:223:35 - dead_null_aware_expression
+   info - Missing type annotation - lib\features\profile\presentation\profile_screen.dart:34:30 - strict_top_level_inference
+   info - Missing type annotation - lib\features\profile\presentation\profile_screen.dart:73:27 - strict_top_level_inference
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor or activeTrackColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\features\profile\presentation\profile_screen.dart:112:19 - deprecated_member_use
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor or activeTrackColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\features\profile\presentation\profile_screen.dart:116:75 - deprecated_member_use
+   info - Missing type annotation - lib\features\progress\presentation\progress_screen.dart:55:26 - strict_top_level_inference
+   info - Missing type annotation - lib\features\progress\presentation\progress_screen.dart:154:25 - strict_top_level_inference
+
