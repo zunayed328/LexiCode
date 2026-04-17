@@ -33,25 +33,12 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Sign up with email, name, and password.
-  Future<bool> signUp({
-    required String name,
-    required String email,
-    required String password,
-  }) async {
+  /// Request a Passwordless Magic Link to be sent to email.
+  Future<bool> sendSignInLinkToEmail(String email) async {
     _setLoading(true);
     _clearError();
     try {
-      _userData = await _authService.signUpWithEmail(
-        name: name,
-        email: email,
-        password: password,
-      );
-      _isAuthenticated = true;
-
-      // Ensure Firestore document exists with defaults
-      await _ensureFirestoreUser();
-
+      await _authService.sendSignInLinkToEmail(email);
       _setLoading(false);
       return true;
     } on AuthException catch (e) {
@@ -65,37 +52,12 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  /// Login with email and password, which triggers OTP generation.
-  Future<bool> login({required String email, required String password}) async {
+  /// Verify the inbound Email Link and finalize authentication.
+  Future<bool> signInWithEmailLink(String email, String emailLink) async {
     _setLoading(true);
     _clearError();
     try {
-      await _authService.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      // Note: We do NOT set _isAuthenticated = true yet.
-      // We wait for the OTP verification step to complete.
-
-      _setLoading(false);
-      return true;
-    } on AuthException catch (e) {
-      _setError(e.message);
-      _setLoading(false);
-      return false;
-    } catch (e) {
-      _setError('Something went wrong. Please try again.');
-      _setLoading(false);
-      return false;
-    }
-  }
-
-  /// Verify the 6-digit OTP to finalize login.
-  Future<bool> verifyOTP(String otp) async {
-    _setLoading(true);
-    _clearError();
-    try {
-      _userData = await _authService.verifyOTP(otp);
+      _userData = await _authService.signInWithEmailLink(email, emailLink);
       _isAuthenticated = true;
 
       // Ensure Firestore document exists with defaults
@@ -108,26 +70,7 @@ class AuthProvider extends ChangeNotifier {
       _setLoading(false);
       return false;
     } catch (e) {
-      _setError('Invalid credentials or verification code. Please try again.');
-      _setLoading(false);
-      return false;
-    }
-  }
-
-  /// Send password reset email.
-  Future<bool> resetPassword(String email) async {
-    _setLoading(true);
-    _clearError();
-    try {
-      await _authService.sendPasswordReset(email);
-      _setLoading(false);
-      return true;
-    } on AuthException catch (e) {
-      _setError(e.message);
-      _setLoading(false);
-      return false;
-    } catch (e) {
-      _setError('Failed to send reset email. Please try again.');
+      _setError('Invalid or expired login link. Please request a new one.');
       _setLoading(false);
       return false;
     }

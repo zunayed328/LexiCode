@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:provider/provider.dart';
@@ -116,6 +118,19 @@ class _AppEntryState extends State<AppEntry> {
     final authProvider = context.read<AuthProvider>();
     final appProvider = context.read<AppProvider>();
     await authProvider.initialize();
+
+    // Web Magic Link Intercept
+    if (kIsWeb) {
+      final String currentUrl = Uri.base.toString();
+      if (FirebaseAuth.instance.isSignInWithEmailLink(currentUrl)) {
+        final prefs = await SharedPreferences.getInstance();
+        final email = prefs.getString('user_email') ?? '';
+        if (email.isNotEmpty) {
+          await authProvider.signInWithEmailLink(email, currentUrl);
+          await prefs.remove('user_email'); // Clear local cache securely
+        }
+      }
+    }
 
     if (!mounted) return;
 

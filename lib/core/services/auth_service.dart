@@ -14,30 +14,31 @@ class AuthService {
   static const String _userEmailKey = 'user_email';
   static const String _userIdKey = 'user_id';
   
-  static String? _currentOtp;
-  static Map<String, dynamic>? _pendingUserMap;
-
-  /// Sign up with email and password.
-  /// Creates user account and sends verification email.
-  Future<Map<String, dynamic>> signUpWithEmail({
-    required String name,
-    required String email,
-    required String password,
-  }) async {
+  /// Send Passwordless Sign-In Link to Email
+  Future<void> sendSignInLinkToEmail(String email) async {
     try {
-      final credential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+      if (email.isEmpty) throw const AuthException('Please enter your email');
 
-      await credential.user?.updateDisplayName(name);
-      await credential.user?.sendEmailVerification();
+      // Setup dynamic Link options. Uses the current Web URI.
+      final actionCodeSettings = ActionCodeSettings(
+        url: kIsWeb ? Uri.base.toString() : 'http://localhost',
+        handleCodeInApp: true,
+      );
 
+      await FirebaseAuth.instance.sendSignInLinkToEmail(
+        email: email,
+        actionCodeSettings: actionCodeSettings,
+      );
+
+      // We MUST save the email locally because if the user clicks the link on the same device,
+      // we need to supply the exact email to complete the flow seamlessly.
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_isLoggedInKey, true);
+      await prefs.setString(_userEmailKey, email);
 
-      return _buildUserMap(credential.user!.uid, name, email, null);
+      debugPrint('[AUTH] Magic link sent successfully to: $email');
     } catch (e, stack) {
       debugPrint('=========================================');
-      debugPrint('[AUTH] SIGNUP ERROR: $e');
+      debugPrint('[AUTH] MAGIC LINK ERROR: $e');
       debugPrint('[AUTH] STACK TRACE: $stack');
       debugPrint('=========================================');
       if (e is AuthException) rethrow;
@@ -45,91 +46,42 @@ class AuthService {
     }
   }
 
-  /// Login with email and password, triggering OTP generation.
-  Future<void> signInWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
+  /// Complete Sign In With Email Link
+  Future<Map<String, dynamic>> signInWithEmailLink(String email, String emailLink) async {
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      final user = credential.user;
-      if (user != null && !user.emailVerified) {
-        await FirebaseAuth.instance.signOut();
-        throw const AuthException('email-not-verified');
+      if (!FirebaseAuth.instance.isSignInWithEmailLink(emailLink)) {
+        throw const AuthException('Invalid or expired login link.');
       }
 
-      // Generate Mock OTP
-      final random = Random();
-      _currentOtp = (100000 + random.nextInt(900000)).toString();
-      debugPrint('=========================================');
-      debugPrint('[AUTH] MOCK EMAIL OTP REQUESTED: $_currentOtp');
-      debugPrint('=========================================');
+      final credential = await FirebaseAuth.instance.signInWithEmailLink(
+        email: email,
+        emailLink: emailLink,
+      );
 
-      _pendingUserMap = _buildUserMap(
-        user!.uid,
-        user.displayName ?? 'Developer',
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_isLoggedInKey, true);
+
+      final user = credential.user;
+      if (user == null) throw const AuthException('User verification failed.');
+
+      // If this is a brand new user, assign a default name from their email prefix.
+      if (credential.additionalUserInfo?.isNewUser ?? false) {
+        final displayName = user.displayName ?? email.split('@')[0];
+        await user.updateDisplayName(displayName);
+      }
+
+      return _buildUserMap(
+        user.uid,
+        user.displayName ?? email.split('@')[0],
         user.email ?? email,
         user.photoURL,
       );
     } catch (e, stack) {
       debugPrint('=========================================');
-      debugPrint('[AUTH] LOGIN ERROR: $e');
+      debugPrint('[AUTH] LINK VERIFICATION ERROR: $e');
       debugPrint('[AUTH] STACK TRACE: $stack');
       debugPrint('=========================================');
       if (e is AuthException) rethrow;
-      throw AuthException(_mapErrorMessage(e.toString()));
-    }
-  }
-
-  /// Verify the OTP code entered by the user.
-  Future<Map<String, dynamic>> verifyOTP(String inputCode) async {
-    if (_currentOtp == null || _pendingUserMap == null) {
-      throw const AuthException('Invalid session. Please login again.');
-    }
-
-    if (inputCode.trim() != _currentOtp) {
-      throw const AuthException('Invalid credentials or verification code. Please try again.');
-    }
-
-    // OTP verified successfully
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_isLoggedInKey, true);
-
-    final userMap = _pendingUserMap!;
-    
-    // Clear pending state
-    _currentOtp = null;
-    _pendingUserMap = null;
-
-    return userMap;
-  }
-
-  /// Send password reset email.
-  Future<void> sendPasswordReset(String email) async {
-    try {
-      if (email.isEmpty) throw const AuthException('Please enter your email');
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      debugPrint('Password reset email sent to: $email');
-    } catch (e) {
-      if (e is AuthException) rethrow;
-      throw AuthException(_mapErrorMessage(e.toString()));
-    }
-  }
-
-  /// Temporarily login, resend verification email, and logout.
-  Future<void> resendVerificationEmail(String email, String password) async {
-    try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      await credential.user?.sendEmailVerification();
-      await FirebaseAuth.instance.signOut();
-    } catch (e) {
       throw AuthException(_mapErrorMessage(e.toString()));
     }
   }
