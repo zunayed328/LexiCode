@@ -89,10 +89,7 @@ class AuthProvider extends ChangeNotifier {
     clearUserData();
   }
 
-  /// Temporarily login and resend validation email.
-  Future<void> resendVerificationEmail(String email, String password) async {
-    await _authService.resendVerificationEmail(email, password);
-  }
+
 
   // ─── Profile Editing ───────────────────────────────────────────
 
@@ -117,16 +114,7 @@ class AuthProvider extends ChangeNotifier {
   /// Get the stored local photo path.
   Future<String?> getPhotoPath() => _authService.getPhotoPath();
 
-  /// Change the user's password.
-  Future<void> changePassword({
-    required String currentPassword,
-    required String newPassword,
-  }) async {
-    await _authService.changePassword(
-      currentPassword: currentPassword,
-      newPassword: newPassword,
-    );
-  }
+
 
   // ─── Firestore Integration ──────────────────────────────────
 
