@@ -8,13 +8,12 @@ import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/providers/app_provider.dart';
 import '../../../core/providers/auth_provider.dart';
-import '../../../core/services/auth_service.dart';
 import '../../../shared/models/activity_entry.dart';
 import '../../../shared/widgets/glass_card.dart';
-import '../../auth/presentation/login_screen.dart';
 import '../../auth/presentation/welcome_screen.dart';
 import '../../language_learning/providers/progress_provider.dart';
 import '../../language_learning/providers/learning_provider.dart';
+import '../widgets/activity_history_list.dart';
 
 // ─── Accent Palette ───────────────────────────────────────────────
 const _cyanAccent = Color(0xFF00D2FF);
@@ -66,6 +65,9 @@ class _ProfileScreenState extends State<ProfileScreen>
           slivers: [
             SliverToBoxAdapter(
               child: _buildProfileHeader(user, provider, isDark),
+            ),
+            const SliverToBoxAdapter(
+              child: ActivityHistoryList(),
             ),
             SliverToBoxAdapter(child: _buildStatsBar(user, provider, isDark)),
             SliverToBoxAdapter(child: _buildWeeklyChart(provider, isDark)),
@@ -1029,17 +1031,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                   color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
                 ),
                 _buildSettingsTile(
-                  Icons.lock_rounded,
-                  'Change Password',
-                  _cyanAccent,
-                  subtitle: 'Update your account security',
-                  onTap: () => _showChangePasswordDialog(context, isDark),
-                ),
-                Divider(
-                  height: 1,
-                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                ),
-                _buildSettingsTile(
                   Icons.logout_rounded,
                   'Log Out',
                   AppColors.error,
@@ -1069,16 +1060,23 @@ class _ProfileScreenState extends State<ProfileScreen>
                             onPressed: () async {
                               Navigator.pop(ctx);
                               try {
+                                // 1. Sign out of Firebase first
+                                await context.read<AuthProvider>().signOut();
+
+                                // 2. Clear all provider state
                                 if (context.mounted) {
+                                  context
+                                      .read<AppProvider>()
+                                      .resetForSignOut();
                                   context
                                       .read<ProgressProvider>()
                                       .clearUserData();
                                   context
                                       .read<LearningProvider>()
                                       .clearUserData();
-                                  context.read<AuthProvider>().clearUserData();
                                 }
-                                await context.read<AuthProvider>().signOut();
+
+                                // 3. Navigate to welcome screen
                                 if (context.mounted) {
                                   Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
@@ -1160,236 +1158,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  // ─── Change Password Dialog ──────────────────────────────────────
-  void _showChangePasswordDialog(BuildContext context, bool isDark) {
-    final currentPwController = TextEditingController();
-    final newPwController = TextEditingController();
-    bool obscureCurrent = true;
-    bool obscureNew = true;
-    bool isLoading = false;
-
-    showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialogState) => AlertDialog(
-          backgroundColor: isDark ? const Color(0xFF1E1E2E) : Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-            side: BorderSide(
-              color: isDark
-                  ? AppColors.darkBorder.withValues(alpha: 0.4)
-                  : AppColors.lightBorder,
-            ),
-          ),
-          icon: Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: _cyanAccent.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.lock_rounded, color: _cyanAccent, size: 28),
-          ),
-          title: Text(
-            'Change Password',
-            style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 18),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: currentPwController,
-                obscureText: obscureCurrent,
-                style: GoogleFonts.inter(fontSize: 14),
-                decoration: InputDecoration(
-                  labelText: 'Current Password',
-                  labelStyle: TextStyle(
-                    fontSize: 13,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
-                  ),
-                  filled: true,
-                  fillColor: isDark
-                      ? AppColors.darkSurface.withValues(alpha: 0.5)
-                      : AppColors.lightDivider,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: _cyanAccent, width: 2),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.lock_outline_rounded,
-                    color: _cyanAccent,
-                    size: 20,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      obscureCurrent
-                          ? Icons.visibility_off_rounded
-                          : Icons.visibility_rounded,
-                      size: 20,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
-                    ),
-                    onPressed: () =>
-                        setDialogState(() => obscureCurrent = !obscureCurrent),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              TextField(
-                controller: newPwController,
-                obscureText: obscureNew,
-                style: GoogleFonts.inter(fontSize: 14),
-                decoration: InputDecoration(
-                  labelText: 'New Password',
-                  labelStyle: TextStyle(
-                    fontSize: 13,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
-                  ),
-                  filled: true,
-                  fillColor: isDark
-                      ? AppColors.darkSurface.withValues(alpha: 0.5)
-                      : AppColors.lightDivider,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: _cyanAccent, width: 2),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.lock_reset_rounded,
-                    color: _cyanAccent,
-                    size: 20,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      obscureNew
-                          ? Icons.visibility_off_rounded
-                          : Icons.visibility_rounded,
-                      size: 20,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
-                    ),
-                    onPressed: () =>
-                        setDialogState(() => obscureNew = !obscureNew),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          actionsAlignment: MainAxisAlignment.center,
-          actionsPadding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
-          actions: [
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: FilledButton(
-                onPressed: isLoading
-                    ? null
-                    : () async {
-                        setDialogState(() => isLoading = true);
-                        try {
-                          await context.read<AuthProvider>().changePassword(
-                            currentPassword: currentPwController.text,
-                            newPassword: newPwController.text,
-                          );
-                          if (ctx.mounted) Navigator.pop(ctx);
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text(
-                                  'Password changed successfully!',
-                                ),
-                                backgroundColor: _emeraldAccent,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            );
-                          }
-                        } on AuthException catch (e) {
-                          setDialogState(() => isLoading = false);
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(e.message),
-                                backgroundColor: AppColors.error,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            );
-                          }
-                        } catch (e) {
-                          setDialogState(() => isLoading = false);
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text(
-                                  'Failed to change password',
-                                ),
-                                backgroundColor: AppColors.error,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                      },
-                style: FilledButton.styleFrom(
-                  backgroundColor: _cyanAccent,
-                  disabledBackgroundColor: _cyanAccent.withValues(alpha: 0.5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                child: isLoading
-                    ? const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          color: Colors.white,
-                        ),
-                      )
-                    : Text(
-                        'Update Password',
-                        style: GoogleFonts.inter(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   // ─── About Section ───────────────────────────────────────────────
   Widget _buildAboutSection(bool isDark) {

@@ -1,155 +1,274 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
+import '../../shared/models/user_model.dart';
 
-/// Provider for authentication state management.
+/// Provider for Firebase Passwordless Email-Link authentication.
 ///
 /// Wraps [AuthService] with ChangeNotifier for reactive UI updates.
-/// Manages loading states, error messages, and user data.
-/// After login/signup, ensures a Firestore user document exists.
+/// Listens to [FirebaseAuth.authStateChanges] so the UI automatically
+/// reflects sign-in / sign-out events.
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
   final FirestoreService _firestoreService = FirestoreService();
 
   bool _isLoading = false;
   bool _isAuthenticated = false;
+  bool _linkSent = false;
   String? _errorMessage;
-  Map<String, dynamic>? _userData;
+  UserModel? _user;
   bool _isFirstLaunch = true;
 
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _isAuthenticated;
+  bool get linkSent => _linkSent;
   String? get errorMessage => _errorMessage;
-  Map<String, dynamic>? get userData => _userData;
+  UserModel? get user => _user;
   bool get isFirstLaunch => _isFirstLaunch;
 
+  /// Legacy-compatible getter — returns user as a Map for AppProvider.loadUserFromAuth().
+  Map<String, dynamic>? get userData => _user?.toMap();
+
+  // ─── Initialization ───────────────────────────────────────────────────────
+
   /// Initialize auth state — call on app start.
+  ///
+  /// Checks for a existing Firebase session and loads the user's
+  /// Firestore profile if authenticated.
   Future<void> initialize() async {
     _isFirstLaunch = await _authService.isFirstLaunch();
-    _isAuthenticated = await _authService.isLoggedIn();
-    if (_isAuthenticated) {
-      _userData = await _authService.getCurrentUser();
-    }
-    notifyListeners();
-  }
 
-  /// Request a Passwordless Magic Link to be sent to email.
-  Future<bool> sendSignInLinkToEmail(String email) async {
-    _setLoading(true);
-    _clearError();
-    try {
-      await _authService.sendSignInLinkToEmail(email);
-      _setLoading(false);
-      return true;
-    } on AuthException catch (e) {
-      _setError(e.message);
-      _setLoading(false);
-      return false;
-    } catch (e) {
-      _setError('Something went wrong. Please try again.');
-      _setLoading(false);
-      return false;
-    }
-  }
-
-  /// Verify the inbound Email Link and finalize authentication.
-  Future<bool> signInWithEmailLink(String email, String emailLink) async {
-    _setLoading(true);
-    _clearError();
-    try {
-      _userData = await _authService.signInWithEmailLink(email, emailLink);
+    final firebaseUser = _authService.currentUser;
+    if (firebaseUser != null) {
+      await _loadUserProfile(firebaseUser);
       _isAuthenticated = true;
+    } else {
+      _isAuthenticated = false;
+    }
 
-      // Ensure Firestore document exists with defaults
-      await _ensureFirestoreUser();
+    // Listen for future auth state changes
+    _authService.authStateChanges.listen((User? user) async {
+      if (user != null) {
+        await _loadUserProfile(user);
+        _isAuthenticated = true;
+      } else {
+        _isAuthenticated = false;
+        _user = null;
+      }
+      notifyListeners();
+    });
 
+    notifyListeners();
+  }
+
+  /// Loads the user's Firestore profile into [_user].
+  Future<void> _loadUserProfile(User firebaseUser) async {
+    try {
+      final data = await _firestoreService.getUserData(firebaseUser.uid);
+      if (data != null) {
+        // Load activity log from Firestore
+        final activities =
+            await _firestoreService.getActivities(firebaseUser.uid);
+
+        _user = UserModel.fromMap(firebaseUser.uid, data)
+            .copyWith(activityLog: activities);
+      } else {
+        // Firestore document doesn't exist yet — create it
+        await _firestoreService.ensureUserDocument(
+          uid: firebaseUser.uid,
+          name: firebaseUser.displayName ??
+              firebaseUser.email?.split('@')[0] ??
+              'Developer',
+          email: firebaseUser.email ?? '',
+          photoURL: firebaseUser.photoURL,
+        );
+
+        _user = UserModel(
+          id: firebaseUser.uid,
+          name: firebaseUser.displayName ??
+              firebaseUser.email?.split('@')[0] ??
+              'Developer',
+          email: firebaseUser.email ?? '',
+        );
+      }
+    } catch (e) {
+      debugPrint('[AuthProvider] _loadUserProfile error: $e');
+    }
+  }
+
+  // ─── Send Sign-In Link ──────────────────────────────────────────────────
+
+  /// Sends a passwordless sign-in email to [email].
+  ///
+  /// Sets [linkSent] to true on success so the UI can show a
+  /// "check your email" message.
+  Future<bool> sendSignInLink(String email) async {
+    _clearError();
+    _setLoading(true);
+
+    try {
+      await _authService.sendSignInLink(email);
+      _linkSent = true;
       _setLoading(false);
+      notifyListeners();
       return true;
-    } on AuthException catch (e) {
-      _setError(e.message);
+    } on FirebaseException catch (e) {
+      _setError(_firebaseErrorMessage(e.code));
       _setLoading(false);
       return false;
     } catch (e) {
-      _setError('Invalid or expired login link. Please request a new one.');
+      _setError('Failed to send sign-in link. Please try again.');
       _setLoading(false);
       return false;
     }
   }
 
-  /// Explicitly clear user state from memory.
-  void clearUserData() {
-    _isAuthenticated = false;
-    _userData = null;
-    notifyListeners();
+  // ─── Complete Sign-In ─────────────────────────────────────────────────────
+
+  /// Completes the email link sign-in.
+  ///
+  /// [emailLink] is the deep-link URL the user clicked from their email.
+  /// If [email] is null, the pending email from SharedPreferences is used.
+  Future<bool> verifySignInLink(String? email, String emailLink) async {
+    _clearError();
+    _setLoading(true);
+
+    try {
+      // Resolve the email — either provided or fetched from local storage
+      final resolvedEmail =
+          email ?? await _authService.getPendingEmail();
+      if (resolvedEmail == null || resolvedEmail.isEmpty) {
+        _setError(
+            'Could not determine your email. Please enter it again.');
+        _setLoading(false);
+        return false;
+      }
+
+      if (!_authService.isSignInLink(emailLink)) {
+        _setError('Invalid sign-in link.');
+        _setLoading(false);
+        return false;
+      }
+
+      final user =
+          await _authService.signInWithEmailLink(resolvedEmail, emailLink);
+
+      await _loadUserProfile(user);
+      _isAuthenticated = true;
+      _linkSent = false;
+      _setLoading(false);
+      notifyListeners();
+      return true;
+    } on FirebaseException catch (e) {
+      _setError(_firebaseErrorMessage(e.code));
+      _setLoading(false);
+      return false;
+    } catch (e) {
+      _setError('Sign-in failed. Please try again.');
+      _setLoading(false);
+      return false;
+    }
   }
 
-  /// Sign out the current user.
+  /// Returns true if [link] is a valid Firebase email sign-in link.
+  bool isSignInLink(String link) => _authService.isSignInLink(link);
+
+  /// Returns the pending email (if one exists from a previous sendSignInLink call).
+  Future<String?> getPendingEmail() => _authService.getPendingEmail();
+
+  // ─── Google Sign-In ────────────────────────────────────────────────────────
+
+  /// Signs in with Google (popup on web, native on mobile).
+  ///
+  /// On success, loads the user's Firestore profile and sets
+  /// [isAuthenticated] to true.
+  Future<bool> signInWithGoogle() async {
+    _clearError();
+    _setLoading(true);
+
+    try {
+      final user = await _authService.signInWithGoogle();
+      await _loadUserProfile(user);
+      _isAuthenticated = true;
+      _setLoading(false);
+      notifyListeners();
+      return true;
+    } on FirebaseException catch (e) {
+      _setError(_firebaseErrorMessage(e.code));
+      _setLoading(false);
+      return false;
+    } catch (e) {
+      final message = e.toString();
+      if (message.contains('cancelled')) {
+        // User closed the popup — not an error, just clear loading
+        _setLoading(false);
+        return false;
+      }
+      _setError('Google sign-in failed. Please try again.');
+      _setLoading(false);
+      return false;
+    }
+  }
+
+  // ─── Legacy bridge methods ────────────────────────────────────────────────
+  // These keep the existing LoginScreen and AppProvider working during
+  // the transition. They will be removed when the UI is rewritten.
+
+  /// Legacy sign-up bridge — sends a sign-in link instead.
+  Future<bool> signUpWithEmailPassword(
+    String name,
+    String email,
+    String password,
+  ) async {
+    return sendSignInLink(email);
+  }
+
+  /// Legacy sign-in bridge — sends a sign-in link instead.
+  Future<bool> signInWithEmailPassword(String email, String password) async {
+    return sendSignInLink(email);
+  }
+
+  // ─── Sign Out ─────────────────────────────────────────────────────────────
+
   Future<void> signOut() async {
     await _authService.signOut();
     clearUserData();
   }
 
+  void clearUserData() {
+    _isAuthenticated = false;
+    _linkSent = false;
+    _user = null;
+    notifyListeners();
+  }
 
+  // ─── Profile Editing ──────────────────────────────────────────────────────
 
-  // ─── Profile Editing ───────────────────────────────────────────
-
-  /// Update the user's display name.
+  /// Updates the user's display name in Firestore and in-memory.
   Future<void> updateDisplayName(String name) async {
-    await _authService.updateDisplayName(name);
-    if (_userData != null) {
-      _userData = {..._userData!, 'name': name};
-    }
+    if (_user == null) return;
+    await _firestoreService.updateUserFields(_user!.id, {'name': name});
+    _user = _user!.copyWith(name: name);
     notifyListeners();
   }
 
-  /// Update the user's avatar photo path locally.
+  /// Saves the photo URL in Firestore and in-memory.
   Future<void> updatePhotoPath(String path) async {
-    await _authService.updatePhotoPath(path);
-    if (_userData != null) {
-      _userData = {..._userData!, 'localPhotoPath': path};
-    }
+    if (_user == null) return;
+    await _firestoreService
+        .updateUserFields(_user!.id, {'photoURL': path});
+    _user = _user!.copyWith(avatarUrl: path);
     notifyListeners();
   }
 
-  /// Get the stored local photo path.
-  Future<String?> getPhotoPath() => _authService.getPhotoPath();
-
-
-
-  // ─── Firestore Integration ──────────────────────────────────
-
-  /// Checks if the user has a document in the `users` collection.
-  /// If they don't, creates one with default values (level 1, xp 0, streak 0).
-  /// Non-blocking: the app continues even if Firestore is unreachable.
-  Future<void> _ensureFirestoreUser() async {
-    if (_userData == null) return;
-
-    try {
-      final uid = _userData!['uid'] as String? ?? '';
-      final name = _userData!['name'] as String? ?? 'Developer';
-      final email = _userData!['email'] as String? ?? '';
-      final photoURL = _userData!['photoURL'] as String?;
-
-      if (uid.isEmpty) return;
-
-      final firestoreData = await _firestoreService.ensureUserDocument(
-        uid: uid,
-        name: name,
-        email: email,
-        photoURL: photoURL,
-      );
-
-      // Merge Firestore data back into local userData so the app
-      // reflects any values already stored (e.g. returning user's XP)
-      if (firestoreData != null) {
-        _userData = {..._userData!, ...firestoreData};
-        notifyListeners();
-      }
-    } catch (e) {
-      debugPrint('AuthProvider._ensureFirestoreUser error: $e');
-      // Non-fatal — the app still works with local data
-    }
+  /// Returns the stored avatar path.
+  Future<String?> getPhotoPath() async {
+    final path = _user?.avatarUrl;
+    return (path != null && path.isNotEmpty) ? path : null;
   }
+
+  // ─── Internal ─────────────────────────────────────────────────────────────
 
   void _setLoading(bool value) {
     _isLoading = value;
@@ -163,5 +282,21 @@ class AuthProvider extends ChangeNotifier {
 
   void _clearError() {
     _errorMessage = null;
+  }
+
+  /// Maps Firebase error codes to user-friendly messages.
+  String _firebaseErrorMessage(String code) {
+    switch (code) {
+      case 'invalid-email':
+        return 'Invalid email address.';
+      case 'user-disabled':
+        return 'This account has been disabled.';
+      case 'invalid-action-code':
+        return 'This sign-in link has expired. Please request a new one.';
+      case 'expired-action-code':
+        return 'This sign-in link has expired. Please request a new one.';
+      default:
+        return 'Authentication error ($code). Please try again.';
+    }
   }
 }

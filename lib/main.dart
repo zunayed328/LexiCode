@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app_links/app_links.dart';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:provider/provider.dart';
@@ -27,20 +28,25 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
 
-  if (kIsWeb) {
-    await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: 'AIzaSyBPP6GNZLgKts8AFZD1cyg8E7Vprs_faG8',
-        authDomain: 'flutter-ai-playground-2efdb.firebaseapp.com',
-        projectId: 'flutter-ai-playground-2efdb',
-        storageBucket: 'flutter-ai-playground-2efdb.firebasestorage.app',
-        messagingSenderId: '1082906445426',
-        appId: '1:1082906445426:web:a3242d860ff4c67eab64eb',
-      ),
-    );
-  } else {
-    // Android / iOS: uses google-services.json / GoogleService-Info.plist automatically
-    await Firebase.initializeApp();
+  try {
+    if (kIsWeb) {
+      await Firebase.initializeApp(
+        options: const FirebaseOptions(
+          apiKey: 'AIzaSyBPP6GNZLgKts8AFZD1cyg0E7Vprs_faG8',
+          authDomain: 'flutter-ai-playground-2efdb.firebaseapp.com',
+          projectId: 'flutter-ai-playground-2efdb',
+          storageBucket: 'flutter-ai-playground-2efdb.firebasestorage.app',
+          messagingSenderId: '1082906445426',
+          appId: '1:1082906445426:web:a3242d860ff4c67eab64eb',
+        ),
+      );
+    } else {
+      // Android / iOS: uses google-services.json / GoogleService-Info.plist automatically
+      await Firebase.initializeApp();
+    }
+  } catch (e) {
+    // Firebase is optional — the app runs fully on local SQLite.
+    debugPrint('[main] Firebase init skipped: $e');
   }
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
@@ -74,13 +80,14 @@ class LexiCodeApp extends StatelessWidget {
   }
 }
 
-/// Auth-aware app entry point.
+/// Auth-aware app entry point with deep-link handling.
 ///
 /// Flow:
-/// 1. Splash (3s) → check auth state
-/// 2. If first launch → Onboarding → Welcome
-/// 3. If not authenticated → Welcome
-/// 4. If authenticated → MainShell
+/// 1. Splash (3s) → check auth state + detect incoming email link
+/// 2. If email link detected → verify and auto-sign-in
+/// 3. If first launch → Onboarding → Welcome
+/// 4. If not authenticated → Welcome
+/// 5. If authenticated → MainShell
 class AppEntry extends StatefulWidget {
   const AppEntry({super.key});
 
@@ -89,10 +96,11 @@ class AppEntry extends StatefulWidget {
 }
 
 class _AppEntryState extends State<AppEntry> {
-  // 0: splash, 1: onboarding, 2: welcome, 3: main
+  // 0: splash, 1: onboarding, 2: welcome, 3: main, 4: verifying link
   int _screen = 0;
   bool _initialized = false;
   late final AppLifecycleListener _lifecycleListener;
+  StreamSubscription? _linkSub;
 
   @override
   void initState() {
@@ -111,6 +119,7 @@ class _AppEntryState extends State<AppEntry> {
   @override
   void dispose() {
     _lifecycleListener.dispose();
+    _linkSub?.cancel();
     super.dispose();
   }
 
@@ -119,19 +128,6 @@ class _AppEntryState extends State<AppEntry> {
     final appProvider = context.read<AppProvider>();
     await authProvider.initialize();
 
-    // Web Magic Link Intercept
-    if (kIsWeb) {
-      final String currentUrl = Uri.base.toString();
-      if (FirebaseAuth.instance.isSignInWithEmailLink(currentUrl)) {
-        final prefs = await SharedPreferences.getInstance();
-        final email = prefs.getString('user_email') ?? '';
-        if (email.isNotEmpty) {
-          await authProvider.signInWithEmailLink(email, currentUrl);
-          await prefs.remove('user_email'); // Clear local cache securely
-        }
-      }
-    }
-
     if (!mounted) return;
 
     // Load user data into AppProvider if already authenticated
@@ -139,16 +135,102 @@ class _AppEntryState extends State<AppEntry> {
       appProvider.loadUserFromAuth(authProvider.userData);
     }
 
-    // Listen for future auth state changes (login/signup/Firestore merge)
-    // so the dashboard updates live when userData changes
+    // Listen for future auth state changes
     authProvider.addListener(() {
       if (authProvider.isAuthenticated && authProvider.userData != null) {
         appProvider.loadUserFromAuth(authProvider.userData);
       }
     });
 
-    // After splash finishes, this will determine where to go
+    // Check for email sign-in link (deep link)
+    await _checkForEmailLink();
+
+    // Listen for incoming links while app is running (mobile)
+    if (!kIsWeb) {
+      _setupMobileLinkListener();
+    }
+
     setState(() => _initialized = true);
+  }
+
+  /// Checks if the app was opened via a Firebase email sign-in link.
+  ///
+  /// On web: reads `Uri.base` (the current browser URL).
+  /// On mobile: reads the initial deep link from `app_links`.
+  Future<void> _checkForEmailLink() async {
+    String? incomingLink;
+
+    if (kIsWeb) {
+      // On web, the email link lands as the full browser URL
+      incomingLink = Uri.base.toString();
+    } else {
+      // On mobile, check if the app was cold-started via a deep link
+      try {
+        final appLinks = AppLinks();
+        final initialUri = await appLinks.getInitialLink();
+        incomingLink = initialUri?.toString();
+      } catch (e) {
+        debugPrint('[DeepLink] getInitialLink error: $e');
+      }
+    }
+
+    if (incomingLink != null) {
+      await _handleEmailLink(incomingLink);
+    }
+  }
+
+  /// Listens for incoming deep links while the app is already running (mobile).
+  void _setupMobileLinkListener() {
+    try {
+      final appLinks = AppLinks();
+      _linkSub = appLinks.uriLinkStream.listen((Uri uri) {
+        _handleEmailLink(uri.toString());
+      });
+    } catch (e) {
+      debugPrint('[DeepLink] uriLinkStream error: $e');
+    }
+  }
+
+  /// Verifies an incoming email sign-in link.
+  ///
+  /// Shows a loading overlay (screen 4) while verifying.
+  /// On success → navigates to MainShell.
+  /// On failure → falls through to normal auth flow.
+  Future<void> _handleEmailLink(String link) async {
+    final authProvider = context.read<AuthProvider>();
+
+    if (!authProvider.isSignInLink(link)) return;
+
+    debugPrint('[DeepLink] Valid sign-in link detected — verifying...');
+    setState(() => _screen = 4); // Show verifying overlay
+
+    final pendingEmail = await authProvider.getPendingEmail();
+    final success = await authProvider.verifySignInLink(pendingEmail, link);
+
+    if (!mounted) return;
+
+    if (success) {
+      // Load user data and go to main
+      final appProvider = context.read<AppProvider>();
+      if (authProvider.userData != null) {
+        appProvider.loadUserFromAuth(authProvider.userData);
+      }
+      setState(() => _screen = 3);
+    } else {
+      // Verification failed — show welcome screen with error
+      setState(() => _screen = 2);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              authProvider.errorMessage ?? 'Sign-in link expired. Please try again.',
+            ),
+            backgroundColor: const Color(0xFFFF4B4B),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
   }
 
   void _onSplashFinished() {
@@ -156,36 +238,38 @@ class _AppEntryState extends State<AppEntry> {
     final authProvider = context.read<AuthProvider>();
 
     if (!_initialized) {
-      // If auth hasn't finished initializing yet, wait a bit
       Future.delayed(const Duration(milliseconds: 500), () {
         if (mounted) _onSplashFinished();
       });
       return;
     }
 
+    // If we're already verifying a link, don't override
+    if (_screen == 4) return;
+
     setState(() {
       if (authProvider.isAuthenticated) {
-        _screen = 3; // Go directly to main app
+        _screen = 3;
       } else if (authProvider.isFirstLaunch) {
-        _screen = 1; // Show onboarding
+        _screen = 1;
       } else {
-        _screen = 2; // Show welcome/login
+        _screen = 2;
       }
     });
   }
 
   void _onOnboardingComplete() {
-    setState(() => _screen = 2); // Go to welcome
+    setState(() => _screen = 2);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Listen for auth state changes (e.g., after login/signup from sub-screens)
     final authProvider = context.watch<AuthProvider>();
-    if (_screen == 2 && authProvider.isAuthenticated) {
-      // Auto-navigate to main when auth succeeds from Welcome → Login/Signup
+
+    // Auto-navigate to main when auth succeeds from any screen
+    if ((_screen == 2 || _screen == 4) && authProvider.isAuthenticated) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) setState(() => _screen = 3);
+        if (mounted && _screen != 3) setState(() => _screen = 3);
       });
     }
 
@@ -196,9 +280,68 @@ class _AppEntryState extends State<AppEntry> {
         return OnboardingScreen(onComplete: _onOnboardingComplete);
       case 2:
         return const WelcomeScreen();
+      case 4:
+        return _buildVerifyingScreen();
       default:
         return const MainShell();
     }
+  }
+
+  /// Full-screen loading overlay shown while verifying an email link.
+  Widget _buildVerifyingScreen() {
+    return Scaffold(
+      backgroundColor: const Color(0xFF121212),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.4),
+                    blurRadius: 30,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.auto_awesome_rounded,
+                size: 36,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 32),
+            const Text(
+              'Verifying your sign-in link...',
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: 160,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  backgroundColor: AppColors.darkBorder.withValues(alpha: 0.3),
+                  valueColor: const AlwaysStoppedAnimation<Color>(
+                    AppColors.primary,
+                  ),
+                  minHeight: 3,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/foundation.dart';
 import '../../shared/models/code_review_model.dart';
+import 'firestore_service.dart';
 
 /// Thrown when the submitted code does not match the selected language.
 class LanguageMismatchException implements Exception {
@@ -25,6 +27,7 @@ class AIService {
   static const String _model = 'meta-llama/llama-4-scout-17b-16e-instruct';
 
   String get _apiKey => dotenv.env['GROQ_API_KEY'] ?? '';
+  final FirestoreService _firestoreService = FirestoreService();
 
   // ─── Language Mismatch Detection ──────────────────────────────
 
@@ -419,13 +422,40 @@ $code''',
   }
 
   /// Chat with an AI mentor. Returns the AI's response text.
+  ///
+  /// On a successful Groq API response, the prompt and response are
+  /// immediately persisted to `users/{uid}/activities` via
+  /// [FirestoreService.saveChatToHistory]. The UID is sourced directly
+  /// from [FirebaseAuth.instance.currentUser?.uid] — the authoritative
+  /// source of truth — rather than any locally-cached value.
   Future<String> chatWithMentor(String message, String context) async {
     final messages = [
       {
         'role': 'system',
-        'content':
-            'You are a friendly coding mentor helping a developer learn English '
-            'and programming. Context: $context.',
+        'content': '''You are Zen, a world-class Technical English Mentor embedded inside the LexiCode learning app.
+
+Your personality:
+- Encouraging, precise, and professional — like a senior engineer who mentors juniors.
+- You never talk down to the user. You celebrate effort and correct mistakes gently.
+- You are concise but thorough. Every response feels premium and structured.
+
+Your core mission:
+Help developers improve their English within the context of software engineering — covering vocabulary, grammar, writing, and professional communication.
+
+Response format:
+You MUST always structure your response into these three sections using this exact markdown formatting:
+
+**💡 Answer**
+[Provide a clear, direct, and friendly answer to the user's question. Use simple English but do not oversimplify technical content. Include examples where helpful.]
+
+**✅ Grammar Check**
+[ONLY include this section if the user made a grammatical or vocabulary mistake in their message. If their English was correct, write: "Your sentence was grammatically correct — well done! 🎉". Gently explain the mistake and show the corrected version. Example format: ❌ You wrote: "How I can improve..." ✅ Correct form: "How can I improve..."]
+
+**🔧 Tech Tip**
+[Pick one key technical English term from the conversation topic. Explain what it means, give a real-world code example or usage, and show how a professional developer would use it in a sentence or PR/email.]
+
+Context hint: $context.
+Always end with a single short, motivating sentence to keep the user engaged.''',
       },
       {'role': 'user', 'content': message},
     ];
@@ -443,17 +473,39 @@ $code''',
         'max_tokens': 1024,
       });
 
-      final response = await http.post(
+      final httpResponse = await http.post(
         Uri.parse(_groqEndpoint),
         headers: headers,
         body: body,
       );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body) as Map<String, dynamic>;
-        return data['choices'][0]['message']['content'] as String;
+      if (httpResponse.statusCode == 200) {
+        final data =
+            jsonDecode(httpResponse.body) as Map<String, dynamic>;
+        final responseText =
+            data['choices'][0]['message']['content'] as String;
+
+        // ── Persist to Firestore immediately after a successful response ──
+        final uid = FirebaseAuth.instance.currentUser?.uid;
+        if (uid != null && uid.isNotEmpty) {
+          // Non-blocking: the UI is not held up waiting for the Firestore write.
+          _firestoreService.saveChatToHistory(
+            uid: uid,
+            prompt: message,
+            response: responseText,
+            category: 'mentorChat',
+          );
+        } else {
+          debugPrint(
+            '[AIService] saveChatToHistory skipped — no authenticated user.',
+          );
+        }
+
+        return responseText;
       } else {
-        debugPrint('Groq API error ${response.statusCode}: ${response.body}');
+        debugPrint(
+          'Groq API error ${httpResponse.statusCode}: ${httpResponse.body}',
+        );
       }
     } catch (e) {
       debugPrint('Error in chatWithMentor: $e');

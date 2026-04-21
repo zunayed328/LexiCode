@@ -11,8 +11,11 @@ import '../../services/api_service.dart';
 
 class AppProvider extends ChangeNotifier {
   final AIService _aiService = AIService();
-  final FirestoreService _firestoreService = FirestoreService();
+  final FirestoreService _firestore = FirestoreService();
   final GamificationService _gamificationService = GamificationService();
+
+  /// Firebase UID — set when user logs in. Null until then.
+  String? _firebaseUid;
 
   /// XP awarded per AI Mentor conversation.
   static const int xpPerMentorChat = 10;
@@ -103,28 +106,45 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Loads user data from auth/Firestore into the local UserModel.
+  /// Resets all session state so a new user can sign in.
   ///
-  /// Call this after successful authentication. Reads the merged
-  /// auth + Firestore data map and builds a live [UserModel].
-  /// The dashboard will reactively update via [notifyListeners].
+  /// **Must** be called on sign-out. Without this, [loadUserFromAuth]
+  /// will silently skip loading because [_userLoadedFromFirestore] is
+  /// still true from the previous session.
+  void resetForSignOut() {
+    _userLoadedFromFirestore = false;
+    _firebaseUid = null;
+    _user = UserModel(id: '', name: 'Developer', email: '');
+    _reviewHistory.clear();
+    _lastReviewResult = null;
+    _todayXp = 0;
+    _currentIndex = 0;
+    saveTimeSpent(); // flush any pending time
+    notifyListeners();
+    debugPrint('[AppProvider] Session reset for sign-out.');
+  }
+
+  /// Loads user data from auth into the local UserModel AND rehydrates
+  /// all persistent data (activity log, review history) from Firestore.
   ///
-  /// Only loads once per session to prevent the auth listener from
-  /// overwriting locally-earned XP with stale Firestore data.
+  /// Call this after successful authentication.
+  /// Only loads once per session to prevent overwriting locally-earned XP.
   void loadUserFromAuth(Map<String, dynamic>? authUserData) {
     if (authUserData == null) return;
-    if (_userLoadedFromFirestore)
-      return; // Already loaded — local model is source of truth
+    if (_userLoadedFromFirestore) return;
 
-    final uid = authUserData['uid'] as String? ?? '';
+    final uid = authUserData['id'] as String? ?? authUserData['uid'] as String? ?? '';
     final name = authUserData['name'] as String? ?? 'Developer';
     final email = authUserData['email'] as String? ?? '';
+
+    _firebaseUid = uid;
 
     _user = UserModel(
       id: uid,
       name: name,
       email: email,
-      avatarUrl: authUserData['photoURL'] as String? ?? '',
+      avatarUrl: authUserData['avatarUrl'] as String? ??
+          authUserData['photoURL'] as String? ?? '',
       xp: (authUserData['xp'] as num?)?.toInt() ?? 0,
       level: (authUserData['level'] as num?)?.toInt() ?? 1,
       streak: (authUserData['streak'] as num?)?.toInt() ?? 0,
@@ -132,12 +152,43 @@ class AppProvider extends ChangeNotifier {
           (authUserData['lessonsCompleted'] as num?)?.toInt() ?? 0,
       codeReviewsCompleted:
           (authUserData['codeReviewsCompleted'] as num?)?.toInt() ?? 0,
-      proficiencyLevel: authUserData['proficiencyLevel'] as String? ?? 'A1',
+      proficiencyLevel:
+          authUserData['proficiencyLevel'] as String? ?? 'A1',
       badges: List<String>.from(authUserData['badges'] ?? []),
+      totalTimeSpentMinutes:
+          (authUserData['totalTimeSpentMinutes'] as num?)?.toInt() ?? 0,
+      activityLog: (authUserData['activityLog'] as List<dynamic>?)
+              ?.map((e) => ActivityEntry.fromMap(e as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
 
     _userLoadedFromFirestore = true;
     notifyListeners();
+
+    // Load activity log and code reviews from Firestore in background
+    if (_firebaseUid != null) {
+      _rehydrateFromFirestore(_firebaseUid!);
+    }
+  }
+
+  /// Loads persisted history from Firestore after login.
+  Future<void> _rehydrateFromFirestore(String uid) async {
+    try {
+      final activities = await _firestore.getActivities(uid);
+      final reviews = await _firestore.getCodeReviews(uid);
+
+      _user = _user.copyWith(activityLog: activities);
+      _reviewHistory
+        ..clear()
+        ..addAll(reviews);
+
+      notifyListeners();
+      debugPrint('[AppProvider] Rehydrated from Firestore: '
+          '${activities.length} activities, ${reviews.length} reviews');
+    } catch (e) {
+      debugPrint('[AppProvider] Rehydrate error: $e');
+    }
   }
 
   Future<CodeReviewResult> reviewCode(String code) async {
@@ -168,10 +219,17 @@ class AppProvider extends ChangeNotifier {
       _isReviewing = false;
       notifyListeners();
 
-      // Sync progress to backend (non-blocking, safe if Firebase not configured)
-      try {
-        ApiService.saveProgress(codeReviewCompleted: true, updateStreak: true);
-      } catch (_) {}
+      // Persist to Firestore (non-blocking)
+      if (_firebaseUid != null) {
+        _firestore.updateXp(_firebaseUid!, GamificationService.xpPerCodeReview);
+        _firestore.incrementField(_firebaseUid!, 'codeReviewsCompleted', 1);
+        _firestore.saveCodeReview(
+          result: result,
+          uid: _firebaseUid!,
+          language: _selectedLanguage,
+        );
+        _firestore.updateStreak(_firebaseUid!);
+      }
 
       return result;
     } catch (e) {
@@ -196,14 +254,18 @@ class AppProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    // Sync progress to backend (non-blocking, safe if Firebase not configured)
-    try {
-      ApiService.saveProgress(
+    // Persist to Firestore (non-blocking)
+    if (_firebaseUid != null) {
+      _firestore.updateXp(_firebaseUid!, GamificationService.xpPerLesson);
+      _firestore.incrementField(_firebaseUid!, 'lessonsCompleted', 1);
+      _firestore.saveLessonProgress(
         lessonId: lessonId,
-        result: {'xpEarned': GamificationService.xpPerLesson, 'score': 100},
-        updateStreak: true,
+        uid: _firebaseUid!,
+        completedQuestions: 5,
+        isCompleted: true,
       );
-    } catch (_) {}
+      _firestore.updateStreak(_firebaseUid!);
+    }
   }
 
   void addXpForPractice() {
@@ -225,12 +287,23 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<String> chatWithMentor(String message) async {
-    return await _aiService.chatWithMentor(message, 'general');
+    final response = await _aiService.chatWithMentor(message, 'general');
+
+    // Persist the chat exchange to Firestore (non-blocking)
+    if (_firebaseUid != null) {
+      _firestore.saveChatToHistory(
+        uid: _firebaseUid!,
+        prompt: message,
+        response: response,
+        category: 'mentorChat',
+      );
+    }
+
+    return response;
   }
 
   /// Awards XP after a mentor chat session and persists to Firestore.
   void addMentorChatXp() {
-    // 1. Update locally for instant UI response
     _user = _gamificationService.addXp(_user, xpPerMentorChat);
     _todayXp += xpPerMentorChat;
 
@@ -244,24 +317,16 @@ class AppProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    // 2. Persist to Firestore and sync back confirmed values
-    _firestoreService.updateXp(_user.id, xpPerMentorChat).then((result) {
-      if (result != null) {
-        final confirmedXp = (result['xp'] as num?)?.toInt() ?? _user.xp;
-        final confirmedLevel =
-            (result['level'] as num?)?.toInt() ?? _user.level;
-        if (confirmedXp != _user.xp || confirmedLevel != _user.level) {
-          _user = _user.copyWith(xp: confirmedXp, level: confirmedLevel);
-          notifyListeners();
-        }
-      }
-    });
-    _firestoreService.updateStreak(_user.id);
+    // Persist to Firestore (non-blocking)
+    if (_firebaseUid != null) {
+      _firestore.updateXp(_firebaseUid!, xpPerMentorChat);
+      _firestore.updateStreak(_firebaseUid!);
+    }
   }
 
   // ─── Activity Logging ──────────────────────────────────────────
 
-  /// Logs a user activity and caps the log at 50 entries.
+  /// Logs a user activity, caps the log at 50 entries, and persists to Firestore.
   void _logActivity({
     required ActivityType type,
     required String title,
@@ -278,12 +343,16 @@ class AppProvider extends ChangeNotifier {
     );
 
     final updatedLog = [entry, ..._user.activityLog];
-    // Cap at 50 entries to prevent unbounded growth
     _user = _user.copyWith(
       activityLog: updatedLog.length > 50
           ? updatedLog.sublist(0, 50)
           : updatedLog,
     );
+
+    // Persist activity to Firestore (non-blocking)
+    if (_firebaseUid != null) {
+      _firestore.saveActivity(entry, _firebaseUid!);
+    }
   }
 
   /// Returns 7 data points for the weekly activity chart.
@@ -310,7 +379,7 @@ class AppProvider extends ChangeNotifier {
   /// Resumes the usage timer (call on app resumed).
   void resumeTimer() => _usageTimer.start();
 
-  /// Persists the accumulated timer value into the user model.
+  /// Persists the accumulated timer value into the user model and Firestore.
   void saveTimeSpent() {
     final sessionMinutes = _usageTimer.elapsed.inMinutes;
     if (sessionMinutes > 0) {
@@ -319,6 +388,11 @@ class AppProvider extends ChangeNotifier {
       );
       _usageTimer.reset();
       _usageTimer.start();
+
+      // Persist to Firestore (non-blocking)
+      if (_firebaseUid != null) {
+        _firestore.addTimeSpent(_firebaseUid!, sessionMinutes);
+      }
     }
   }
 

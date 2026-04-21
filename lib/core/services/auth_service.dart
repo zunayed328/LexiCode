@@ -1,168 +1,200 @@
-import 'dart:math';
-import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'firestore_service.dart';
 
-/// Authentication service with real Firebase integration and Custom Email OTP.
+/// Firebase Passwordless Email-Link Authentication Service.
 ///
-/// Manages secure credential provisioning, token lifecycle, and authentication states
-/// across native Email/Password schemas.
-/// Features built-in email verification roadblocks, OTP verification, and password resetting utilities.
+/// Flow:
+///   1. User enters their email → [sendSignInLink] sends a magic link.
+///   2. User clicks the link  → [signInWithEmailLink] completes auth.
+///   3. On first sign-in      → a Firestore user document is created.
+///
+/// Session state is managed entirely by Firebase Auth. The only local
+/// persistence is the pending email (stored in SharedPreferences so
+/// the link can be verified when the user returns to the app).
 class AuthService {
-  static const String _isLoggedInKey = 'is_logged_in';
-  static const String _userNameKey = 'user_name';
-  static const String _userEmailKey = 'user_email';
-  static const String _userIdKey = 'user_id';
-  
-  /// Send Passwordless Sign-In Link to Email
-  Future<void> sendSignInLinkToEmail(String email) async {
-    try {
-      if (email.isEmpty) throw const AuthException('Please enter your email');
+  static const String _pendingEmailKey = 'pending_sign_in_email';
 
-      // Setup dynamic Link options. Uses the current Web URI.
-      final actionCodeSettings = ActionCodeSettings(
-        url: kIsWeb ? Uri.base.toString() : 'http://localhost',
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirestoreService _firestoreService = FirestoreService();
+
+  // ─── Action Code Settings ───────────────────────────────────────────────
+
+  /// Configure this URL to your authorized domain.
+  /// For local dev:  http://localhost:8080
+  /// For production: https://flutter-ai-playground-2efdb.web.app
+  ActionCodeSettings get _actionCodeSettings => ActionCodeSettings(
+        url: kIsWeb
+            ? 'http://localhost:8080'
+            : 'https://flutter-ai-playground-2efdb.web.app',
         handleCodeInApp: true,
+        // iOS and Android settings for deep-linking (optional for web-only)
+        iOSBundleId: 'com.lexicode.lexicodeApp',
+        androidPackageName: 'com.lexicode.lexicode_app',
+        androidInstallApp: true,
+        androidMinimumVersion: '21',
       );
 
-      await FirebaseAuth.instance.sendSignInLinkToEmail(
-        email: email,
-        actionCodeSettings: actionCodeSettings,
-      );
+  // ─── Send Sign-In Link ──────────────────────────────────────────────────
 
-      // We MUST save the email locally because if the user clicks the link on the same device,
-      // we need to supply the exact email to complete the flow seamlessly.
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_userEmailKey, email);
+  /// Sends a passwordless sign-in email to [email].
+  ///
+  /// The email address is persisted locally so it can be matched when the
+  /// user returns via the email link.
+  Future<void> sendSignInLink(String email) async {
+    final trimmedEmail = email.trim().toLowerCase();
 
-      debugPrint('[AUTH] Magic link sent successfully to: $email');
-    } catch (e, stack) {
-      debugPrint('=========================================');
-      debugPrint('[AUTH] MAGIC LINK ERROR: $e');
-      debugPrint('[AUTH] STACK TRACE: $stack');
-      debugPrint('=========================================');
-      if (e is AuthException) rethrow;
-      throw AuthException(_mapErrorMessage(e.toString()));
-    }
-  }
-
-  /// Complete Sign In With Email Link
-  Future<Map<String, dynamic>> signInWithEmailLink(String email, String emailLink) async {
-    try {
-      if (!FirebaseAuth.instance.isSignInWithEmailLink(emailLink)) {
-        throw const AuthException('Invalid or expired login link.');
-      }
-
-      final credential = await FirebaseAuth.instance.signInWithEmailLink(
-        email: email,
-        emailLink: emailLink,
-      );
-
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_isLoggedInKey, true);
-
-      final user = credential.user;
-      if (user == null) throw const AuthException('User verification failed.');
-
-      // If this is a brand new user, assign a default name from their email prefix.
-      if (credential.additionalUserInfo?.isNewUser ?? false) {
-        final displayName = user.displayName ?? email.split('@')[0];
-        await user.updateDisplayName(displayName);
-      }
-
-      return _buildUserMap(
-        user.uid,
-        user.displayName ?? email.split('@')[0],
-        user.email ?? email,
-        user.photoURL,
-      );
-    } catch (e, stack) {
-      debugPrint('=========================================');
-      debugPrint('[AUTH] LINK VERIFICATION ERROR: $e');
-      debugPrint('[AUTH] STACK TRACE: $stack');
-      debugPrint('=========================================');
-      if (e is AuthException) rethrow;
-      throw AuthException(_mapErrorMessage(e.toString()));
-    }
-  }
-
-  /// Update the user's display name.
-  Future<void> updateDisplayName(String name) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      await user.updateDisplayName(name);
-    }
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_userNameKey, name);
-  }
-
-  /// Update the user's local avatar photo path.
-  Future<void> updatePhotoPath(String path) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user_photo_path', path);
-  }
-
-  /// Get the locally stored avatar photo path.
-  Future<String?> getPhotoPath() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('user_photo_path');
-  }
-
-  /// Change the user's password.
-  Future<void> changePassword({
-    required String currentPassword,
-    required String newPassword,
-  }) async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null || user.email == null)
-        throw const AuthException('User not logged in');
-
-      // Re-authenticate
-      final cred = EmailAuthProvider.credential(
-        email: user.email!,
-        password: currentPassword,
-      );
-      await user.reauthenticateWithCredential(cred);
-
-      await user.updatePassword(newPassword);
-      debugPrint('Password changed successfully');
-    } catch (e) {
-      throw AuthException(_mapErrorMessage(e.toString()));
-    }
-  }
-
-  /// Sign out the current user.
-  Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_isLoggedInKey, false);
-  }
-
-  /// Check if user is currently logged in.
-  Future<bool> isLoggedIn() async {
-    final prefs = await SharedPreferences.getInstance();
-    final localLogin = prefs.getBool(_isLoggedInKey) ?? false;
-    final firebaseUser = FirebaseAuth.instance.currentUser;
-    return localLogin && firebaseUser != null && firebaseUser.emailVerified;
-  }
-
-  /// Get current user data.
-  Future<Map<String, dynamic>?> getCurrentUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    final isLogged = prefs.getBool(_isLoggedInKey) ?? false;
-    final user = FirebaseAuth.instance.currentUser;
-    if (!isLogged || user == null) return null;
-
-    return _buildUserMap(
-      user.uid,
-      user.displayName ?? 'Developer',
-      user.email ?? '',
-      user.photoURL,
+    await _auth.sendSignInLinkToEmail(
+      email: trimmedEmail,
+      actionCodeSettings: _actionCodeSettings,
     );
+
+    // Persist the email locally — needed to complete sign-in when user
+    // returns to the app via the link.
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_pendingEmailKey, trimmedEmail);
+
+    debugPrint('[AuthService] Sign-in link sent to $trimmedEmail');
   }
 
-  /// Check if this is the first app launch.
+  // ─── Complete Sign-In With Email Link ───────────────────────────────────
+
+  /// Completes the passwordless sign-in using the [emailLink] the user
+  /// clicked. If the user is new, a Firestore profile document is created.
+  ///
+  /// Returns the authenticated [User].
+  /// Throws [FirebaseAuthException] on failure.
+  Future<User> signInWithEmailLink(String email, String emailLink) async {
+    final trimmedEmail = email.trim().toLowerCase();
+
+    final credential = await _auth.signInWithEmailLink(
+      email: trimmedEmail,
+      emailLink: emailLink,
+    );
+
+    final user = credential.user;
+    if (user == null) {
+      throw FirebaseAuthException(
+        code: 'null-user',
+        message: 'Sign-in succeeded but no user was returned.',
+      );
+    }
+
+    // Ensure the user has a Firestore profile document
+    await _firestoreService.ensureUserDocument(
+      uid: user.uid,
+      name: user.displayName ?? trimmedEmail.split('@')[0],
+      email: trimmedEmail,
+      photoURL: user.photoURL,
+    );
+
+    // Clear the pending email
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_pendingEmailKey);
+
+    debugPrint('[AuthService] Signed in: ${user.uid} ($trimmedEmail)');
+    return user;
+  }
+
+  // ─── Link Verification ──────────────────────────────────────────────────
+
+  /// Returns true if [link] is a valid Firebase sign-in email link.
+  bool isSignInLink(String link) {
+    return _auth.isSignInWithEmailLink(link);
+  }
+
+  /// Returns the email address saved when [sendSignInLink] was called.
+  /// Returns null if no pending sign-in exists.
+  Future<String?> getPendingEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_pendingEmailKey);
+  }
+
+  // ─── Google Sign-In ─────────────────────────────────────────────────────
+
+  /// Signs in with Google using Firebase's popup flow.
+  ///
+  /// Uses [signInWithPopup] with [GoogleAuthProvider] — works on
+  /// both web and mobile without manual token extraction.
+  ///
+  /// On first sign-in, creates a Firestore user document.
+  /// Returns the authenticated [User].
+  Future<User> signInWithGoogle() async {
+    final googleProvider = GoogleAuthProvider();
+    googleProvider.addScope('email');
+    googleProvider.addScope('profile');
+    // Force account picker so the user can switch accounts after logout
+    googleProvider.setCustomParameters({'prompt': 'select_account'});
+
+    final credential = await _auth.signInWithPopup(googleProvider);
+
+    final user = credential.user;
+    if (user == null) {
+      throw FirebaseAuthException(
+        code: 'null-user',
+        message: 'Google sign-in succeeded but no user was returned.',
+      );
+    }
+
+    // Ensure the user has a Firestore profile document
+    await _firestoreService.ensureUserDocument(
+      uid: user.uid,
+      name: user.displayName ?? user.email?.split('@')[0] ?? 'Developer',
+      email: user.email ?? '',
+      photoURL: user.photoURL,
+    );
+
+    debugPrint('[AuthService] Google sign-in: ${user.uid} (${user.email})');
+    return user;
+  }
+
+  // ─── Session ────────────────────────────────────────────────────────────
+
+  /// The currently signed-in Firebase user, or null.
+  User? get currentUser => _auth.currentUser;
+
+  /// Whether a Firebase session is active.
+  bool get isLoggedIn => _auth.currentUser != null;
+
+  /// Stream of auth state changes (sign-in, sign-out, token refresh).
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
+
+  /// Signs out the current user.
+  ///
+  /// Clears both the Firebase session and the cached Google credential
+  /// so the account picker shows again on the next sign-in.
+  Future<void> signOut() async {
+    // 1. Clear Google's cached credential (best-effort)
+    try {
+      if (kIsWeb) {
+        // On web, disconnect() revokes the cached Google session
+        // so signInWithPopup shows the account picker next time.
+        await GoogleSignIn.instance.disconnect();
+      } else {
+        await GoogleSignIn.instance.disconnect();
+      }
+    } catch (e) {
+      // Not all users signed in with Google — this is expected to fail
+      // for email-link users. Silently continue.
+      debugPrint('[AuthService] Google disconnect (non-critical): $e');
+    }
+
+    // 2. Clear the Firebase session (always runs)
+    try {
+      await _auth.signOut();
+    } catch (e) {
+      debugPrint('[AuthService] Firebase signOut error: $e');
+      rethrow;
+    }
+
+    debugPrint('[AuthService] Signed out (Firebase + Google cleared).');
+  }
+
+  // ─── First Launch ───────────────────────────────────────────────────────
+
+  /// Returns true on the very first app launch (clears the flag after).
   Future<bool> isFirstLaunch() async {
     final prefs = await SharedPreferences.getInstance();
     final isFirst = prefs.getBool('is_first_launch') ?? true;
@@ -171,59 +203,15 @@ class AuthService {
     }
     return isFirst;
   }
-
-  /// Build the Firestore user document map.
-  Map<String, dynamic> _buildUserMap(
-    String uid,
-    String name,
-    String email,
-    String? photoURL,
-  ) {
-    return {
-      'uid': uid,
-      'name': name,
-      'email': email,
-      'photoURL': photoURL,
-      'totalXP': 0,
-      'currentLevel': 1,
-      'currentStreak': 0,
-      'longestStreak': 0,
-      'hearts': 5,
-      'gems': 0,
-      'dailyGoal': 'regular',
-      'englishLevel': 'A1',
-      'isPremium': false,
-      'createdAt': DateTime.now().toIso8601String(),
-      'lastPracticeDate': null,
-    };
-  }
-
-  /// Map Firebase error codes to user-friendly messages.
-  String _mapErrorMessage(String error) {
-    if (error.contains('email-already-in-use')) {
-      return 'Email already in use';
-    } else if (error.contains('invalid-email')) {
-      return 'Please enter a valid email';
-    } else if (error.contains('weak-password')) {
-      return 'Password is too weak';
-    } else if (error.contains('user-not-found') ||
-        error.contains('wrong-password') ||
-        error.contains('invalid-credential')) {
-      return 'Invalid credentials or verification code. Please try again.';
-    } else if (error.contains('network')) {
-      return 'Network error. Please try again.';
-    } else if (error.contains('too-many-requests')) {
-      return 'Too many attempts. Please try again later.';
-    }
-    return 'Something went wrong. Please try again.';
-  }
 }
 
-/// Custom exception for authentication errors.
-class AuthException implements Exception {
+// ─── Custom Exception ─────────────────────────────────────────────────────────
+
+class FirebaseAuthException implements Exception {
+  final String code;
   final String message;
-  const AuthException(this.message);
+  const FirebaseAuthException({required this.code, required this.message});
 
   @override
-  String toString() => message;
+  String toString() => 'FirebaseAuthException($code): $message';
 }

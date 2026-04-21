@@ -733,6 +733,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     final provider = context.read<AppProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textController = TextEditingController();
+    // ScrollController to programmatically jump to the latest message.
+    final scrollController = ScrollController();
     final messages = <Map<String, String>>[
       {
         'role': 'mentor',
@@ -741,6 +743,19 @@ class _DashboardScreenState extends State<DashboardScreen>
       },
     ];
 
+    /// Scrolls the chat list to the very bottom after the frame is rendered.
+    void _scrollToBottom() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
+    }
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -748,193 +763,216 @@ class _DashboardScreenState extends State<DashboardScreen>
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.75,
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(24),
+            // viewInsets.bottom is the height of the on-screen keyboard (0 when hidden).
+            final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
+            return Padding(
+              // Push the entire sheet up by exactly the keyboard height.
+              padding: EdgeInsets.only(bottom: keyboardHeight),
+              child: Container(
+                // Use a max height so the sheet doesn't exceed 75% of the screen,
+                // but allows it to shrink naturally when the keyboard opens.
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.75,
                 ),
-              ),
-              child: Column(
-                children: [
-                  // Handle
-                  Container(
-                    margin: const EdgeInsets.only(top: 12),
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkBorder
-                          : AppColors.lightBorder,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
+                decoration: BoxDecoration(
+                  color:
+                      isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
                   ),
-                  // Title
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            gradient: AppColors.accentGradient,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Icon(
-                            Icons.smart_toy_rounded,
-                            color: Colors.white,
-                            size: 22,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'AI Mentor',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Text(
-                              'Online',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.accentGreen,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(height: 1),
-                  // Messages
-                  Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: messages.length,
-                      itemBuilder: (context, index) {
-                        final msg = messages[index];
-                        final isMentor = msg['role'] == 'mentor';
-                        return Align(
-                          alignment: isMentor
-                              ? Alignment.centerLeft
-                              : Alignment.centerRight,
-                          child: Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            padding: const EdgeInsets.all(14),
-                            constraints: BoxConstraints(
-                              maxWidth:
-                                  MediaQuery.of(context).size.width * 0.75,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isMentor
-                                  ? (isDark
-                                        ? AppColors.darkCard
-                                        : AppColors.lightDivider)
-                                  : AppColors.primary,
-                              borderRadius: BorderRadius.only(
-                                topLeft: const Radius.circular(16),
-                                topRight: const Radius.circular(16),
-                                bottomLeft: Radius.circular(isMentor ? 4 : 16),
-                                bottomRight: Radius.circular(isMentor ? 16 : 4),
-                              ),
-                            ),
-                            child: Text(
-                              msg['text']!,
-                              style: TextStyle(
-                                color: isMentor
-                                    ? (isDark
-                                          ? AppColors.darkText
-                                          : AppColors.lightText)
-                                    : Colors.white,
-                                fontSize: 14,
-                                height: 1.5,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  // Input
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkBackground
-                          : AppColors.lightBackground,
-                      border: Border(
-                        top: BorderSide(
-                          color: isDark
-                              ? AppColors.darkBorder
-                              : AppColors.lightBorder,
-                        ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Handle
+                    Container(
+                      margin: const EdgeInsets.only(top: 12),
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: textController,
-                            decoration: InputDecoration(
-                              hintText: 'Ask me anything...',
-                              filled: true,
-                              fillColor: isDark
-                                  ? AppColors.darkSurface
-                                  : AppColors.lightSurface,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(24),
-                                borderSide: BorderSide.none,
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 12,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: () async {
-                            if (textController.text.trim().isEmpty) return;
-                            final msg = textController.text.trim();
-                            textController.clear();
-                            setModalState(() {
-                              messages.add({'role': 'user', 'text': msg});
-                            });
-                            final response = await provider.chatWithMentor(msg);
-                            setModalState(() {
-                              messages.add({
-                                'role': 'mentor',
-                                'text': response,
-                              });
-                            });
-                            // Award XP for the mentor chat interaction
-                            provider.addMentorChatXp();
-                          },
-                          child: Container(
-                            width: 48,
-                            height: 48,
+                    // Title
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
                             decoration: BoxDecoration(
-                              gradient: AppColors.primaryGradient,
-                              borderRadius: BorderRadius.circular(24),
+                              gradient: AppColors.accentGradient,
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(
-                              Icons.send_rounded,
+                              Icons.smart_toy_rounded,
                               color: Colors.white,
-                              size: 20,
+                              size: 22,
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'AI Mentor',
+                                style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Text(
+                                'Online',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.accentGreen,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    const Divider(height: 1),
+                    // Messages — Expanded so it fills available space and
+                    // shrinks naturally when the keyboard pushes the sheet up.
+                    Expanded(
+                      child: ListView.builder(
+                        controller: scrollController,
+                        padding: const EdgeInsets.all(16),
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) {
+                          final msg = messages[index];
+                          final isMentor = msg['role'] == 'mentor';
+                          return Align(
+                            alignment: isMentor
+                                ? Alignment.centerLeft
+                                : Alignment.centerRight,
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.all(14),
+                              constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width * 0.75,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isMentor
+                                    ? (isDark
+                                          ? AppColors.darkCard
+                                          : AppColors.lightDivider)
+                                    : AppColors.primary,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: const Radius.circular(16),
+                                  topRight: const Radius.circular(16),
+                                  bottomLeft:
+                                      Radius.circular(isMentor ? 4 : 16),
+                                  bottomRight:
+                                      Radius.circular(isMentor ? 16 : 4),
+                                ),
+                              ),
+                              child: Text(
+                                msg['text']!,
+                                style: TextStyle(
+                                  color: isMentor
+                                      ? (isDark
+                                            ? AppColors.darkText
+                                            : AppColors.lightText)
+                                      : Colors.white,
+                                  fontSize: 14,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    // Input bar — always visible above the keyboard because its
+                    // parent sheet is already shifted up by keyboardHeight.
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? AppColors.darkBackground
+                            : AppColors.lightBackground,
+                        border: Border(
+                          top: BorderSide(
+                            color: isDark
+                                ? AppColors.darkBorder
+                                : AppColors.lightBorder,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: textController,
+                              decoration: InputDecoration(
+                                hintText: 'Ask me anything...',
+                                filled: true,
+                                fillColor: isDark
+                                    ? AppColors.darkSurface
+                                    : AppColors.lightSurface,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                  borderSide: BorderSide.none,
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () async {
+                              if (textController.text.trim().isEmpty) return;
+                              final msg = textController.text.trim();
+                              textController.clear();
+                              setModalState(() {
+                                messages.add({'role': 'user', 'text': msg});
+                              });
+                              // Scroll to the user's message immediately.
+                              _scrollToBottom();
+                              final response =
+                                  await provider.chatWithMentor(msg);
+                              setModalState(() {
+                                messages.add({
+                                  'role': 'mentor',
+                                  'text': response,
+                                });
+                              });
+                              // Scroll again to reveal the mentor's reply.
+                              _scrollToBottom();
+                              // Award XP for the mentor chat interaction.
+                              provider.addMentorChatXp();
+                            },
+                            child: Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                gradient: AppColors.primaryGradient,
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: const Icon(
+                                Icons.send_rounded,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           },

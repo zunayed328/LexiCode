@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 enum IssueSeverity { info, warning, error, critical }
 
@@ -47,6 +48,7 @@ class SyntaxError {
 // ─── Code Review Result ─────────────────────────────────────────
 
 class CodeReviewResult {
+  final String id;
   final String originalCode;
   final String language;
   final int overallScore;
@@ -65,6 +67,7 @@ class CodeReviewResult {
   final List<SyntaxError> syntaxErrors;
 
   CodeReviewResult({
+    String? id,
     required this.originalCode,
     required this.language,
     required this.overallScore,
@@ -79,7 +82,8 @@ class CodeReviewResult {
     this.hasSyntaxErrors = false,
     this.syntaxErrors = const [],
     DateTime? reviewDate,
-  }) : reviewDate = reviewDate ?? DateTime.now();
+  })  : id = id ?? const Uuid().v4(),
+        reviewDate = reviewDate ?? DateTime.now();
 
   int get criticalCount =>
       issues.where((i) => i.severity == IssueSeverity.critical).length;
@@ -130,7 +134,11 @@ class CodeReviewResult {
     return const Color(0xFFFF4757);
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => toMap();
+
+  /// Serializes to a DB-compatible map.
+  Map<String, dynamic> toMap() => {
+    'id': id,
     'originalCode': originalCode,
     'language': language,
     'overallScore': overallScore,
@@ -146,6 +154,38 @@ class CodeReviewResult {
     'syntaxErrors': syntaxErrors.map((e) => e.toJson()).toList(),
     'reviewDate': reviewDate.toIso8601String(),
   };
+
+  /// Deserializes from a stored map (e.g. from SQLite JSON blob).
+  factory CodeReviewResult.fromMap(Map<String, dynamic> map) {
+    return CodeReviewResult(
+      id: map['id'] as String?,
+      originalCode: map['originalCode'] as String? ?? '',
+      language: map['language'] as String? ?? 'Unknown',
+      overallScore: (map['overallScore'] as num?)?.toInt() ?? 0,
+      ratings: (map['ratings'] as Map<String, dynamic>?)?.map(
+            (k, v) => MapEntry(k, (v as num).toInt()),
+          ) ??
+          {},
+      issues: (map['issues'] as List<dynamic>?)
+              ?.map((i) => CodeIssue.fromJson(Map<String, dynamic>.from(i as Map)))
+              .toList() ??
+          [],
+      suggestions: List<String>.from(map['suggestions'] ?? []),
+      explanation: map['explanation'] as String? ?? '',
+      newVocabulary: List<String>.from(map['newVocabulary'] ?? []),
+      fixedCode: map['fixedCode'] as String? ?? '',
+      changedLines: List<int>.from(map['changedLines'] ?? []),
+      summary: map['summary'] as String? ?? '',
+      hasSyntaxErrors: map['hasSyntaxErrors'] as bool? ?? false,
+      syntaxErrors: (map['syntaxErrors'] as List<dynamic>?)
+              ?.map((e) => SyntaxError.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          [],
+      reviewDate: map['reviewDate'] != null
+          ? DateTime.tryParse(map['reviewDate'] as String) ?? DateTime.now()
+          : DateTime.now(),
+    );
+  }
 }
 
 // ─── Code Issue ─────────────────────────────────────────────────
@@ -280,4 +320,26 @@ class CodeIssue {
     'explanation': explanation,
     'exampleFix': exampleFix,
   };
+
+  factory CodeIssue.fromJson(Map<String, dynamic> json) {
+    return CodeIssue(
+      title: json['title'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      simpleExplanation: json['simpleExplanation'] as String? ?? '',
+      severity: IssueSeverity.values.firstWhere(
+        (e) => e.name == json['severity'],
+        orElse: () => IssueSeverity.info,
+      ),
+      type: IssueType.values.firstWhere(
+        (e) => e.name == json['type'],
+        orElse: () => IssueType.bug,
+      ),
+      lineNumber: json['lineNumber'] as int?,
+      column: json['column'] as int?,
+      suggestion: json['suggestion'] as String?,
+      codeExample: json['codeExample'] as String?,
+      explanation: json['explanation'] as String?,
+      exampleFix: json['exampleFix'] as String?,
+    );
+  }
 }
