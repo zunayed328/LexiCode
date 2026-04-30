@@ -6,7 +6,6 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../models/activity_model.dart';
-import '../../admin/admin_dashboard_screen.dart'; // We'll create this later
 
 class ActivityHistoryList extends StatelessWidget {
   const ActivityHistoryList({super.key});
@@ -24,74 +23,6 @@ class ActivityHistoryList extends StatelessWidget {
 
     return Column(
       children: [
-        // Role check for Admin Dashboard Button
-        StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          stream: firestoreService.streamUserDocument(uid),
-          builder: (context, docSnapshot) {
-            if (docSnapshot.hasData && docSnapshot.data!.exists) {
-              final role = docSnapshot.data!.data()?['role'] as String?;
-              if (role == 'admin') {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primary.withValues(alpha: 0.6),
-                          AppColors.primaryDark.withValues(alpha: 0.6),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        width: 1,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.3),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: ElevatedButton.icon(
-                          icon: const Icon(Icons.admin_panel_settings, color: Colors.white),
-                          label: const Text(
-                            'Admin Dashboard',
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            minimumSize: const Size(double.infinity, 54),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const AdminDashboardScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }
-            }
-            return const SizedBox.shrink();
-          },
-        ),
         
         // Activity List Stream
         SizedBox(

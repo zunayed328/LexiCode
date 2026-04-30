@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/providers/app_provider.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../models/exercise_model.dart';
 import '../../models/exam_result_model.dart';
@@ -80,6 +81,8 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
       final evaluation = await _gemini.evaluateWriting(text, prompt);
       if (mounted) {
         setState(() => _isEvaluating = false);
+        // Persist XP and activity to Firestore via AppProvider
+        context.read<AppProvider>().addXpForPractice();
         // Navigate or handle evaluation
         Navigator.pushReplacement(
           context,
@@ -207,49 +210,9 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
                                       constraints: const BoxConstraints(
                                         maxHeight: 250,
                                       ),
-                                      child: Image.asset(
+                                      child: _buildTaskImage(
                                         imageUrl,
-                                        width: double.infinity,
-                                        fit: BoxFit.contain,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                              return Container(
-                                                height: 200,
-                                                width: double.infinity,
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                  color: isDark
-                                                      ? Colors.white.withValues(
-                                                          alpha: 0.05,
-                                                        )
-                                                      : Colors.black.withValues(
-                                                          alpha: 0.05,
-                                                        ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    const Icon(
-                                                      Icons
-                                                          .broken_image_rounded,
-                                                      color: Colors.grey,
-                                                      size: 32,
-                                                    ),
-                                                    const SizedBox(height: 4),
-                                                    Text(
-                                                      'Image failed to load',
-                                                      style: GoogleFonts.inter(
-                                                        fontSize: 12,
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
+                                        isDark,
                                       ),
                                     ),
                                   ),
@@ -396,5 +359,97 @@ class _IeltsWritingScreenState extends State<IeltsWritingScreen> {
         ),
       ),
     );
+  }
+
+  /// Builds the Task 1 chart image with graceful error fallback.
+  ///
+  /// Automatically detects whether [imageUrl] is a local asset path
+  /// or a network URL and uses the appropriate widget.
+  Widget _buildTaskImage(String imageUrl, bool isDark) {
+    Widget errorFallback(BuildContext ctx, Object error, StackTrace? stack) {
+      return Container(
+        height: 200,
+        width: double.infinity,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.black.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.08)
+                : Colors.black.withValues(alpha: 0.08),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.bar_chart_rounded,
+              color: _accentColor.withValues(alpha: 0.5),
+              size: 40,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Chart could not be displayed',
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: isDark ? Colors.white38 : Colors.black38,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Use the description above to write your response',
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                color: isDark ? Colors.white24 : Colors.black26,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Local asset path (e.g. "assets/images/task1_chart.png")
+    if (imageUrl.startsWith('assets/')) {
+      return Image.asset(
+        imageUrl,
+        width: double.infinity,
+        fit: BoxFit.contain,
+        errorBuilder: errorFallback,
+      );
+    }
+
+    // Network URL fallback (shouldn't happen with the image bank,
+    // but handles edge cases gracefully)
+    if (imageUrl.startsWith('http')) {
+      return Image.network(
+        imageUrl,
+        width: double.infinity,
+        fit: BoxFit.contain,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return SizedBox(
+            height: 200,
+            child: Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                    : null,
+                color: _accentColor,
+                strokeWidth: 2,
+              ),
+            ),
+          );
+        },
+        errorBuilder: errorFallback,
+      );
+    }
+
+    // Unknown format — show fallback
+    return errorFallback(context, 'Unknown image format', null);
   }
 }

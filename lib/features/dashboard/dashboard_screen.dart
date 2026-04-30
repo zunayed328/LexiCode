@@ -1,9 +1,11 @@
+import 'dart:io' show File;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/providers/app_provider.dart';
+import '../../core/providers/auth_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/streak_widget.dart';
 import '../../shared/widgets/xp_progress_ring.dart';
@@ -18,6 +20,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animController;
+  String? _localPhotoPath;
 
   @override
   void initState() {
@@ -26,6 +29,23 @@ class _DashboardScreenState extends State<DashboardScreen>
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     )..forward();
+    _loadSavedPhoto();
+  }
+
+  Future<void> _loadSavedPhoto() async {
+    final path = await context.read<AuthProvider>().getPhotoPath();
+    if (path != null && path.isNotEmpty && mounted) {
+      setState(() => _localPhotoPath = path);
+    }
+  }
+
+  /// Resolves the correct ImageProvider based on whether the path
+  /// is a local file (from image_picker) or a network URL (e.g. Google avatar).
+  ImageProvider _resolveAvatarImage(String pathOrUrl) {
+    if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) {
+      return NetworkImage(pathOrUrl);
+    }
+    return FileImage(File(pathOrUrl));
   }
 
   @override
@@ -112,7 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              gradient: user.avatarUrl.isEmpty
+              gradient: (_localPhotoPath == null && user.avatarUrl.isEmpty)
                   ? AppColors.primaryGradient
                   : null,
               borderRadius: BorderRadius.circular(16),
@@ -123,14 +143,17 @@ class _DashboardScreenState extends State<DashboardScreen>
                   offset: const Offset(0, 4),
                 ),
               ],
-              image: user.avatarUrl.isNotEmpty
+              image: (_localPhotoPath != null || user.avatarUrl.isNotEmpty)
                   ? DecorationImage(
-                      image: NetworkImage(user.avatarUrl),
+                      image: _resolveAvatarImage(
+                        _localPhotoPath ?? user.avatarUrl,
+                      ),
                       fit: BoxFit.cover,
+                      filterQuality: FilterQuality.high,
                     )
                   : null,
             ),
-            child: user.avatarUrl.isEmpty
+            child: (_localPhotoPath == null && user.avatarUrl.isEmpty)
                 ? Center(
                     child: Text(
                       user.name.isNotEmpty

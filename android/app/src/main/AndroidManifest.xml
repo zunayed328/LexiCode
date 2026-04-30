@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Microphone access for IELTS Speaking recording -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <application
         android:label="lexicode_app"
         android:name="${applicationName}"
@@ -32,6 +34,9 @@
                 <data
                     android:scheme="https"
                     android:host="flutter-ai-playground-2efdb.firebaseapp.com"/>
+                <data
+                    android:scheme="https"
+                    android:host="flutter-ai-playground-2efdb.web.app"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

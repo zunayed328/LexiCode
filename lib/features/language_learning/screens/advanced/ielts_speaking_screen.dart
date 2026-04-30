@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:io' show File, Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:record/record.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/providers/app_provider.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../models/exercise_model.dart';
 import '../../models/exam_result_model.dart';
@@ -118,6 +121,8 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
       );
       if (mounted) {
         setState(() => _isEvaluating = false);
+        // Persist XP and activity to Firestore via AppProvider
+        context.read<AppProvider>().addXpForPractice();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -151,7 +156,7 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
       final hasPermission = await _recorder.hasPermission();
       if (!hasPermission) {
         _showError(
-          'Microphone permission denied. Please allow microphone access in your browser/device settings.',
+          'Microphone permission denied. Please allow microphone access in Settings.',
         );
         return;
       }
@@ -163,8 +168,16 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
         numChannels: 1,
       );
 
-      // Start recording — on web the path is ignored and a blob URL is returned
-      await _recorder.start(config, path: '');
+      // Build a valid file path for mobile; on web the path is ignored
+      String recordPath = '';
+      if (!kIsWeb) {
+        final tempDir = await getTemporaryDirectory();
+        final ext = config.encoder == AudioEncoder.wav ? 'wav' : 'webm';
+        recordPath =
+            '${tempDir.path}/lexicode_recording_${DateTime.now().millisecondsSinceEpoch}.$ext';
+      }
+
+      await _recorder.start(config, path: recordPath);
 
       if (mounted) {
         setState(() => _isRecording = true);
@@ -197,12 +210,16 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
         throw Exception('Recording produced no audio data.');
       }
 
-      // Fetch audio bytes — works for both blob URLs (web) and file URIs
+      // Read audio bytes — file on mobile, blob URL on web
       final audioBytes = await _fetchAudioBytes(path);
 
       if (audioBytes.isEmpty) {
-        throw Exception('Recording is empty. Please try speaking again.');
+        throw Exception(
+          'Microphone did not pick up any sound. Please check your mic and try again.',
+        );
       }
+
+      debugPrint('[Recording] Audio size: ${audioBytes.length} bytes from: $path');
 
       // Determine file extension based on platform
       final fileName = kIsWeb ? 'recording.webm' : 'recording.wav';
@@ -230,23 +247,44 @@ class _IeltsSpeakingScreenState extends State<IeltsSpeakingScreen>
     }
   }
 
-  /// Fetches audio bytes from the recorded path.
-  /// On web this is a blob URL; on mobile/desktop it's a file:// URI or path.
-  /// Both can be fetched via HTTP GET.
+  /// Reads audio bytes from the recorded path.
+  ///
+  /// On web: [pathOrUrl] is a blob URL — fetched via HTTP GET.
+  /// On mobile: [pathOrUrl] is a local file path — read via dart:io File.
   Future<Uint8List> _fetchAudioBytes(String pathOrUrl) async {
-    try {
-      final uri = pathOrUrl.startsWith('http') || pathOrUrl.startsWith('blob')
-          ? Uri.parse(pathOrUrl)
-          : Uri.parse('file:///$pathOrUrl');
-      final response = await http.get(uri);
-      if (response.statusCode == 200) {
-        return response.bodyBytes;
+    // Web: blob URLs must be fetched via HTTP
+    if (kIsWeb ||
+        pathOrUrl.startsWith('http') ||
+        pathOrUrl.startsWith('blob')) {
+      try {
+        final response = await http.get(Uri.parse(pathOrUrl));
+        if (response.statusCode == 200) {
+          return response.bodyBytes;
+        }
+        throw Exception('Failed to read audio (HTTP ${response.statusCode})');
+      } catch (e) {
+        throw Exception('Could not read recorded audio: $e');
       }
-      throw Exception('Failed to read audio (HTTP ${response.statusCode})');
+    }
+
+    // Mobile/Desktop: read from the local file system
+    try {
+      final file = File(pathOrUrl);
+      if (!file.existsSync()) {
+        throw Exception(
+          'Audio file not found at $pathOrUrl. Recording may have failed.',
+        );
+      }
+      final bytes = await file.readAsBytes();
+      if (bytes.isEmpty) {
+        throw Exception(
+          'Microphone did not pick up any sound. The audio file is 0 bytes.',
+        );
+      }
+      return bytes;
     } catch (e) {
-      // If HTTP fetch fails on mobile, the path might be a regular file path.
-      // We'll re-throw since dart:io is not available on web.
-      throw Exception('Could not read recorded audio: $e');
+      if (e is Exception) rethrow;
+      throw Exception('Could not read recorded audio file: $e');
     }
   }
 

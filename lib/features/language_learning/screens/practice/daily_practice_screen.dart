@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/providers/app_provider.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../models/exercise_model.dart';
 import '../intermediate/practice_session_screen.dart';
@@ -153,6 +154,8 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
         } else {
           _sessionComplete = true;
           context.read<ProgressProvider>().addXp(_xpEarned);
+          // Persist to Firestore via AppProvider
+          context.read<AppProvider>().addXpForPractice();
         }
       });
     }
@@ -171,6 +174,8 @@ class _DailyPracticeScreenState extends State<DailyPracticeScreen> {
               setState(() {
                 _sessionComplete = true;
                 context.read<ProgressProvider>().addXp(_xpEarned + 10);
+                // Persist to Firestore via AppProvider
+                context.read<AppProvider>().addXpForPractice();
               });
             },
             child: const Text('Complete Session'),

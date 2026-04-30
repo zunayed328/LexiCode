@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/providers/app_provider.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../widgets/timer_widget.dart';
 import '../../widgets/tts_controls.dart';
@@ -656,6 +658,8 @@ Despite these advances, educational researchers emphasize the importance of main
   }
 
   void _finishExam() {
+    // Persist XP and activity to Firestore via AppProvider
+    context.read<AppProvider>().addXpForPractice();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const ExamResultScreen()),

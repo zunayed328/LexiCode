@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/providers/app_provider.dart';
 import '../../models/exercise_model.dart';
 import '../../models/exam_result_model.dart';
 import '../../services/content_generation_service.dart';
@@ -33,15 +35,44 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
   final TextEditingController _answerController = TextEditingController();
   bool _showFeedback = false;
 
+  // TTS & audio playback state
+  final FlutterTts _tts = FlutterTts();
+  bool _hasPlayedAudio = false;
+  bool _isSpeaking = false;
+  bool _showTranscript = false;
+  double _ttsProgress = 0.0;
+
   @override
   void initState() {
     super.initState();
     _loadSection();
     _answerController.addListener(_onTextChanged);
+    _initTts();
+  }
+
+  Future<void> _initTts() async {
+    await _tts.setLanguage('en-US');
+    await _tts.setSpeechRate(0.45);
+    await _tts.setPitch(1.0);
+    _tts.setStartHandler(() {
+      if (mounted) setState(() { _isSpeaking = true; _hasPlayedAudio = true; });
+    });
+    _tts.setCompletionHandler(() {
+      if (mounted) setState(() { _isSpeaking = false; _ttsProgress = 1.0; });
+    });
+    _tts.setCancelHandler(() {
+      if (mounted) setState(() => _isSpeaking = false);
+    });
+    _tts.setProgressHandler((text, start, end, word) {
+      if (mounted && text.isNotEmpty) {
+        setState(() => _ttsProgress = end / text.length);
+      }
+    });
   }
 
   @override
   void dispose() {
+    _tts.stop();
     _answerController.removeListener(_onTextChanged);
     _answerController.dispose();
     super.dispose();
@@ -91,15 +122,44 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
         q.options.isEmpty; // If no options, fall back to text input
   }
 
+  bool _evaluateAnswer(String userAns, String correctAns) {
+    final u = userAns.trim().toLowerCase();
+    final c = correctAns.trim().toLowerCase();
+
+    if (u == c) return true;
+
+    // Remove common MCQ prefixes like "a) ", "b.", "c - "
+    String stripPrefix(String s) {
+      return s.replaceAll(RegExp(r'^[a-z][\)\.\-]\s*'), '').trim();
+    }
+
+    final cleanU = stripPrefix(u);
+    final cleanC = stripPrefix(c);
+
+    if (cleanU == cleanC && cleanU.isNotEmpty) return true;
+
+    // If the correct answer is just the option letter (e.g., "a")
+    if (c.length == 1 && RegExp(r'^[a-z]$').hasMatch(c)) {
+      if (u.startsWith('$c)') || u.startsWith('$c.') || u.startsWith('$c ') || u.startsWith('$c-')) {
+        return true;
+      }
+    }
+
+    // Fallback to contains for slight variations
+    if (cleanC.isNotEmpty && cleanU.isNotEmpty) {
+      if (cleanU.contains(cleanC) || cleanC.contains(cleanU)) return true;
+    }
+
+    return false;
+  }
+
   void _checkAnswer() {
     if (_session == null || !_hasAnswer) return;
 
     final currentQ = _session!.exercises[_currentQuestionIndex];
     final answer = _currentAnswer;
 
-    final isCorrect =
-        answer.trim().toLowerCase() ==
-        currentQ.correctAnswer.trim().toLowerCase();
+    final isCorrect = _evaluateAnswer(answer, currentQ.correctAnswer);
 
     _results.add(
       ExerciseResult(
@@ -122,9 +182,14 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
     }
 
     // Reset state for next question
+    _tts.stop();
     _selectedOption = null;
     _answerController.clear();
     _showFeedback = false;
+    _hasPlayedAudio = false;
+    _isSpeaking = false;
+    _showTranscript = false;
+    _ttsProgress = 0.0;
 
     if (_currentQuestionIndex < _session!.exercises.length - 1) {
       setState(() => _currentQuestionIndex++);
@@ -134,6 +199,8 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
   }
 
   void _finishSection() {
+    // Persist XP and activity to Firestore via AppProvider
+    context.read<AppProvider>().addXpForPractice();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const ExamResultScreen()),
@@ -259,54 +326,10 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Context / audio transcript
+                    // Audio Player UI (replaces raw transcript)
                     if (currentQ.audioText != null &&
                         currentQ.audioText!.isNotEmpty) ...[
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.darkCard.withValues(alpha: 0.5)
-                              : AppColors.lightBackground,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: isDark
-                                ? AppColors.darkBorder
-                                : AppColors.lightBorder,
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.headphones_rounded,
-                                  color: _accentColor,
-                                  size: 16,
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  'Audio Transcript',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: _accentColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            _buildRichQuestion(
-                              currentQ.audioText!,
-                              isDark,
-                              fontSize: 14,
-                              italic: true,
-                            ),
-                          ],
-                        ),
-                      ),
+                      _buildAudioPlayer(currentQ.audioText!, isDark),
                       const SizedBox(height: 20),
                     ],
 
@@ -417,6 +440,207 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
 
     return RichText(text: TextSpan(children: spans));
   }
+  // ─── Audio Player Widget ───────────────────────────────────────
+  Widget _buildAudioPlayer(String transcript, bool isDark) {
+    return Column(
+      children: [
+        // Main audio player card
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                _accentColor.withValues(alpha: 0.12),
+                _accentColor.withValues(alpha: 0.05),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: _accentColor.withValues(alpha: 0.25),
+            ),
+          ),
+          child: Column(
+            children: [
+              // Play/Stop button with waveform
+              Row(
+                children: [
+                  // Play button
+                  GestureDetector(
+                    onTap: () async {
+                      if (_isSpeaking) {
+                        await _tts.stop();
+                        setState(() => _isSpeaking = false);
+                      } else {
+                        setState(() => _ttsProgress = 0.0);
+                        await _tts.speak(transcript);
+                      }
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: _isSpeaking
+                              ? [Colors.red.shade400, Colors.red.shade600]
+                              : [_accentColor, _accentColor.withValues(alpha: 0.8)],
+                        ),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: (_isSpeaking ? Colors.red : _accentColor)
+                                .withValues(alpha: 0.35),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        _isSpeaking
+                            ? Icons.stop_rounded
+                            : Icons.play_arrow_rounded,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  // Waveform / progress area
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _isSpeaking
+                              ? 'Playing audio...'
+                              : (_hasPlayedAudio
+                                  ? 'Tap to replay'
+                                  : 'Tap play to listen'),
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? Colors.white : AppColors.lightText,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Progress bar
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: _ttsProgress,
+                            backgroundColor: isDark
+                                ? Colors.white.withValues(alpha: 0.1)
+                                : Colors.black.withValues(alpha: 0.08),
+                            valueColor: AlwaysStoppedAnimation(
+                              _isSpeaking ? _accentColor : AppColors.success,
+                            ),
+                            minHeight: 6,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              // "Listen first" hint (shown before first play)
+              if (!_hasPlayedAudio) ...[
+                const SizedBox(height: 14),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Colors.amber.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline_rounded,
+                        size: 16,
+                        color: Colors.amber.shade700,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Listen to the audio before answering',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.amber.shade700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+
+        // Show Transcript toggle (accessibility)
+        const SizedBox(height: 10),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton.icon(
+            onPressed: () => setState(() => _showTranscript = !_showTranscript),
+            icon: Icon(
+              _showTranscript
+                  ? Icons.visibility_off_rounded
+                  : Icons.visibility_rounded,
+              size: 16,
+              color: isDark ? Colors.white38 : Colors.black38,
+            ),
+            label: Text(
+              _showTranscript ? 'Hide Transcript' : 'Show Transcript',
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                color: isDark ? Colors.white38 : Colors.black38,
+              ),
+            ),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              minimumSize: const Size(0, 32),
+            ),
+          ),
+        ),
+
+        // Hidden transcript (toggled)
+        if (_showTranscript)
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(top: 4),
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.04)
+                  : Colors.black.withValues(alpha: 0.03),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.08)
+                    : Colors.black.withValues(alpha: 0.06),
+              ),
+            ),
+            child: _buildRichQuestion(
+              transcript,
+              isDark,
+              fontSize: 13,
+              italic: true,
+            ),
+          ),
+      ],
+    );
+  }
 
   /// Builds the appropriate answer area based on question type
   Widget _buildAnswerArea(Exercise q, bool isDark) {
@@ -430,7 +654,7 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
   Widget _buildTextInput(bool isDark) {
     return TextField(
       controller: _answerController,
-      enabled: !_showFeedback,
+      enabled: !_showFeedback && _hasPlayedAudio,
       style: GoogleFonts.inter(fontSize: 16),
       decoration: InputDecoration(
         hintText: 'Type your answer here...',
@@ -509,7 +733,7 @@ class _IeltsListeningScreenState extends State<IeltsListeningScreen> {
         return Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: GestureDetector(
-            onTap: _showFeedback
+            onTap: (_showFeedback || !_hasPlayedAudio)
                 ? null
                 : () => setState(() => _selectedOption = option),
             child: AnimatedContainer(

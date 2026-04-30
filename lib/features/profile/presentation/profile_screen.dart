@@ -1,3 +1,4 @@
+import 'dart:io' show File;
 import 'dart:math';
 import 'dart:ui';
 import 'package:fl_chart/fl_chart.dart';
@@ -127,7 +128,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     shape: BoxShape.circle,
                     image: _localPhotoPath != null || user.avatarUrl.isNotEmpty
                         ? DecorationImage(
-                            image: NetworkImage(
+                            image: _resolveAvatarImage(
                               _localPhotoPath ?? user.avatarUrl,
                             ),
                             fit: BoxFit.cover,
@@ -286,13 +287,22 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   // ─── Profile Editing Actions ──────────────────────────────────────
 
+  /// Resolves the correct ImageProvider based on whether the path
+  /// is a local file (from image_picker) or a network URL (e.g. Google avatar).
+  ImageProvider _resolveAvatarImage(String pathOrUrl) {
+    if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) {
+      return NetworkImage(pathOrUrl);
+    }
+    return FileImage(File(pathOrUrl));
+  }
+
   Future<void> _pickProfileImage(AppProvider provider) async {
     final picker = ImagePicker();
     final image = await picker.pickImage(
       source: ImageSource.gallery,
-      maxWidth: 512,
-      maxHeight: 512,
-      imageQuality: 85,
+      maxWidth: 800,
+      maxHeight: 800,
+      imageQuality: 92,
     );
 
     if (image != null && mounted) {

@@ -66,5 +66,28 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- Microphone access for IELTS Speaking recording -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>LexiCode needs microphone access to record your spoken English for IELTS Speaking practice.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>LexiCode uses speech recognition to transcribe your spoken English for practice evaluation.</string>
+	<!-- Firebase email link deep-linking (Universal Links) -->
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.lexicode.lexicodeApp</string>
+			</array>
+		</dict>
+	</array>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:flutter-ai-playground-2efdb.firebaseapp.com</string>
+	</array>
 </dict>
 </plist>

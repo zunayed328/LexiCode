@@ -12,7 +12,20 @@
           "package_name": "com.lexicode.lexicode_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1082906445426-r8mnd6i0gmb7fiapipdrru9footmelom.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lexicode.lexicode_app",
+            "certificate_hash": "8d0a994fff7637fb608ade7f8cf8fe3c20de3e57"
+          }
+        },
+        {
+          "client_id": "1082906445426-399oisgurcol9mpk9sof646ctsf6be3j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDBV4syCMVqROBUgfgJCBWCv3KnBFbUZII"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1082906445426-399oisgurcol9mpk9sof646ctsf6be3j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

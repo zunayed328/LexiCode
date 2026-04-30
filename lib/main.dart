@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:app_links/app_links.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -48,6 +49,21 @@ void main() async {
     // Firebase is optional — the app runs fully on local SQLite.
     debugPrint('[main] Firebase init skipped: $e');
   }
+
+  // Initialize Google Sign-In (required once by google_sign_in v7+).
+  // The serverClientId is the Web Client ID from the Firebase Console,
+  // which lets Android receive a valid ID token for Firebase Auth.
+  if (!kIsWeb) {
+    try {
+      await GoogleSignIn.instance.initialize(
+        serverClientId:
+            '1082906445426-399oisgurcol9mpk9sof646ctsf6be3j.apps.googleusercontent.com',
+      );
+    } catch (e) {
+      debugPrint('[main] GoogleSignIn init skipped: $e');
+    }
+  }
+
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     MultiProvider(

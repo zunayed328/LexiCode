@@ -28,7 +28,7 @@ class AuthService {
   ActionCodeSettings get _actionCodeSettings => ActionCodeSettings(
         url: kIsWeb
             ? 'http://localhost:8080'
-            : 'https://flutter-ai-playground-2efdb.web.app',
+            : 'https://flutter-ai-playground-2efdb.firebaseapp.com',
         handleCodeInApp: true,
         // iOS and Android settings for deep-linking (optional for web-only)
         iOSBundleId: 'com.lexicode.lexicodeApp',
@@ -114,21 +114,44 @@ class AuthService {
 
   // ─── Google Sign-In ─────────────────────────────────────────────────────
 
-  /// Signs in with Google using Firebase's popup flow.
+  /// Signs in with Google.
   ///
-  /// Uses [signInWithPopup] with [GoogleAuthProvider] — works on
-  /// both web and mobile without manual token extraction.
+  /// On **Android / iOS**: uses the native [GoogleSignIn] flow via the
+  /// `google_sign_in` package, exchanging the Google ID token + access token
+  /// for a Firebase [OAuthCredential].
+  ///
+  /// On **Web**: falls back to Firebase's [signInWithPopup] with
+  /// [GoogleAuthProvider] (no package needed).
   ///
   /// On first sign-in, creates a Firestore user document.
   /// Returns the authenticated [User].
   Future<User> signInWithGoogle() async {
-    final googleProvider = GoogleAuthProvider();
-    googleProvider.addScope('email');
-    googleProvider.addScope('profile');
-    // Force account picker so the user can switch accounts after logout
-    googleProvider.setCustomParameters({'prompt': 'select_account'});
+    late UserCredential credential;
 
-    final credential = await _auth.signInWithPopup(googleProvider);
+    if (kIsWeb) {
+      // ── Web ──────────────────────────────────────────────────────────────
+      final googleProvider = GoogleAuthProvider();
+      googleProvider.addScope('email');
+      googleProvider.addScope('profile');
+      googleProvider.setCustomParameters({'prompt': 'select_account'});
+      credential = await _auth.signInWithPopup(googleProvider);
+    } else {
+      // ── Android / iOS ────────────────────────────────────────────────────
+      // Force account picker on subsequent sign-ins by signing out first.
+      await GoogleSignIn.instance.signOut();
+
+      // authenticate() throws if the user cancels (non-null in v7)
+      final googleUser = await GoogleSignIn.instance.authenticate();
+
+      // In v7, .authentication is a sync getter (not a Future)
+      final googleAuth = googleUser.authentication;
+      // Only idToken is available in v7; accessToken is obtained separately via
+      // authorizationClient if needed, but idToken alone is sufficient for Firebase.
+      final oauthCredential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+      credential = await _auth.signInWithCredential(oauthCredential);
+    }
 
     final user = credential.user;
     if (user == null) {
@@ -168,16 +191,11 @@ class AuthService {
   Future<void> signOut() async {
     // 1. Clear Google's cached credential (best-effort)
     try {
-      if (kIsWeb) {
-        // On web, disconnect() revokes the cached Google session
-        // so signInWithPopup shows the account picker next time.
-        await GoogleSignIn.instance.disconnect();
-      } else {
-        await GoogleSignIn.instance.disconnect();
-      }
+      // Disconnect revokes the cached token so the account picker
+      // appears again on the next sign-in attempt.
+      await GoogleSignIn.instance.disconnect();
     } catch (e) {
-      // Not all users signed in with Google — this is expected to fail
-      // for email-link users. Silently continue.
+      // Not all users signed in with Google — silently continue.
       debugPrint('[AuthService] Google disconnect (non-critical): $e');
     }
 

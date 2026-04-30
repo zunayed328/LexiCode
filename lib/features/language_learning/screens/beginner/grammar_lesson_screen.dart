@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/providers/app_provider.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../providers/learning_provider.dart';
 import '../../widgets/tts_controls.dart';
@@ -646,9 +647,13 @@ class _GrammarLessonScreenState extends State<GrammarLessonScreen> {
     final score = total > 0 ? (correct / total * 100) : 0.0;
     final provider = context.read<LearningProvider>();
 
-    // Complete lesson
+    // Complete lesson (local progress)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       provider.completeLesson(provider.currentLesson?.id ?? '', score);
+      // Persist to Firestore via AppProvider
+      context.read<AppProvider>().completeLesson(
+        provider.currentLesson?.id ?? '',
+      );
     });
 
     return SingleChildScrollView(

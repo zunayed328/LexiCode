@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/providers/app_provider.dart';
 import '../../models/exercise_model.dart';
 import '../../widgets/exercise_card.dart';
 import '../../widgets/answer_feedback.dart';
@@ -363,6 +365,10 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
       });
     } else {
       setState(() => _sessionComplete = true);
+      // Persist XP and activity to Firestore via AppProvider
+      if (mounted) {
+        context.read<AppProvider>().addXpForPractice();
+      }
     }
   }
 

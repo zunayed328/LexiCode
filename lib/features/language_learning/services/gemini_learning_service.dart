@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -180,24 +181,55 @@ $exclusions
     IELTSSectionType sectionType,
     UserProgress progress,
   ) async {
-    // BYPASS API FOR WRITING TASK
+    // ── Writing Section: hardcoded with predefined image bank ──────
     if (sectionType == IELTSSectionType.writing) {
+      // Predefined bank of verified local chart assets.
+      // Each entry pairs a guaranteed-valid image path with its matching prompt.
+      const writingTask1Bank = [
+        {
+          'image': 'assets/images/task1_chart.png',
+          'prompt':
+              'The bar chart below shows the percentage of UK adults who ate '
+              'five portions of fruit and vegetables per day from 2001 to 2008. '
+              'Summarise the information by selecting and reporting the main '
+              'features, and make comparisons where relevant.',
+        },
+        {
+          'image': 'assets/images/task1_line_graph.png',
+          'prompt':
+              'The line graph below shows the number of visitors to three '
+              'London museums between 2007 and 2012. Summarise the information '
+              'by selecting and reporting the main features, and make '
+              'comparisons where relevant.',
+        },
+        {
+          'image': 'assets/images/task1_pie_chart.png',
+          'prompt':
+              'The pie chart below shows how household energy was consumed '
+              'by category in 2020. Summarise the information by selecting '
+              'and reporting the main features, and make comparisons where '
+              'relevant.',
+        },
+      ];
+
+      // Randomly select a Task 1 prompt + image pair
+      final random = Random();
+      final task1 = writingTask1Bank[random.nextInt(writingTask1Bank.length)];
+
       return ExerciseSession(
-        id: 'mock_writing_001',
+        id: 'writing_${DateTime.now().millisecondsSinceEpoch}',
         sessionType: SessionType.ieltsExam,
         topic: 'IELTS Writing Practice',
         level: LearningLevel.advanced,
         warmupText: 'IELTS Writing Section. You have limited time.',
         cooldownReflection: 'Reflect on your writing today.',
         exercises: [
-          const Exercise(
+          Exercise(
             id: 'task1',
             type: ExerciseType.writingPrompt,
-            question:
-                'The chart below shows the percentage of people who ate five portions of fruit and vegetables per day in the UK from 2001 to 2008. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.',
-            context:
-                'The chart below shows the percentage of people who ate five portions of fruit and vegetables per day in the UK from 2001 to 2008. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.',
-            imageUrl: 'assets/images/task1_chart.png',
+            question: task1['prompt']!,
+            context: task1['prompt']!,
+            imageUrl: task1['image']!,
             correctAnswer: '',
             difficulty: ExerciseDifficulty.challenging,
           ),
@@ -205,9 +237,15 @@ $exclusions
             id: 'task2',
             type: ExerciseType.writingPrompt,
             question:
-                'Some people think that university education should be free for everyone. Others think that students should pay for their higher education. Discuss both these views and give your own opinion.',
+                'Some people think that university education should be free '
+                'for everyone. Others think that students should pay for their '
+                'higher education. Discuss both these views and give your own '
+                'opinion.',
             context:
-                'Some people think that university education should be free for everyone. Others think that students should pay for their higher education. Discuss both these views and give your own opinion.',
+                'Some people think that university education should be free '
+                'for everyone. Others think that students should pay for their '
+                'higher education. Discuss both these views and give your own '
+                'opinion.',
             correctAnswer: '',
             difficulty: ExerciseDifficulty.challenging,
           ),
@@ -217,6 +255,56 @@ $exclusions
 
     final exclusions = _buildExclusionBlock(progress);
 
+    // ── Speaking Section: dedicated conversational prompt ────────────
+    if (sectionType == IELTSSectionType.speaking) {
+      final speakingPrompt = '''
+You are an IELTS Speaking examiner. Generate a full IELTS Speaking practice test.
+
+CRITICAL RULES:
+- You must ONLY generate conversational, text-based questions.
+- Every question must be answerable purely through speech with NO visual aids.
+- DO NOT generate questions that ask the user to look at, describe, or analyze
+  any graph, chart, table, picture, diagram, map, or any other visual material.
+- DO NOT include "imageUrl", "audioText", or "context" fields.
+- Follow the real IELTS Speaking test format:
+  • Part 1 (4-5 questions): Simple personal questions (hobbies, daily life, hometown).
+  • Part 2 (1 question): A cue card / long-turn topic. Start the question with
+    "Describe..." followed by bullet points the candidate should cover.
+  • Part 3 (4-5 questions): Abstract / analytical follow-up discussion questions
+    related to Part 2's theme.
+
+Provide a JSON object with:
+- "id": unique string ID
+- "sessionType": "ieltsExam"
+- "level": "advanced"
+- "topic": "IELTS Speaking Practice"
+- "warmupText": "IELTS Speaking Section. Speak naturally and clearly."
+- "exercises": array of 10-11 exercise objects, each with:
+  - "id": unique string
+  - "type": "speakingPrompt"
+  - "question": the speaking question text (conversational, NO visual references)
+  - "options": [] (empty array — speaking has no multiple choice)
+  - "correctAnswer": "" (empty — evaluated by AI after transcription)
+  - "explanation": a brief note on what a strong answer would cover
+  - "difficulty": one of "easy", "medium", "hard", "challenging"
+  - "points": 10
+
+Example good questions:
+- "Tell me about your hometown. What do you like most about living there?"
+- "Describe a memorable trip you took recently. Where did you go and why?"
+- "Do you think technology has made people more or less social? Why?"
+
+Example BAD questions (DO NOT generate these):
+- "Describe the graph showing visitor numbers..." (requires a visual)
+- "Look at the chart below and summarize..." (requires a visual)
+
+$exclusions
+''';
+
+      return _generate(speakingPrompt, (data) => ExerciseSession.fromJson(data));
+    }
+
+    // ── Reading / Listening: generic IELTS prompt ───────────────────
     final prompt =
         '''
 Generate an IELTS simulation section practice test for ${sectionType.name}.
@@ -233,9 +321,8 @@ Provide a JSON object with:
 - "warmupText": "IELTS ${sectionType.name} Section. You have limited time."
 - "exercises": array of 10-15 exercise objects representing IELTS questions, suitable for the section type.
   - "id", "type", "question", "options" (array), "correctAnswer", "explanation", "difficulty", "points"
-  - For Reading/Writing: include a "context" field with the full reading passage or writing task prompt.
+  - For Reading: include a "context" field with the full reading passage.
   - For Listening: include an "audioText" field with the transcript of the audio.
-  - For Writing Task 1 exercises that describe a graph, chart, table, or diagram: include an "imageUrl" field with a sample chart image URL. Use "https://via.placeholder.com/400x250.png?text=Sample+Bar+Chart" as a placeholder. The first exercise should be a Task 1 with a graph description and include this imageUrl.
 
 $exclusions
 ''';
@@ -327,9 +414,14 @@ Parameters:
 - Level: $diffLabel
 - Count: $count
 
+IMPORTANT RULES:
+- All prompts must be purely conversational and answerable through speech alone.
+- DO NOT generate prompts that reference any graph, chart, table, picture,
+  diagram, map, or any visual material. The user has NO visual display.
+
 Provide a JSON object with a single field "prompts" which is an array of $count objects, each with:
 - "id": unique string
-- "prompt": the speaking topic or question
+- "prompt": the speaking topic or question (conversational only, NO visual references)
 - "preparationTimeSeconds": integer (e.g., 60)
 - "speakingTimeSeconds": integer (e.g., 120)
 - "bulletPoints": array of 3-4 bullet points to cover

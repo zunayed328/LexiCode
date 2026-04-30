@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/providers/app_provider.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../models/exercise_types_model.dart';
 import '../../models/exam_result_model.dart';
@@ -76,6 +77,8 @@ class _WritingPracticeScreenState extends State<WritingPracticeScreen> {
           _evaluation = evaluation;
           _isEvaluating = false;
         });
+        // Persist XP and activity to Firestore via AppProvider
+        context.read<AppProvider>().addXpForPractice();
       }
     } catch (e) {
       if (mounted) {

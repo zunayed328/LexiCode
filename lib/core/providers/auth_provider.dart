@@ -110,17 +110,16 @@ class AuthProvider extends ChangeNotifier {
     try {
       await _authService.sendSignInLink(email);
       _linkSent = true;
-      _setLoading(false);
       notifyListeners();
       return true;
     } on FirebaseException catch (e) {
       _setError(_firebaseErrorMessage(e.code));
-      _setLoading(false);
       return false;
     } catch (e) {
       _setError('Failed to send sign-in link. Please try again.');
-      _setLoading(false);
       return false;
+    } finally {
+      _setLoading(false);
     }
   }
 
@@ -189,25 +188,27 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       final user = await _authService.signInWithGoogle();
+
+      // Force Firebase to refresh cached auth state (prevents stale sessions)
+      await user.reload();
+
       await _loadUserProfile(user);
       _isAuthenticated = true;
-      _setLoading(false);
       notifyListeners();
       return true;
     } on FirebaseException catch (e) {
       _setError(_firebaseErrorMessage(e.code));
-      _setLoading(false);
       return false;
     } catch (e) {
       final message = e.toString();
       if (message.contains('cancelled')) {
         // User closed the popup — not an error, just clear loading
-        _setLoading(false);
         return false;
       }
       _setError('Google sign-in failed. Please try again.');
-      _setLoading(false);
       return false;
+    } finally {
+      _setLoading(false);
     }
   }
 
@@ -232,13 +233,28 @@ class AuthProvider extends ChangeNotifier {
   // ─── Sign Out ─────────────────────────────────────────────────────────────
 
   Future<void> signOut() async {
-    await _authService.signOut();
-    clearUserData();
+    try {
+      await _authService.signOut();
+    } catch (e) {
+      debugPrint('[AuthProvider] signOut error: $e');
+    } finally {
+      // Total state wipe — reset everything so re-login works cleanly
+      _isAuthenticated = false;
+      _isLoading = false;
+      _linkSent = false;
+      _errorMessage = null;
+      _user = null;
+      notifyListeners();
+    }
   }
 
+  /// Resets all provider state without touching Firebase.
+  /// Used when external callers need to clear state (e.g. profile screen logout).
   void clearUserData() {
     _isAuthenticated = false;
+    _isLoading = false;
     _linkSent = false;
+    _errorMessage = null;
     _user = null;
     notifyListeners();
   }
