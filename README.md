@@ -1,17 +1,30 @@
-# lexicode_app
+# LexiCode DualCore Assistant 🚀
 
-A new Flutter project.
+An AI-powered mobile application designed to bridge the gap between language proficiency and technical skill development. 
 
-## Getting Started
+## 🌟 Overview
+LexiCode operates on a unique "dual-core" architecture:
+1. **English Proficiency Core:** Structured modules for English language learning and dedicated IELTS preparation.
+2. **Code Review Core:** Real-time programming feedback and technical tutoring powered by **Zen**, our integrated AI persona.
 
-This project is a starting point for a Flutter application.
+## 🛠️ Tech Stack
+* **Frontend:** Flutter (Cross-platform mobile framework)
+* **Backend:** Firebase (Authentication, Cloud Firestore for real-time data sync)
+* **AI Integration:** LLM API integration for the Zen tutoring persona
 
-A few resources to get you started if this is your first Flutter project:
+## ✨ Key Features
+* **Interactive IELTS Prep:** Targeted modules to improve language mechanics and test readiness.
+* **Zen AI Code Tutor:** Submit code snippets or technical queries to receive instant, structured reviews and debugging assistance.
+* **Seamless Cloud Sync:** Secure user authentication and real-time progress tracking.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## 🚀 Getting Started
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Prerequisites
+* Flutter SDK (Latest stable version)
+* Dart SDK
+* A Firebase project configured for Android/iOS
+
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/zunayed328/LexiCode.git](https://github.com/zunayed328/LexiCode.git)
